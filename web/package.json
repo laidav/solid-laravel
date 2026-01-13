@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reactables/core": "^2.0.1",
+    "rxjs": "^7.8.2",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
