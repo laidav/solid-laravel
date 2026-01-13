@@ -1,11 +1,11 @@
-import { createSignal } from 'solid-js'
-import solidLogo from './assets/solid.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import solidLogo from "./assets/solid.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import { createReactable } from "./Helpers/createReactable";
+import { RxCounter } from "./RxCounter";
 
 function App() {
-  const [count, setCount] = createSignal(0)
-
+  const [count, { increment }] = createReactable(() => RxCounter());
   return (
     <>
       <div>
@@ -18,9 +18,7 @@ function App() {
       </div>
       <h1>Vite + Solid</h1>
       <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count()}
-        </button>
+        <button onClick={increment}>count is {count()}</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
@@ -29,7 +27,7 @@ function App() {
         Click on the Vite and Solid logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
