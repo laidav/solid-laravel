@@ -29,11 +29,14 @@ export const createReactable = <
   // create a Solid signal for state
   const [state, setState] = createSignal<T>();
 
-  // subscribe inside the hook
+  // subscribe signal to state observable
   const stateSub = state$.subscribe(setState);
 
   // automatically clean up on component unmount
-  onCleanup(() => stateSub.unsubscribe());
+  onCleanup(() => {
+    stateSub.unsubscribe();
+    actions.destroy?.();
+  });
 
   return [state, actions, actions$, state$] as const;
 };

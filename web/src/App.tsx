@@ -6,6 +6,9 @@ import { RxCounter } from "./RxCounter";
 
 function App() {
   const [count, { increment }] = createReactable(() => RxCounter());
+
+  console.log("function");
+
   return (
     <>
       <div>
