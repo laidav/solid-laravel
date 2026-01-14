@@ -1,23 +1,27 @@
 # Base Project
 
-## Tasks
+### Tasks
 
-- Backend
-  - set up routes
-    - api, register in app
-  - authorization- scantum
-    - Auth Controller
-      - login
-      - logout
+#### Sign up page
 
-    - Forgot password
+- Update models for email verification
+- Add registration page 
+  - backend 
+    - register user endpoint
+    - add mailpit to see emails are coming through
+  - frontend
+    - add routing to app
+    - create user sign up page
+      - on success show the notice page
 
-  - User Controller
-    - sign create user 
-    - authenticated routes
-      - get user profile
+- Email verification handler page
 
-- Frontend
-  - Login page
-  - Sign up page
-  - Forgot Password page
+- Resend email notification
+  - backend 
+    - add endpoint for resendiing
+  - frontend
+    - update success page to have button to resend notice
+
+#### Login Page
+
+#### Reset Password Page
