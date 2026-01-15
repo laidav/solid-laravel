@@ -9,8 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends APIController
 {
-    public function showResetForm() {}
-
     public function register(Request $request, CreateNewUser $creator): JsonResponse
     {
         // Create the user using Fortify's action
