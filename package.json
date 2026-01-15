@@ -1,0 +1,13 @@
+{
+  "name": "web-app",
+  "version": "1.0.0",
+  "description": "Basic App",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "ci:fix-backend": "cd backend; vendor/bin/pint ",
+    "ci:lint-backend": "cd backend; npx concurrently -g -n pint,phpstan 'vendor/bin/pint --parallel --test' 'vendor/bin/phpstan'"
+  }
+}
