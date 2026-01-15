@@ -8,7 +8,8 @@
 - add mailpit to see emails are coming through - DONE
 - Add registration page 
   - backend 
-    - register user endpoint
+    - register user endpoint - IN PROGRESS
+    - test with postman
   - frontend
     - add routing to app
     - create user sign up page
