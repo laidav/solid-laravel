@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controller\API;
+namespace App\Http\Controllers\API;
 
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\API\APIController;
 
 class AuthController extends APIController
 {
