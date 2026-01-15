@@ -15,7 +15,7 @@
     },
     {
       "label": "BackendServer",
-      "command": "cd backend && php artisan serve"
+      "command": "cd backend && php artisan serve --no-reload"
     },
     {
       "label": "WebFrontendServer",
