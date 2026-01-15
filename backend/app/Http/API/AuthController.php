@@ -5,7 +5,7 @@ namespace App\Http\Controller\API;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends APIController {
   public function showResetForm() {
