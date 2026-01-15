@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controller\API\AuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return [];
