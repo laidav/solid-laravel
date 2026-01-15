@@ -8,10 +8,13 @@
 - add mailpit to see emails are coming through - DONE
 - Add registration page 
   - backend 
-    - register user endpoint - IN PROGRESS
-    - test with postman
+    - register user endpoint - DONE
+    - test with postman - DONE
   - frontend
-    - add routing to app
+    - add routing to app - IN PROGRESS
+    - Forms 
+      - Context
+      - Field
     - create user sign up page
       - on success show the notice page
 
