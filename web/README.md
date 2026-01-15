@@ -4,11 +4,11 @@
 
 #### Sign up page
 
-- Update models for email verification
+- Update models for email verification - DONE
+- add mailpit to see emails are coming through - DONE
 - Add registration page 
   - backend 
     - register user endpoint
-    - add mailpit to see emails are coming through
   - frontend
     - add routing to app
     - create user sign up page
