@@ -18,6 +18,11 @@
       "command": "cd backend && php artisan serve"
     },
     {
+      "label": "Format Backend",
+      "command": "cd backend && ./vendor/bin/pint",
+      "problemMatcher": []
+    },
+    {
       "label": "WebFrontendServer",
       "command": "cd web && npm run dev"
     }
