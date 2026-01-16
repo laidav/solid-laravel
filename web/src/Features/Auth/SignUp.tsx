@@ -11,7 +11,7 @@ const SignUp = () => {
     build(
       group({
         controls: {
-          name: control(["Dave", "required"]),
+          name: control(["", "required"]),
           email: control(["", ["required", "email"]]),
           password: control(["", ["required"]]),
           confirmPassword: control(["", ["required"]]),
