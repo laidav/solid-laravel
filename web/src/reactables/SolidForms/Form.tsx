@@ -1,6 +1,6 @@
 import type { RxFormActions } from "@reactables/forms";
 import { ControlModels } from "@reactables/forms";
-import { createContext, createMemo } from "solid-js";
+import { createContext, createMemo, Show } from "solid-js";
 import type { JSX, Accessor } from "solid-js";
 
 export type HookedRxForm = [
@@ -21,8 +21,8 @@ export const Form = ({ rxForm, children }: FormProps) => {
   const stateInitialized = createMemo(() => state() !== undefined, undefined);
 
   return (
-    <FormContext.Provider value={rxForm}>
-      {stateInitialized() && children}
-    </FormContext.Provider>
+    <Show when={stateInitialized()}>
+      <FormContext.Provider value={rxForm}>{children}</FormContext.Provider>
+    </Show>
   );
 };

@@ -1,7 +1,7 @@
-import type { Component, JSX } from "solid-js";
-import { useContext, createMemo } from "solid-js";
+import type { Component } from "solid-js";
+import { useContext, createMemo, Show } from "solid-js";
 import { ControlModels } from "@reactables/forms";
-import { FormContext } from "./Form";
+import { FormContext, type HookedRxForm } from "./Form";
 
 export type EventHandler<Event> = (event: Event, name?: string) => void;
 
@@ -29,7 +29,7 @@ export interface WrappedFieldProps {
 }
 
 export interface FieldProps {
-  component: () => Component;
+  component: Component<WrappedFieldProps>;
   name?: string;
   [key: string]: unknown;
 }
@@ -39,53 +39,58 @@ export const Field = ({
   name = "root",
   ...props
 }: FieldProps) => {
-  const rxForm = useContext(FormContext);
-  const stateInitialized = createMemo(() => state() !== undefined, undefined);
-
-  if (!rxForm || !stateInitialized()) return;
+  const rxForm = useContext(FormContext) as HookedRxForm;
 
   const [state] = rxForm;
+
   const control = createMemo(
     () => state()?.[name] as ControlModels.FormControl<unknown>,
   );
 
-  if (!control()) {
-    throw `Control '${name}' can not be found`;
-  }
+  const [, { markControlAsTouched, updateValues }] = rxForm;
 
-  const { controlRef, touched, value } = control();
+  return (
+    <Show when={control()} fallback={<div>Control Not Found</div>}>
+      {(c) => {
+        const { value, controlRef, touched } = c();
+        const inputProps = {
+          name,
+          value,
+          onBlur: () => {
+            if (!touched) markControlAsTouched({ controlRef });
+          },
+          onChange: (event: Event | unknown) => {
+            let value: unknown;
+            if ((event as Event).currentTarget) {
+              switch (
+                ((event as Event).currentTarget as HTMLInputElement).type
+              ) {
+                case "checkbox":
+                  value = ((event as Event).currentTarget as HTMLInputElement)
+                    .checked;
+                  break;
+                case "email":
+                case "text":
+                default:
+                  value = ((event as Event).currentTarget as HTMLInputElement)
+                    .value;
+              }
+            } else {
+              value = event;
+            }
 
-  const [, { markControlAsTouched }] = rxForm;
-
-  const inputProps = {
-    name,
-    value,
-    onBlur: () => {
-      if (!touched) markControlAsTouched({ controlRef });
-    },
-    onChange: (event: Event | unknown) => {
-      let value: unknown;
-      if ((event as FormEvent<HTMLInputElement>).currentTarget) {
-        switch ((event as FormEvent<HTMLInputElement>).currentTarget.type) {
-          case "checkbox":
-            value = (event as FormEvent<HTMLInputElement>).currentTarget
-              .checked;
-            break;
-          case "email":
-          case "text":
-          default:
-            value = (event as FormEvent<HTMLInputElement>).currentTarget.value;
-        }
-      } else {
-        value = event;
-      }
-
-      updateValues({
-        controlRef,
-        value,
-      });
-    },
-  };
-
-  return <Component input={inputProps} meta={state[name]} {...props} />;
+            updateValues({
+              controlRef,
+              value,
+            });
+          },
+        };
+        return (
+          <>
+            <Component input={inputProps} meta={c()} {...props} />
+          </>
+        );
+      }}
+    </Show>
+  );
 };
