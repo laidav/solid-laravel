@@ -47,7 +47,7 @@ export const Field = ({
 
     const [state] = rxForm as HookedRxForm;
 
-    return state?.[name] as ControlModels.FormControl<unknown>;
+    return state()?.[name] as ControlModels.FormControl<unknown>;
   });
   const actions = createMemo(() => {
     if (!rxForm) return;
@@ -98,6 +98,7 @@ export const Field = ({
             };
             return (
               <>
+                <h1>{c().value as string}</h1>
                 <Component input={inputProps} meta={c()} {...props} />
               </>
             );

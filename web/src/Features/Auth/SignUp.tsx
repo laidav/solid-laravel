@@ -7,11 +7,11 @@ import PasswordInput from "../Shared/PasswordInput";
 import { FormContext } from "../../reactables/SolidForms/FormContext";
 
 const SignUp = () => {
-  const [state, actions] = createReactable(() =>
+  const rxForm = createReactable(() =>
     build(
       group({
         controls: {
-          name: control(["", "required"]),
+          name: control(["Dave", "required"]),
           email: control(["", ["required", "email"]]),
           password: control(["", ["required"]]),
           confirmPassword: control(["", ["required"]]),
@@ -23,7 +23,7 @@ const SignUp = () => {
 
   return (
     <div>
-      <FormContext.Provider value={[state(), actions]}>
+      <FormContext.Provider value={rxForm}>
         <Field name="name" component={TextInput} label="Username" />
         <Field name="email" component={EmailInput} label="Email" />
         <Field name="password" component={PasswordInput} label="Password" />

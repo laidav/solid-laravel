@@ -1,10 +1,10 @@
 import type { RxFormActions } from "@reactables/forms";
 import { ControlModels } from "@reactables/forms";
-import type { JSX } from "solid-js";
+import type { JSX, Accessor } from "solid-js";
 import { FormContext } from "./FormContext";
 
 export type HookedRxForm = [
-  ControlModels.Form<unknown> | undefined,
+  Accessor<ControlModels.Form<unknown> | undefined>,
   RxFormActions,
   ...unknown[],
 ];
