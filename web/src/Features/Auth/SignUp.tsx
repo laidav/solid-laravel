@@ -1,11 +1,9 @@
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
-import { Form } from "../../reactables/SolidForms/Form";
 import { Field } from "../../reactables/SolidForms/Field";
 import TextInput from "../Shared/TextInput";
 import EmailInput from "../Shared/EmailInput";
 import PasswordInput from "../Shared/PasswordInput";
-import { useContext } from "solid-js";
 import { FormContext } from "../../reactables/SolidForms/FormContext";
 
 const SignUp = () => {
@@ -19,10 +17,9 @@ const SignUp = () => {
           confirmPassword: control(["", ["required"]]),
         },
       }),
+      { debug: true },
     ),
   );
-
-  console.log(state());
 
   return (
     <div>

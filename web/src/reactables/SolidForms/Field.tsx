@@ -21,7 +21,7 @@ export interface EventOrValueHandler<Event> extends EventHandler<Event> {
 export interface WrappedFieldInputProps extends CommonFieldInputProps {
   value: any;
   onBlur: EventOrValueHandler<FocusEvent>;
-  onChange: EventOrValueHandler<Event>;
+  onInput: EventOrValueHandler<Event>;
 }
 
 export interface WrappedFieldProps {
@@ -68,7 +68,7 @@ export const Field = ({
               onBlur: () => {
                 if (!touched) a().markControlAsTouched({ controlRef });
               },
-              onChange: (event: Event | unknown) => {
+              onInput: (event: Event | unknown) => {
                 let value: unknown;
                 if ((event as Event).currentTarget) {
                   switch (
