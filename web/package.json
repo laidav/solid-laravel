@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@reactables/core": "^2.0.1",
+    "@reactables/forms": "^2.0.1",
     "@solidjs/router": "^0.15.4",
     "rxjs": "^7.8.2",
     "solid-js": "^1.9.10"
