@@ -5,7 +5,7 @@ import { Field } from "../../reactables/SolidForms/Field";
 import TextInput from "../Shared/TextInput";
 import EmailInput from "../Shared/EmailInput";
 import PasswordInput from "../Shared/PasswordInput";
-
+import { Show } from "solid-js";
 const SignUp = () => {
   const rxForm = createReactable(() =>
     build(
@@ -19,18 +19,21 @@ const SignUp = () => {
       }),
     ),
   );
+
   return (
     <div>
-      <h1>Sign Up!</h1>
       <Form rxForm={rxForm}>
-        <Field name="name" component={TextInput} label="Username" />
-        <Field name="email" component={EmailInput} label="Email" />
-        <Field name="password" component={PasswordInput} label="Password" />
-        <Field
-          name="confirmPassword"
-          component={PasswordInput}
-          label="Confirm Password"
-        />
+        <Show when={rxForm}>
+          <h1>hi</h1>
+          <Field name="name" component={TextInput} label="Username" />
+          <Field name="email" component={EmailInput} label="Email" />
+          <Field name="password" component={PasswordInput} label="Password" />
+          <Field
+            name="confirmPassword"
+            component={PasswordInput}
+            label="Confirm Password"
+          />
+        </Show>
       </Form>
     </div>
   );
