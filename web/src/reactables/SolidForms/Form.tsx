@@ -1,25 +1,18 @@
 import type { RxFormActions } from "@reactables/forms";
 import { ControlModels } from "@reactables/forms";
-import { createContext } from "solid-js";
 import type { JSX, Accessor } from "solid-js";
+import { FormContext } from "./FormContext";
 
 export type HookedRxForm = [
   Accessor<ControlModels.Form<unknown> | undefined>,
   RxFormActions,
   ...unknown[],
 ];
-
-export const FormContext = createContext<HookedRxForm>();
-
 interface FormProps {
   rxForm: HookedRxForm;
   children?: JSX.Element;
 }
 
 export const Form = ({ rxForm, children }: FormProps) => {
-  return (
-    <FormContext.Provider value={rxForm}>
-      <form>{children}</form>
-    </FormContext.Provider>
-  );
+  return <FormContext.Provider value={rxForm}>{children}</FormContext.Provider>;
 };

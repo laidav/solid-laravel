@@ -23,17 +23,14 @@ const SignUp = () => {
   return (
     <div>
       <Form rxForm={rxForm}>
-        <Show when={rxForm}>
-          <h1>hi</h1>
-          <Field name="name" component={TextInput} label="Username" />
-          <Field name="email" component={EmailInput} label="Email" />
-          <Field name="password" component={PasswordInput} label="Password" />
-          <Field
-            name="confirmPassword"
-            component={PasswordInput}
-            label="Confirm Password"
-          />
-        </Show>
+        <Field name="name" component={TextInput} label="Username" />
+        <Field name="email" component={EmailInput} label="Email" />
+        <Field name="password" component={PasswordInput} label="Password" />
+        <Field
+          name="confirmPassword"
+          component={PasswordInput}
+          label="Confirm Password"
+        />
       </Form>
     </div>
   );

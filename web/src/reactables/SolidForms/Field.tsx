@@ -1,7 +1,8 @@
 import type { Component } from "solid-js";
 import { useContext, createMemo, Show } from "solid-js";
 import { ControlModels } from "@reactables/forms";
-import { FormContext, type HookedRxForm } from "./Form";
+import { type HookedRxForm } from "./Form";
+import { FormContext } from "./FormContext";
 
 export type EventHandler<Event> = (event: Event, name?: string) => void;
 
