@@ -10,7 +10,7 @@ use App\Http\Controllers\API\APIController;
 
 class AuthController extends APIController
 {
-    public function register(Request $request, CreateNewUser $creator): JsonResponse
+    public function signUp(Request $request, CreateNewUser $creator): JsonResponse
     {
         // Create the user using Fortify's action
         $user = $creator->create($request->only([

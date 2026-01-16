@@ -5,11 +5,7 @@ export interface InputProps extends WrappedFieldProps {
   label?: string | JSX.Element;
 }
 
-export const Input = ({
-  input,
-  meta: { touched, errors },
-  label,
-}: InputProps) => {
+const TextInput = ({ input, meta: { touched, errors }, label }: InputProps) => {
   return (
     <div class="mb-3">
       {label && <label class="form">{label}</label>}
@@ -22,3 +18,5 @@ export const Input = ({
     </div>
   );
 };
+
+export default TextInput;

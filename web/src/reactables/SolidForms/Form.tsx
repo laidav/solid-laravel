@@ -22,7 +22,9 @@ export const Form = ({ rxForm, children }: FormProps) => {
 
   return (
     <Show when={stateInitialized()}>
-      <FormContext.Provider value={rxForm}>{children}</FormContext.Provider>
+      <form>
+        <FormContext.Provider value={rxForm}>{children}</FormContext.Provider>
+      </form>
     </Show>
   );
 };
