@@ -40,58 +40,70 @@ export const Field = ({
   name = "root",
   ...props
 }: FieldProps) => {
-  const rxForm = useContext(FormContext) as HookedRxForm;
+  const rxForm = useContext(FormContext);
 
-  const [state] = rxForm;
+  const control = createMemo(() => {
+    if (!rxForm) return;
 
-  const control = createMemo(
-    () => state()?.[name] as ControlModels.FormControl<unknown>,
-  );
+    const [state] = rxForm as HookedRxForm;
 
-  const [, { markControlAsTouched, updateValues }] = rxForm;
+    return state?.[name] as ControlModels.FormControl<unknown>;
+  });
+  const actions = createMemo(() => {
+    if (!rxForm) return;
+
+    const [, actions] = rxForm as HookedRxForm;
+    return actions;
+  });
 
   return (
-    <Show when={control()} fallback={<div>Control Not Found</div>}>
-      {(c) => {
-        const { value, controlRef, touched } = c();
-        const inputProps = {
-          name,
-          value,
-          onBlur: () => {
-            if (!touched) markControlAsTouched({ controlRef });
-          },
-          onChange: (event: Event | unknown) => {
-            let value: unknown;
-            if ((event as Event).currentTarget) {
-              switch (
-                ((event as Event).currentTarget as HTMLInputElement).type
-              ) {
-                case "checkbox":
-                  value = ((event as Event).currentTarget as HTMLInputElement)
-                    .checked;
-                  break;
-                case "email":
-                case "text":
-                default:
-                  value = ((event as Event).currentTarget as HTMLInputElement)
-                    .value;
-              }
-            } else {
-              value = event;
-            }
-
-            updateValues({
-              controlRef,
+    <Show when={actions()}>
+      {(a) => (
+        <Show when={control()} fallback={<div>Control Not Found</div>}>
+          {(c) => {
+            const { value, controlRef, touched } = c();
+            const inputProps = {
+              name,
               value,
-            });
-          },
-        };
-        return (
-          <>
-            <Component input={inputProps} meta={c()} {...props} />
-          </>
-        );
-      }}
+              onBlur: () => {
+                if (!touched) a().markControlAsTouched({ controlRef });
+              },
+              onChange: (event: Event | unknown) => {
+                let value: unknown;
+                if ((event as Event).currentTarget) {
+                  switch (
+                    ((event as Event).currentTarget as HTMLInputElement).type
+                  ) {
+                    case "checkbox":
+                      value = (
+                        (event as Event).currentTarget as HTMLInputElement
+                      ).checked;
+                      break;
+                    case "email":
+                    case "text":
+                    default:
+                      value = (
+                        (event as Event).currentTarget as HTMLInputElement
+                      ).value;
+                  }
+                } else {
+                  value = event;
+                }
+
+                a().updateValues({
+                  controlRef,
+                  value,
+                });
+              },
+            };
+            return (
+              <>
+                <Component input={inputProps} meta={c()} {...props} />
+              </>
+            );
+          }}
+        </Show>
+      )}
     </Show>
   );
 };
