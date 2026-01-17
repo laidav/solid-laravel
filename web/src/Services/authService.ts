@@ -6,7 +6,7 @@ export interface CreateUserPayload {
 }
 
 export async function createUser(payload: CreateUserPayload) {
-  const res = await fetch("http://localhost:8000/api/v1/register", {
+  const res = await fetch("http://localhost:8000/api/v1/sign-up", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
