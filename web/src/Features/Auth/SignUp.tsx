@@ -45,9 +45,8 @@ const SignUp = () => {
     } = formState()!;
     const payload = {
       ...fields,
-      confirm_password: confirmPassword,
+      password_confirmation: confirmPassword,
     };
-    console.log(payload);
     return payload;
   };
 

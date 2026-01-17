@@ -10,7 +10,7 @@
   - backend 
     - register user endpoint - DONE
     - test with postman - DONE
-    - check Mail pit - DEFERED
+    - check Mail pit - IN PROGRESS
   - frontend
     - add routing to app - IN PROGRESS
     - Forms 
@@ -23,6 +23,8 @@
       - on success show the notice page - DONE
 
     - test rendering of context - DONE
+
+    - standardize api calls for auth and no auth - TODO
 
 - Email verification handler page
 
