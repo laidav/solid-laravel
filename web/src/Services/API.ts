@@ -11,7 +11,7 @@ import { Subject } from "rxjs";
  * Calls return axios objects, so they can be used the same as axios.
  */
 class API {
-  static base = "http://localhost:8000/api/v1";
+  static base = import.meta.env.VITE_API_BASE_URL;
 
   static defaultHeaders = {
     Accept: "application/json",
