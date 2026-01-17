@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "axios";
 import API from "./API";
 export interface CreateUserPayload {
   name: string;
@@ -6,10 +7,13 @@ export interface CreateUserPayload {
   password_confirmation: string;
 }
 
-export function userService(api: API) {
+export function AuthService(api: API) {
   return {
     createUser(params: CreateUserPayload) {
-      return api.post({ location: "/sign-up", body: params });
+      return api.post({
+        location: "/sign-up",
+        body: params,
+      }) as Promise<AxiosResponse>;
     },
   };
 }

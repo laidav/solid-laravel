@@ -8,11 +8,17 @@ import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { createUser, type CreateUserPayload } from "../../Services/authService";
+import {
+  AuthService,
+  type CreateUserPayload,
+} from "../../Services/authService";
+import { useApi } from "../Shared/Components/ApiProvider";
 
 const SignUp = () => {
-  const [state, actions] = createReactable(() =>
-    combine({
+  const [state, actions] = createReactable(() => {
+    const authService = AuthService(useApi(false));
+
+    return combine({
       form: build<{
         name: string;
         email: string;
@@ -29,10 +35,10 @@ const SignUp = () => {
         }),
       ),
       request: RxRequest<CreateUserPayload, { userId: number }>({
-        resource: createUser,
+        resource: authService.createUser,
       }),
-    }),
-  );
+    });
+  });
 
   const getPayload = (): CreateUserPayload => {
     const { confirmPassword, ...fields } = state()!.form.root.value;

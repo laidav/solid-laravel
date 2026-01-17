@@ -22,13 +22,17 @@ interface RequestOptionsBase<Data> {
   sources?: Observable<Action<any>>[];
 }
 
-interface RequestOptionsWithEffect<RequestPayload, Data>
-  extends RequestOptionsBase<Data> {
+interface RequestOptionsWithEffect<
+  RequestPayload,
+  Data,
+> extends RequestOptionsBase<Data> {
   effect: OperatorFunction<Action<RequestPayload>, Observable<any>>;
 }
 
-interface RequestOptionsWithResource<RequestPayload, Data>
-  extends RequestOptionsBase<Data> {
+interface RequestOptionsWithResource<
+  RequestPayload,
+  Data,
+> extends RequestOptionsBase<Data> {
   resource: (payload: RequestPayload) => Promise<unknown> | Observable<unknown>;
 }
 
