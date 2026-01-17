@@ -17,14 +17,12 @@
       - Context - DONE
       - Field
 
-    - create bare bonesuser sign up page
-      - set up api
-      - TextInput and Email Fields
-      - on success show the notice page
+    - create bare bonesuser sign up page - DONE
+      - set up api - DONE
+      - TextInput and Email Fields - DONE
+      - on success show the notice page - DONE
 
-    - test rendering of context
-
-  - mapExtended errors as a utils for `@reactable/forms`?
+    - test rendering of context - DONE
 
 - Email verification handler page
 
