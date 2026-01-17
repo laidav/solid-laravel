@@ -1,4 +1,5 @@
 import { combine } from "@reactables/core";
+import { Show } from "solid-js";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -42,34 +43,47 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      {state()?.request.success ? (
-        <h1>User created! Please check your email and verify your account.</h1>
-      ) : (
-        <div>
-          <Form rxForm={[() => state()?.form, actions.form]}>
-            <Field name="name" component={TextInput} label="Username" />
-            <Field name="email" component={EmailInput} label="Email" />
-            <Field name="password" component={PasswordInput} label="Password" />
-            <Field
-              name="confirmPassword"
-              component={PasswordInput}
-              label="Confirm Password"
-            />
-            <button type="button" onClick={() => actions.form.resetControl([])}>
-              Clear
-            </button>
-            <button
-              type="button"
-              disabled={state()?.request.loading || !state()?.form.root.valid}
-              onClick={() => actions.request.send(getPayload())}
-            >
-              Submit
-            </button>
-          </Form>
-        </div>
+    <Show when={state()}>
+      {(s) => (
+        <>
+          {s().request.success ? (
+            <h1>
+              User created! Please check your email and verify your account.
+            </h1>
+          ) : (
+            <div>
+              <Form rxForm={[() => s().form, actions.form]}>
+                <Field name="name" component={TextInput} label="Username" />
+                <Field name="email" component={EmailInput} label="Email" />
+                <Field
+                  name="password"
+                  component={PasswordInput}
+                  label="Password"
+                />
+                <Field
+                  name="confirmPassword"
+                  component={PasswordInput}
+                  label="Confirm Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => actions.form.resetControl([])}
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  disabled={s().request.loading || !s().form.root.valid}
+                  onClick={() => actions.request.send(getPayload())}
+                >
+                  Submit
+                </button>
+              </Form>
+            </div>
+          )}
+        </>
       )}
-    </>
+    </Show>
   );
 };
 
