@@ -10,7 +10,6 @@ const TextInput = ({ input, meta, label }: InputProps) => {
     <div class="mb-3">
       {label && <label class="form">{label}</label>}
       <input {...input} value={meta().value} type="text" />
-      {meta().value}
       {meta().touched && meta().errors.required && (
         <div>
           <small class="text-danger">Field is required</small>
