@@ -4,7 +4,6 @@ import { Field } from "../../reactables/SolidForms/Field";
 import TextInput from "../Shared/TextInput";
 import EmailInput from "../Shared/EmailInput";
 import PasswordInput from "../Shared/PasswordInput";
-import { FormContext } from "../../reactables/SolidForms/FormContext";
 import { Form } from "../../reactables/SolidForms/Form";
 
 const SignUp = () => {
