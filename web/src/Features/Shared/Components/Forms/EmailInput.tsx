@@ -1,5 +1,5 @@
 import type { JSX } from "solid-js";
-import type { WrappedFieldProps } from "../../reactables/SolidForms/Field";
+import type { WrappedFieldProps } from "../../../../reactables/SolidForms/Field";
 
 export interface InputProps extends WrappedFieldProps {
   label?: string | JSX.Element;
