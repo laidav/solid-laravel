@@ -12,19 +12,19 @@
     - test with postman - DONE
     - check Mail pit - IN PROGRESS
   - frontend
-    - add routing to app - IN PROGRESS
+    - add routing to app - DONE
     - Forms 
       - Context - DONE
-      - Field
+      - Field - DONE
 
-    - create bare bonesuser sign up page - DONE
+    - create bare bones user sign up page - DONE
       - set up api - DONE
       - TextInput and Email Fields - DONE
       - on success show the notice page - DONE
 
     - test rendering of context - DONE
 
-    - standardize api calls for auth and no auth - TODO
+    - standardize api calls for auth and no auth - IN PROGRESS
 
 - Email verification handler page
 

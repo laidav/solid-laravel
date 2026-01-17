@@ -1,3 +1,4 @@
+import API from "./API";
 export interface CreateUserPayload {
   name: string;
   email: string;
@@ -5,19 +6,10 @@ export interface CreateUserPayload {
   password_confirmation: string;
 }
 
-export async function createUser(payload: CreateUserPayload) {
-  const res = await fetch("http://localhost:8000/api/v1/sign-up", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+export function userService(api: API) {
+  return {
+    createUser(params: CreateUserPayload) {
+      return api.post({ location: "/sign-up", body: params });
     },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    throw res;
-  }
-
-  return res.json();
+  };
 }
