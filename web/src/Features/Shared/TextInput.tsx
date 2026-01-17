@@ -9,7 +9,7 @@ const TextInput = ({ input, meta, label }: InputProps) => {
   return (
     <div class="mb-3">
       {label && <label class="form">{label}</label>}
-      <input {...input} type="text" />
+      <input {...input} value={meta().value} type="text" />
       {meta().value}
       {meta().touched && meta().errors.required && (
         <div>

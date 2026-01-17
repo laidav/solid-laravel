@@ -13,6 +13,10 @@ interface FormProps {
   children?: JSX.Element;
 }
 
-export const Form = ({ rxForm, children }: FormProps) => {
-  return <FormContext.Provider value={rxForm}>{children}</FormContext.Provider>;
+export const Form = (props: FormProps) => {
+  return (
+    <FormContext.Provider value={props.rxForm}>
+      {props.children}
+    </FormContext.Provider>
+  );
 };

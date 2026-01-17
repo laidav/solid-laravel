@@ -5,6 +5,7 @@ import TextInput from "../Shared/TextInput";
 import EmailInput from "../Shared/EmailInput";
 import PasswordInput from "../Shared/PasswordInput";
 import { FormContext } from "../../reactables/SolidForms/FormContext";
+import { Form } from "../../reactables/SolidForms/Form";
 
 const SignUp = () => {
   const rxForm = createReactable(() =>
@@ -21,9 +22,14 @@ const SignUp = () => {
     ),
   );
 
+  const [, actions] = rxForm;
+
   return (
     <div>
-      <FormContext.Provider value={rxForm}>
+      <Form rxForm={rxForm}>
+        <button type="button" onClick={() => actions.resetControl([])}>
+          Clear
+        </button>
         <Field name="name" component={TextInput} label="Username" />
         <Field name="email" component={EmailInput} label="Email" />
         <Field name="password" component={PasswordInput} label="Password" />
@@ -32,7 +38,7 @@ const SignUp = () => {
           component={PasswordInput}
           label="Confirm Password"
         />
-      </FormContext.Provider>
+      </Form>
     </div>
   );
 };

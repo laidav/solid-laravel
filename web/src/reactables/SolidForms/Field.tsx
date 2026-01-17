@@ -19,14 +19,13 @@ export interface EventOrValueHandler<Event> extends EventHandler<Event> {
 }
 
 export interface WrappedFieldInputProps extends CommonFieldInputProps {
-  value: any;
   onBlur: EventOrValueHandler<FocusEvent>;
   onInput: EventOrValueHandler<Event>;
 }
 
 export interface WrappedFieldProps {
   input: WrappedFieldInputProps;
-  meta: Accessor<ControlModels.FormControl<unknown>>;
+  meta: Accessor<ControlModels.FormControl<string>>;
 }
 
 export interface FieldProps {
@@ -47,7 +46,7 @@ export const Field = ({
 
     const [state] = rxForm as HookedRxForm;
 
-    return state()?.[name] as ControlModels.FormControl<unknown>;
+    return state()?.[name] as ControlModels.FormControl<string>;
   });
   const actions = createMemo(() => {
     if (!rxForm) return;
@@ -61,12 +60,11 @@ export const Field = ({
       {(a) => (
         <Show when={control()} fallback={<div>Control Not Found</div>}>
           {(c) => {
-            const { value, controlRef, touched } = c();
+            const { controlRef } = c();
             const inputProps = {
               name,
-              value,
               onBlur: () => {
-                if (!touched) a().markControlAsTouched({ controlRef });
+                if (!c().touched) a().markControlAsTouched({ controlRef });
               },
               onInput: (event: Event | unknown) => {
                 let value: unknown;
