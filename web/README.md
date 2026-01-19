@@ -24,7 +24,7 @@
 
     - test rendering of context - DONE
 
-    - standardize api calls for auth and no auth - IN PROGRESS
+    - standardize api calls for auth and no auth - DONE
 
 - Email verification handler page
 
