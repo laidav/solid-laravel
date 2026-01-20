@@ -2,21 +2,21 @@ import { createContext, type JSX, useContext } from "solid-js";
 import API from "../../../Services/API";
 
 export const ApiContext = createContext<
-  { authenticatedApi: API; unautheticatedApi: API } | undefined
+  { apiWithCredentials: API; apiNoCredentials: API } | undefined
 >();
 
 export const ApiProvider = (props: { children: JSX.Element }) => (
   <ApiContext.Provider
-    value={{ authenticatedApi: new API(), unautheticatedApi: new API(false) }}
+    value={{ apiWithCredentials: new API(), apiNoCredentials: new API(false) }}
   >
     {props.children}
   </ApiContext.Provider>
 );
 
-export const useApi = (authenticated = true) => {
-  const { unautheticatedApi, authenticatedApi } = useContext(ApiContext)!;
+export const useApi = (withCredentials = true) => {
+  const { apiWithCredentials, apiNoCredentials } = useContext(ApiContext)!;
 
-  return authenticated ? authenticatedApi : unautheticatedApi;
+  return withCredentials ? apiWithCredentials : apiNoCredentials;
 };
 
 export default ApiProvider;

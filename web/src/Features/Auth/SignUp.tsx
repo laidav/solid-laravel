@@ -16,7 +16,7 @@ import { useApi } from "../Shared/Components/ApiProvider";
 
 const SignUp = () => {
   const [state, actions] = createReactable(() => {
-    const authService = AuthService(useApi(false));
+    const authService = AuthService(useApi());
 
     return combine({
       form: build<{
