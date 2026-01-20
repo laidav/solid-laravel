@@ -13,6 +13,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+// use Illuminate\Auth\Middleware\Authenticate;
+// use Illuminate\Support\Facades\Auth;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -44,5 +46,18 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+
+        // Authenticate::redirectUsing(function(Request $request) {
+        //     if ($request->routeIs('verification.verify')) {
+        //         Auth::loginUsingId($request->route('id'));
+
+        //         return route('verification.verify', [
+        //             'id' => $request->route('id'),
+        //             'hash' => $request->route('hash'),
+        //             'expires' => $request->query('expires'),
+        //             'signature' => $request->query('signature')
+        //         ]);
+        //     }
+        // });
     }
 }
