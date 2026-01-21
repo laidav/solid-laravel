@@ -31,17 +31,28 @@
 ### Need email verification and resend (logged in but not verified) (After creating user or trying to logging in to see a page but not yet verified)
   - NOTE RIGHT NOW LOGGING IN AFTER CREATION ONLY, BUT ALSO AVAILABLE AFTER LOGGING IN
   - backend 
-    - add endpoint for resending - IN PROGRESS
+    - add endpoint for resending - IN PROGRESS - DONE
   - frontend
-    - update success page to have button to resend notice
+    - update success page to have button to resend notice - DONE
 
 #### Auth guards
-- throttling?
+- flow
+  - load app
+
+  - see if user is logged in, if not and is guarded 
+    - should return user
+    - if not logged in kick to login page (make a stub)
+
+  - if logged in but not verified send to verify notice page
+
 - Backend
   - check login status endpoint - returns user?
 
 - Frontend  
   - RxAuth
+  - also guards
+    - for both logged in
+    - then verified users
 
 #### Login Page
 - throttling?
