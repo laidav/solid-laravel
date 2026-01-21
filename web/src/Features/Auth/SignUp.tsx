@@ -1,4 +1,6 @@
 import { combine } from "@reactables/core";
+import { take } from "rxjs/operators";
+import { useNavigate } from "@solidjs/router";
 import { Show } from "solid-js";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
@@ -15,7 +17,7 @@ import {
 import { useApi } from "../Shared/Components/ApiProvider";
 
 const SignUp = () => {
-  const [state, actions] = createReactable(() => {
+  const [state, actions, actions$] = createReactable(() => {
     const authService = AuthService(useApi());
 
     return combine({
@@ -47,6 +49,13 @@ const SignUp = () => {
       password_confirmation: confirmPassword,
     };
   };
+
+  actions$
+    .ofTypes([actions$.types["[request] - sendSuccess"]])
+    .pipe(take(1))
+    .subscribe(() => {
+      useNavigate()("/verify-email");
+    });
 
   return (
     <Show when={state()}>

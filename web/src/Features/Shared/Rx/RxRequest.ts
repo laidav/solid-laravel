@@ -1,12 +1,37 @@
+import axios from "axios";
 import { type Action, RxBuilder } from "@reactables/core";
-import { type OperatorFunction, Observable, from, of } from "rxjs";
+import { type OperatorFunction, type Observable, from, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
+
+export type SerializableError = {
+  message: string;
+  code?: string | number;
+  httpStatus?: number;
+  details?: unknown;
+};
+
+const serializeAxiosError = (e: unknown): SerializableError => {
+  if (axios.isAxiosError(e)) {
+    return {
+      message: e.response?.data?.message ?? e.message,
+      httpStatus: e.response?.status,
+      code: e.code,
+      details: e.response?.data,
+    };
+  }
+
+  if (e instanceof Error) {
+    return { message: e.message };
+  }
+
+  return { message: "Unknown error" };
+};
 
 interface LoadableState<T> {
   data: T;
   loading: boolean;
   success: boolean;
-  error: unknown;
+  error: SerializableError | null;
 }
 
 const loadableInitialState = {
@@ -89,7 +114,12 @@ export const RxRequest = <RequestPayload, Data>(
                     type: "sendSuccess",
                     payload: response,
                   })),
-                  catchError(() => of({ type: "sendFailure" })),
+                  catchError((e) =>
+                    of({
+                      type: "sendFailure",
+                      payload: serializeAxiosError(e),
+                    }),
+                  ),
                 ),
               ),
             ),

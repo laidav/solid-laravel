@@ -18,6 +18,11 @@ export function AuthService(api: API) {
           }) as Promise<AxiosResponse>,
       );
     },
+    resendEmailVerification() {
+      return api.post({
+        location: "auth/verification-notification",
+      }) as Promise<AxiosResponse>;
+    },
     test() {
       return api.post({
         location: "loggedin-test",

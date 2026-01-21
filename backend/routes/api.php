@@ -17,7 +17,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/sign-up', [AuthController::class, 'signUp'])
             ->name(RouteNames::AUTH_SIGN_UP);
 
-        Route::post('/email/verification-notification', function (Request $request) {
+        Route::post('/verification-notification', function (Request $request) {
             $request->user()->sendEmailVerificationNotification();
 
             return response()->json([
