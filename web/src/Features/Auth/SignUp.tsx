@@ -10,45 +10,36 @@ import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import {
-  AuthService,
-  type CreateUserPayload,
-} from "../../Services/authService";
+import { AuthService } from "../../Services/authService";
 import { useApi } from "../Shared/Components/ApiProvider";
+
+export interface CreateUserFormValue {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
 
 const SignUp = () => {
   const [state, actions, actions$] = createReactable(() => {
     const authService = AuthService(useApi());
 
     return combine({
-      form: build<{
-        name: string;
-        email: string;
-        password: string;
-        confirmPassword: string;
-      }>(
+      form: build<CreateUserFormValue>(
         group({
           controls: {
             name: control(["", "required"]),
             email: control(["", ["required", "email"]]),
             password: control(["", ["required"]]),
-            confirmPassword: control(["", ["required"]]),
+            passwordConfirmation: control(["", ["required"]]),
           },
         }),
       ),
-      request: RxRequest<CreateUserPayload, { userId: number }>({
+      request: RxRequest<CreateUserFormValue, { userId: number }>({
         resource: authService.createUser,
       }),
     });
   });
-
-  const getPayload = (): CreateUserPayload => {
-    const { confirmPassword, ...fields } = state()!.form.root.value;
-    return {
-      ...fields,
-      password_confirmation: confirmPassword,
-    };
-  };
 
   const navigate = useNavigate();
 
@@ -68,7 +59,7 @@ const SignUp = () => {
             <Field name="email" component={EmailInput} label="Email" />
             <Field name="password" component={PasswordInput} label="Password" />
             <Field
-              name="confirmPassword"
+              name="passwordConfirmation"
               component={PasswordInput}
               label="Confirm Password"
             />
@@ -78,7 +69,7 @@ const SignUp = () => {
             <button
               type="button"
               disabled={s().request.loading || !s().form.root.valid}
-              onClick={() => actions.request.send(getPayload())}
+              onClick={() => actions.request.send(state()!.form.root.value)}
             >
               Submit
             </button>

@@ -19,7 +19,8 @@
     },
     {
       "label": "Reseed Backend (TEMP ONLY WHILE DEV)",
-      "command": "cd backend && php artisan migrate:refresh --seed"
+      "command": "cd backend && php artisan migrate:refresh --seed",
+      "problemMatcher": []
     },
     {
       "label": "WebFrontendServer",

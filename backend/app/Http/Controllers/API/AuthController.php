@@ -12,13 +12,15 @@ class AuthController extends APIController
 {
     public function signUp(Request $request, CreateNewUser $creator): JsonResponse
     {
+        $payload = $request->all();
+
         // Create the user using Fortify's action
-        $user = $creator->create($request->only([
-            'name',
-            'email',
-            'password',
-            'password_confirmation',
-        ]));
+        $user = $creator->create([
+            'name' => $payload['name'],
+            'email' => $payload['email'],
+            'password' => $payload['password'],
+            'password_confirmation' => $payload['passwordConfirmation'],
+        ]);
 
         return response()->json(['userId' => $user->id], Response::HTTP_CREATED);
     }
