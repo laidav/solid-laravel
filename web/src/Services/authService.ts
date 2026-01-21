@@ -10,14 +10,13 @@ export interface CreateUserPayload {
 export function AuthService(api: API) {
   return {
     createUser(params: CreateUserPayload) {
-      api.get({ location: "/sanctum/csrf-cookie" })?.then(
+      return api.get({ location: "/sanctum/csrf-cookie" })?.then(
         () =>
           api.post({
             location: "/sign-up",
             body: params,
           }) as Promise<AxiosResponse>,
       );
-      return;
     },
   };
 }
