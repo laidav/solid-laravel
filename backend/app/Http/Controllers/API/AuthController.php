@@ -30,12 +30,9 @@ class AuthController extends APIController
 
     public function checkLoginStatus(): JsonResponse
     {
-        try {
-            $user = Auth::user();
-                if (! $user) {
-                    return response()->json('Not authenticated', 401);
-                }
-        } catch (Exception $e) {
+        $user = Auth::user();
+
+        if (! $user) {
             return response()->json('Not authenticated', 401);
         }
 
