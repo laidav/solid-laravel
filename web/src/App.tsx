@@ -4,10 +4,21 @@ import SignUp from "./Features/Auth/SignUp";
 import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
 import ApiProvider from "./Features/Shared/Components/ApiProvider";
 import Home from "./Features/Shared/Components/Home";
+import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
+import { createReactable } from "./reactables/createReactable";
+import { AuthService } from "./Services/authService";
+import { useApi } from "./Features/Shared/Components/ApiProvider";
+import { RxApp } from "./Features/Shared/Rx/RxApp";
 
 function App() {
+  const api = useApi();
+  const rxApp = createReactable(() => {
+    const authService = AuthService(api);
+    return RxApp({ authService });
+  });
+
   return (
-    <ApiProvider>
+    <RxAppProvider rxApp={rxApp}>
       <div>
         <Router>
           <Route path="/" component={() => <h1>Starter App</h1>} />
@@ -16,8 +27,12 @@ function App() {
           <Route path="/home" component={Home} />
         </Router>
       </div>
-    </ApiProvider>
+    </RxAppProvider>
   );
 }
 
-export default App;
+export default () => (
+  <ApiProvider>
+    <App />
+  </ApiProvider>
+);

@@ -18,6 +18,17 @@ export function AuthService(api: API) {
         location: "auth/verification-notification",
       }) as Promise<AxiosResponse>;
     },
+    login(body: { email: string; password: string }) {
+      return api.post({
+        location: "auth/login",
+        body,
+      }) as Promise<AxiosResponse>;
+    },
+    logout() {
+      return api.post({
+        location: "auth/login",
+      }) as Promise<AxiosResponse>;
+    },
     test() {
       return api.post({
         location: "loggedin-test",

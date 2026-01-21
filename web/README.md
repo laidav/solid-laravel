@@ -46,10 +46,11 @@
   - if logged in but not verified send to verify notice page
 
 - Backend
-  - check login status endpoint - returns user?
+  - check login status endpoint - returns user? - DONE
 
-- Frontend  
-  - RxAuth
+- Frontend - IN PROGRESS  
+  - RxApp
+    - RxAuth 
   - also guards
     - for both logged in
     - then verified users
