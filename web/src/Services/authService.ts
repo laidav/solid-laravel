@@ -19,7 +19,7 @@ export function AuthService(api: API) {
       }) as Promise<AxiosResponse>;
     },
     checkLoginStatus() {
-      return api.post({
+      return api.get({
         location: "auth/check-login-status",
       }) as Promise<AxiosResponse>;
     },
