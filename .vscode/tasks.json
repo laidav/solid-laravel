@@ -18,6 +18,10 @@
       "command": "cd backend && php artisan serve --no-reload"
     },
     {
+      "label": "Reseed Backend (TEMP ONLY WHILE DEV)",
+      "command": "cd backend && php artisan migrate:refresh --seed"
+    },
+    {
       "label": "WebFrontendServer",
       "command": "cd web && npm run dev"
     }
