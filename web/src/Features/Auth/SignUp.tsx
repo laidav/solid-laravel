@@ -50,11 +50,13 @@ const SignUp = () => {
     };
   };
 
+  const navigate = useNavigate();
+
   actions$
     .ofTypes([actions$.types["[request] - sendSuccess"]])
     .pipe(take(1))
     .subscribe(() => {
-      useNavigate()("/verify-email");
+      navigate("/verify-email");
     });
 
   return (
