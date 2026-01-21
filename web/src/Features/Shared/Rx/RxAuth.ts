@@ -1,5 +1,5 @@
 import { type Action, RxBuilder } from "@reactables/core";
-import { of, from, Observable } from "rxjs";
+import { of, from, Observable, concat } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../../../Services/authService";
 
@@ -24,10 +24,20 @@ export const RxAuth = ({
   authService,
 }: {
   authService: ReturnType<typeof AuthService>;
-}) =>
-  RxBuilder({
+}) => {
+  /** LOGIN **/
+  const checkLoginStatus$ = concat(
+    of({ type: "checkLoginStatus" }),
+    from(authService.checkLoginStatus()).pipe(
+      map(({ data }) => ({ type: "checkLoginStatusSuccess", payload: data })),
+      catchError(() => of({ type: "checkLoginStatusFailure" })),
+    ),
+  );
+
+  return RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
+    sources: [checkLoginStatus$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -125,6 +135,10 @@ export const RxAuth = ({
         loggingOut: false,
         isLoggedIn: false,
       }),
+      checkLoginStatus: (state) => ({
+        ...state,
+        checkingLoginStatus: true,
+      }),
       checkLoginStatusSuccess: (state, { payload }: Action<User>) => ({
         ...state,
         loggingIn: false,
@@ -139,3 +153,4 @@ export const RxAuth = ({
       },
     },
   });
+};

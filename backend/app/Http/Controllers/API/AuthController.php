@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\API\APIController;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends APIController
@@ -26,18 +27,23 @@ class AuthController extends APIController
 
         return response()->json(['userId' => $user->id], Response::HTTP_CREATED);
     }
-        public function me(): Response
+
+    public function checkLoginStatus(): JsonResponse
     {
-        $user = Auth::user();
-        if (! $user) {
-            return response('Not authenticated', 401);
+        try {
+            $user = Auth::user();
+                if (! $user) {
+                    return response()->json('Not authenticated', 401);
+                }
+        } catch (Exception $e) {
+            return response()->json('Not authenticated', 401);
         }
 
-        return response([
+        return response()->json([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'emailVerified' => User::hasVerifiedEmail(),
+            'emailVerified' => isset($user->email_verified_at),
             ], 200);
     }
 }

@@ -18,6 +18,11 @@ export function AuthService(api: API) {
         location: "auth/verification-notification",
       }) as Promise<AxiosResponse>;
     },
+    checkLoginStatus() {
+      return api.post({
+        location: "auth/check-login-status",
+      }) as Promise<AxiosResponse>;
+    },
     login(body: { email: string; password: string }) {
       return api.post({
         location: "auth/login",
