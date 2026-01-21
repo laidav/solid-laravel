@@ -1,30 +1,37 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\RouteNames;
 use Illuminate\Support\Facades\Route;
-        use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
-// AUTH ROUTES
+Route::prefix('v1')->group(function () {
 
-Route::prefix('v1')->group(function() {
-    Route::prefix('auth')->group(function() {
-        Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
-        Route::post('/sign-up', [AuthController::class, 'signUp']);
-    });
+    // AUTH ROUTES
+    Route::prefix('auth')->group(function () {
 
-    // Authenticated Routes
-    Route::middleware(['auth:sanctum'])->group(function() {
+        Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show'])
+            ->name(RouteNames::AUTH_CSRF_COOKIE);
+
+        Route::post('/sign-up', [AuthController::class, 'signUp'])
+            ->name(RouteNames::AUTH_SIGN_UP);
 
         Route::post('/email/verification-notification', function (Request $request) {
             $request->user()->sendEmailVerificationNotification();
 
-            return back()->with('message', 'Verification link sent!');
-        })->middleware(['throttle:6,1'])->name('verification.send');
+            return response()->json([
+                'message' => 'Verification link sent!',
+            ]);
+        })
+            ->middleware(['auth:sanctum', 'throttle:6,1'])
+            ->name(RouteNames::VERIFICATION_SEND);
+    });
 
-        // Email verified Routes
-        Route::middleware(['verified'])->group(function() {
-            Route::post('/loggedin-test', [function() {}]);
-        });
+    // AUTHENTICATED ROUTES
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+        Route::post('/loggedin-test', function () {
+            return response()->json(['ok' => true]);
+        })->name(RouteNames::LOGGED_IN_TEST);
     });
 });
