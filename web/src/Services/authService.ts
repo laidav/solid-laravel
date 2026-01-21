@@ -1,4 +1,4 @@
-import type { AxiosResponse } from "axios";
+import { type AxiosResponse } from "axios";
 import API from "./API";
 export interface CreateUserPayload {
   name: string;
@@ -10,10 +10,14 @@ export interface CreateUserPayload {
 export function AuthService(api: API) {
   return {
     createUser(params: CreateUserPayload) {
-      return api.post({
-        location: "/sign-up",
-        body: params,
-      }) as Promise<AxiosResponse>;
+      api.get({ location: "/sanctum/csrf-cookie" })?.then(
+        () =>
+          api.post({
+            location: "/sign-up",
+            body: params,
+          }) as Promise<AxiosResponse>,
+      );
+      return;
     },
   };
 }

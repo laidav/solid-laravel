@@ -42,12 +42,12 @@ class API {
 
   unauthorizedResponse$ = this._unauthorizedResponse$.asObservable();
 
-  get = ({ location, params }: { location: string; params: any }) => {
-    return this._instance?.get(location, { params });
+  get = ({ location, params }: { location: string; params?: any }) => {
+    return this._instance!.get(location, { params });
   };
 
-  delete = ({ location, params }: { location: string; params: any }) => {
-    return this._instance?.delete(location, { params });
+  delete = ({ location, params }: { location: string; params?: any }) => {
+    return this._instance!.delete(location, { params });
   };
 
   post = ({
@@ -56,10 +56,10 @@ class API {
     config = {},
   }: {
     location: string;
-    body: any;
+    body?: any;
     config?: any;
   }) => {
-    return this._instance?.post(location, body, config);
+    return this._instance!.post(location, body, config);
   };
 
   put = ({
@@ -68,10 +68,10 @@ class API {
     config,
   }: {
     location: string;
-    body: any;
-    config: any;
+    body?: any;
+    config?: any;
   }) => {
-    return this._instance?.put(location, body, config);
+    return this._instance!.put(location, body, config);
   };
 
   patch = ({
@@ -80,10 +80,10 @@ class API {
     config,
   }: {
     location: string;
-    body: any;
-    config: any;
+    body?: any;
+    config?: any;
   }) => {
-    return this._instance?.patch(location, body, config);
+    return this._instance!.patch(location, body, config);
   };
 }
 
