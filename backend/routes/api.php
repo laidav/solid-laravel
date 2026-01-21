@@ -7,6 +7,12 @@ use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 // AUTH ROUTES
 
 Route::prefix('v1')->group(function() {
-    Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
-    Route::post('/sign-up', [AuthController::class, 'signUp']);
+    Route::prefix('auth')->group(function() {
+        Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
+        Route::post('/sign-up', [AuthController::class, 'signUp']);
+    });
+
+    Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+        Route::post('/loggedin-test', [function() {}]);
+    });
 });
