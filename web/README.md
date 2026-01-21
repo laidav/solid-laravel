@@ -26,14 +26,24 @@
 
     - standardize api calls for auth and no auth - DONE
 
-- Email verification handler page - DONE
+- Email verification handler - DONE
 
-- Resend email notification
+### Need email verification and resend (logged in but not verified) (After creating user or trying to logging in to see a page but not yet verified)
+  - NOTE RIGHT NOW LOGGING IN AFTER CREATION ONLY, BUT ALSO AVAILABLE AFTER LOGGING IN
   - backend 
-    - add endpoint for resendiing
+    - add endpoint for resending - IN PROGRESS
   - frontend
     - update success page to have button to resend notice
 
+#### Auth guards
+- throttling?
+- Backend
+  - check login status endpoint - returns user?
+
+- Frontend  
+  - RxAuth
+
 #### Login Page
+- throttling?
 
 #### Reset Password Page
