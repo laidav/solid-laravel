@@ -26,7 +26,7 @@
 
     - standardize api calls for auth and no auth - DONE
 
-- Email verification handler page
+- Email verification handler page - DONE
 
 - Resend email notification
   - backend 
