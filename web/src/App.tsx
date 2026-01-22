@@ -22,28 +22,32 @@ function App() {
   const [appState] = rxApp;
 
   return (
-    <>
-      {appState()?.auth.checkingLoginStatus ? (
-        <div>Loading...</div>
-      ) : (
-        <RxAppProvider rxApp={rxApp}>
-          <div>
-            <Router>
-              <Route path="/" component={() => <h1>Starter App</h1>} />
-              <GuardedRoute
-                path="/verify-email"
-                component={VerifyEmailNotice}
-                when={appState()!.auth.isLoggedIn}
-                redirectTo="/login"
-              />
-              <Route path="/sign-up" component={SignUp} />
-              <Route path="/home" component={Home} />
-              <Route path="/login" component={() => <h1>Login</h1>} />
-            </Router>
-          </div>
-        </RxAppProvider>
+    <Show when={appState()}>
+      {(s) => (
+        <>
+          {s()?.auth.checkingLoginStatus ? (
+            <div>Loading...</div>
+          ) : (
+            <RxAppProvider rxApp={rxApp}>
+              <div>
+                <Router>
+                  <Route path="/" component={() => <h1>Starter App</h1>} />
+                  <GuardedRoute
+                    path="/verify-email"
+                    component={VerifyEmailNotice}
+                    when={appState()!.auth.isLoggedIn}
+                    redirectTo="/login"
+                  />
+                  <Route path="/sign-up" component={SignUp} />
+                  <Route path="/home" component={Home} />
+                  <Route path="/login" component={() => <h1>Login</h1>} />
+                </Router>
+              </div>
+            </RxAppProvider>
+          )}
+        </>
       )}
-    </>
+    </Show>
   );
 }
 
