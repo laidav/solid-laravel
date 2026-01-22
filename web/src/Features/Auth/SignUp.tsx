@@ -69,7 +69,7 @@ const SignUp = () => {
             <button
               type="button"
               disabled={s().request.loading || !s().form.root.valid}
-              onClick={() => actions.request.send(state()!.form.root.value)}
+              onClick={() => actions.request.send(s()!.form.root.value)}
             >
               Submit
             </button>

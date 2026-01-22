@@ -21,11 +21,9 @@ function App() {
 
   const [appState] = rxApp;
 
-  const checkingLoginStatus = () => appState()?.auth.checkingLoginStatus;
-
   return (
     <>
-      {checkingLoginStatus() ? (
+      {appState()?.auth.checkingLoginStatus ? (
         <div>Loading...</div>
       ) : (
         <RxAppProvider rxApp={rxApp}>
