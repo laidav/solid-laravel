@@ -141,6 +141,7 @@ export const RxAuth = ({
       }),
       checkLoginStatusSuccess: (state, { payload }: Action<User>) => ({
         ...state,
+        checkingLoginStatus: false,
         loggingIn: false,
         isLoggedIn: true,
         currentUser: payload,
