@@ -1,7 +1,8 @@
-import { type Action, RxBuilder } from "@reactables/core";
+import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../../../Services/authService";
+import { RxRequest } from "./RxRequest";
 
 export interface User {
   id: number;
@@ -25,6 +26,9 @@ export const RxAuth = ({
 }: {
   authService: ReturnType<typeof AuthService>;
 }) => {
+  /** SIGN UP **/
+  const rxSignUpReq = RxRequest({ resource: authService.signUp });
+
   /** LOGIN **/
   const checkLoginStatus$ = concat(
     of({ type: "checkLoginStatus" }),
@@ -34,10 +38,22 @@ export const RxAuth = ({
     ),
   );
 
-  return RxBuilder({
+  const [, , signUpReqActions$] = rxSignUpReq;
+
+  const signUpSuccess$ = signUpReqActions$
+    .ofTypes([signUpReqActions$.types.sendSuccess])
+    .pipe(
+      map((action) => ({
+        type: "signUpSuccess",
+        payload: action.payload as User,
+      })),
+    );
+
+  const rxLogin = RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    sources: [checkLoginStatus$],
+    debug: true,
+    sources: [checkLoginStatus$, signUpSuccess$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -88,6 +104,11 @@ export const RxAuth = ({
         currentUser: payload.user,
         lockedOut: false,
         loginFailure: null,
+      }),
+      signUpSuccess: (state, { payload }: Action<{ user: User }>) => ({
+        ...state,
+        isLoggedIn: true,
+        currentUser: payload.user,
       }),
       loginFailure: (state) => ({
         ...state,
@@ -153,5 +174,10 @@ export const RxAuth = ({
         reducer: () => initialAuthState,
       },
     },
+  });
+
+  return combine({
+    signUpReq: rxSignUpReq,
+    login: rxLogin,
   });
 };

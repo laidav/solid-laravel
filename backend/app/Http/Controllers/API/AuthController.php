@@ -25,7 +25,12 @@ class AuthController extends APIController
             'password_confirmation' => $payload['passwordConfirmation'],
         ]);
 
-        return response()->json(['userId' => $user->id], Response::HTTP_CREATED);
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'emailVerified' => false,
+        ], Response::HTTP_CREATED);
     }
 
     public function checkLoginStatus(): JsonResponse

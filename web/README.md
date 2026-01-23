@@ -51,8 +51,10 @@
 - Frontend - IN PROGRESS  
   - RxApp
     - RxAuth 
-  - also guards
-    - for both logged in
+    - refactor to separate concerns
+  - also guards - DONE
+    - Guarded component - DONE
+    - for both logged in - DONE
     - then verified users
 
 #### Login Page

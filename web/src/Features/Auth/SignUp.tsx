@@ -9,11 +9,9 @@ import TextInput from "../Shared/Components/Forms/TextInput";
 import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
-import { RxRequest } from "../Shared/Rx/RxRequest";
-import { AuthService } from "../../Services/authService";
-import { useApi } from "../Shared/Components/ApiProvider";
+import { useRxApp } from "../Shared/Components/RxAppProvider";
 
-export interface CreateUserFormValue {
+export interface SignUpFormValue {
   name: string;
   email: string;
   password: string;
@@ -21,40 +19,37 @@ export interface CreateUserFormValue {
 }
 
 const SignUp = () => {
-  const [state, actions, actions$] = createReactable(() => {
-    const authService = AuthService(useApi());
-
-    return combine({
-      form: build<CreateUserFormValue>(
-        group({
-          controls: {
-            name: control(["", "required"]),
-            email: control(["", ["required", "email"]]),
-            password: control(["", ["required"]]),
-            passwordConfirmation: control(["", ["required"]]),
-          },
-        }),
-      ),
-      request: RxRequest<CreateUserFormValue, { userId: number }>({
-        resource: authService.createUser,
+  const rxForm = createReactable(() =>
+    build<SignUpFormValue>(
+      group({
+        controls: {
+          name: control(["", "required"]),
+          email: control(["", ["required", "email"]]),
+          password: control(["", ["required"]]),
+          passwordConfirmation: control(["", ["required"]]),
+        },
       }),
-    });
-  });
+    ),
+  );
+
+  const [appState, appActions, appActions$] = useRxApp();
 
   const navigate = useNavigate();
 
-  actions$
-    .ofTypes([actions$.types["[request] - sendSuccess"]])
+  appActions$
+    .ofTypes([appActions$.types["[auth] - [login] - signUpSuccess"]])
     .pipe(take(1))
     .subscribe(() => {
       navigate("/verify-email");
     });
 
+  const [formState, formActions] = rxForm;
+
   return (
-    <Show when={state()}>
+    <Show when={formState()}>
       {(s) => (
         <div>
-          <Form rxForm={[() => s().form, actions.form]}>
+          <Form rxForm={rxForm}>
             <Field name="name" component={TextInput} label="Username" />
             <Field name="email" component={EmailInput} label="Email" />
             <Field name="password" component={PasswordInput} label="Password" />
@@ -63,13 +58,13 @@ const SignUp = () => {
               component={PasswordInput}
               label="Confirm Password"
             />
-            <button type="button" onClick={() => actions.form.resetControl([])}>
+            <button type="button" onClick={() => formActions.resetControl([])}>
               Clear
             </button>
             <button
               type="button"
-              disabled={s().request.loading || !s().form.root.valid}
-              onClick={() => actions.request.send(s()!.form.root.value)}
+              disabled={appState()?.auth.signUpReq.loading || !s().root.valid}
+              onClick={() => appActions.auth.signUpReq.send(s()!.root.value)}
             >
               Submit
             </button>

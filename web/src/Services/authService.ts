@@ -1,10 +1,10 @@
 import { type AxiosResponse } from "axios";
 import API from "./API";
-import { type CreateUserFormValue } from "../Features/Auth/SignUp";
+import { type SignUpFormValue } from "../Features/Auth/SignUp";
 
 export function AuthService(api: API) {
   return {
-    createUser(params: CreateUserFormValue) {
+    signUp(params: SignUpFormValue) {
       return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
         () =>
           api.post({

@@ -25,7 +25,7 @@ function App() {
     <Show when={appState()}>
       {(s) => (
         <>
-          {s()?.auth.checkingLoginStatus ? (
+          {s()?.auth.login.checkingLoginStatus ? (
             <div>Loading...</div>
           ) : (
             <RxAppProvider rxApp={rxApp}>
@@ -35,7 +35,7 @@ function App() {
                   <GuardedRoute
                     path="/verify-email"
                     component={VerifyEmailNotice}
-                    when={appState()!.auth.isLoggedIn}
+                    when={appState()!.auth.login.isLoggedIn}
                     redirectTo="/login"
                   />
                   <Route path="/sign-up" component={SignUp} />
