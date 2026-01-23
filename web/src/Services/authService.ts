@@ -13,7 +13,7 @@ export function AuthService(api: API) {
           }) as Promise<AxiosResponse>,
       );
     },
-    login(params: SignUpFormValue) {
+    login(params: { email: string; password: string }) {
       return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
         () =>
           api.post({
