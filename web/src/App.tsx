@@ -6,20 +6,11 @@ import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
 import ApiProvider from "./Features/Shared/Components/ApiProvider";
 import Home from "./Features/Shared/Components/Home";
 import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
-import { createReactable } from "./reactables/createReactable";
-import { AuthService } from "./Services/authService";
-import { useApi } from "./Features/Shared/Components/ApiProvider";
-import { RxApp } from "./Features/Shared/Rx/RxApp";
+import { useRxApp } from "./Features/Shared/Components/RxAppProvider";
 import { GuardedRoute } from "./Features/Shared/Components/GuardedRoute";
 
 function App() {
-  const api = useApi();
-  const rxApp = createReactable(() => {
-    const authService = AuthService(api);
-    return RxApp({ authService });
-  });
-
-  const [appState] = rxApp;
+  const [appState] = useRxApp();
 
   return (
     <Show when={appState()}>
@@ -28,34 +19,32 @@ function App() {
           {s()?.auth.login.checkingLoginStatus ? (
             <div>Loading...</div>
           ) : (
-            <RxAppProvider rxApp={rxApp}>
-              <div>
-                <Router>
-                  <Route path="/" component={() => <h1>Starter App</h1>} />
-                  <GuardedRoute
-                    path="/verify-email"
-                    component={VerifyEmailNotice}
-                    when={appState()!.auth.login.isLoggedIn}
-                    redirectTo="/login"
-                  />
-                  <Route path="/sign-up" component={SignUp} />
-                  <GuardedRoute
-                    path="/home"
-                    component={Home}
-                    when={Boolean(
-                      appState()!.auth.login.isLoggedIn &&
-                      appState()!.auth.login.currentUser?.emailVerified,
-                    )}
-                    redirectTo={
-                      !appState()!.auth.login.isLoggedIn
-                        ? "/login"
-                        : "/verify-email"
-                    }
-                  />
-                  <Route path="/login" component={() => <h1>Login</h1>} />
-                </Router>
-              </div>
-            </RxAppProvider>
+            <div>
+              <Router>
+                <Route path="/" component={() => <h1>Starter App</h1>} />
+                <GuardedRoute
+                  path="/verify-email"
+                  component={VerifyEmailNotice}
+                  when={appState()!.auth.login.isLoggedIn}
+                  redirectTo="/login"
+                />
+                <Route path="/sign-up" component={SignUp} />
+                <GuardedRoute
+                  path="/home"
+                  component={Home}
+                  when={Boolean(
+                    appState()!.auth.login.isLoggedIn &&
+                    appState()!.auth.login.currentUser?.emailVerified,
+                  )}
+                  redirectTo={
+                    !appState()!.auth.login.isLoggedIn
+                      ? "/login"
+                      : "/verify-email"
+                  }
+                />
+                <Route path="/login" component={() => <h1>Login</h1>} />
+              </Router>
+            </div>
           )}
         </>
       )}
@@ -65,6 +54,8 @@ function App() {
 
 export default () => (
   <ApiProvider>
-    <App />
+    <RxAppProvider>
+      <App />
+    </RxAppProvider>
   </ApiProvider>
 );
