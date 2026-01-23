@@ -38,5 +38,5 @@ export const createReactable = <
     actions.destroy?.();
   });
 
-  return [state as Accessor<T>, actions, actions$, state$] as const;
+  return [() => state()!, actions, actions$, state$] as const;
 };
