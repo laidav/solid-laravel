@@ -1,11 +1,27 @@
-import { createContext, useContext, type JSX, Show } from "solid-js";
+import { type ReactableState } from "@reactables/core";
+import {
+  createContext,
+  useContext,
+  type JSX,
+  Show,
+  type Accessor,
+} from "solid-js";
 import { type HookedReactable } from "../../../reactables/createReactable";
 import { RxApp } from "../Rx/RxApp";
 import { AuthService } from "../../../Services/authService";
 import { useApi } from "./ApiProvider";
 import { createReactable } from "../../../reactables/createReactable";
 
-const RxAppContext = createContext<HookedReactable<typeof RxApp> | undefined>(
+type RxAppState = ReactableState<typeof RxApp>;
+type HookedRxApp = HookedReactable<typeof RxApp>;
+type HookedInitializedRxApp = [
+  Accessor<RxAppState>,
+  HookedRxApp[1],
+  HookedRxApp[2],
+  HookedRxApp[3],
+];
+
+const RxAppContext = createContext<HookedInitializedRxApp | undefined>(
   undefined,
 );
 
@@ -13,7 +29,7 @@ type RxAppProviderProps = {
   children: JSX.Element;
 };
 
-export function useRxApp(): HookedReactable<typeof RxApp> {
+export function useRxApp(): HookedInitializedRxApp {
   const context = useContext(RxAppContext);
 
   if (!context) {
@@ -24,14 +40,19 @@ export function useRxApp(): HookedReactable<typeof RxApp> {
 
 const RxAppProvider = (props: RxAppProviderProps) => {
   const api = useApi();
-  const rxApp = createReactable(() => {
+  const [appState, appActions, appActions$, appState$] = createReactable(() => {
     const authService = AuthService(api);
     return RxApp({ authService });
   });
+
   return (
-    <RxAppContext.Provider value={rxApp}>
-      {props.children}
-    </RxAppContext.Provider>
+    <Show when={appState()}>
+      {(s) => (
+        <RxAppContext.Provider value={[s, appActions, appActions$, appState$]}>
+          {props.children}
+        </RxAppContext.Provider>
+      )}
+    </Show>
   );
 };
 
