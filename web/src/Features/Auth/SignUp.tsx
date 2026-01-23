@@ -1,3 +1,4 @@
+import { combine, type Action } from "@reactables/core";
 import { take } from "rxjs/operators";
 import { useNavigate } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
@@ -8,6 +9,10 @@ import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { useRxApp } from "../Shared/Components/RxAppProvider";
+import { useApi } from "../Shared/Components/ApiProvider";
+import { AuthService } from "../../Services/authService";
+import { RxRequest } from "../Shared/Rx/RxRequest";
+import type { User } from "../Shared/Rx/RxAuth";
 
 export interface SignUpFormValue {
   name: string;
@@ -17,35 +22,42 @@ export interface SignUpFormValue {
 }
 
 const SignUp = () => {
+  const api = useApi();
   const rxForm = createReactable(() =>
-    build<SignUpFormValue>(
-      group({
-        controls: {
-          name: control(["", "required"]),
-          email: control(["", ["required", "email"]]),
-          password: control(["", ["required"]]),
-          passwordConfirmation: control(["", ["required"]]),
-        },
-      }),
-    ),
+    combine({
+      form: build<SignUpFormValue>(
+        group({
+          controls: {
+            name: control(["", "required"]),
+            email: control(["", ["required", "email"]]),
+            password: control(["", ["required"]]),
+            passwordConfirmation: control(["", ["required"]]),
+          },
+        }),
+      ),
+      submitRequest: RxRequest({ resource: AuthService(api).signUp }),
+    }),
   );
 
-  const [appState, appActions, appActions$] = useRxApp();
+  const [signUpState, { form: formActions, submitRequest }, signUpActions$] =
+    rxForm;
+
+  const formState = () => signUpState().form;
+
+  const [, appActions] = useRxApp();
 
   const navigate = useNavigate();
-
-  appActions$
-    .ofTypes([appActions$.types["[auth] - [signUpReq] - sendSuccess"]])
+  signUpActions$
+    .ofTypes([signUpActions$.types["[submitRequest] - sendSuccess"]])
     .pipe(take(1))
-    .subscribe(() => {
+    .subscribe((action: Action) => {
+      appActions.auth.loginSuccess({ user: action.payload! as User });
       navigate("/verify-email");
     });
 
-  const [formState, formActions] = rxForm;
-
   return (
     <div>
-      <Form rxForm={rxForm}>
+      <Form rxForm={[formState, formActions]}>
         <Field name="name" component={TextInput} label="Username" />
         <Field name="email" component={EmailInput} label="Email" />
         <Field name="password" component={PasswordInput} label="Password" />
@@ -60,9 +72,9 @@ const SignUp = () => {
         <button
           type="button"
           disabled={
-            appState().auth.signUpReq.loading || !formState().root.valid
+            signUpState().submitRequest.loading || !formState().root.valid
           }
-          onClick={() => appActions.auth.signUpReq.send(formState().root.value)}
+          onClick={() => submitRequest.send(formState().root.value)}
         >
           Submit
         </button>

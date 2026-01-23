@@ -26,9 +26,6 @@ export const RxAuth = ({
 }: {
   authService: ReturnType<typeof AuthService>;
 }) => {
-  /** SIGN UP **/
-  const rxSignUpReq = RxRequest({ resource: authService.signUp });
-
   /** LOGIN **/
   const checkLoginStatus$ = concat(
     of({ type: "checkLoginStatus" }),
@@ -38,21 +35,10 @@ export const RxAuth = ({
     ),
   );
 
-  const [, , signUpReqActions$] = rxSignUpReq;
-
-  const signUpSuccess$ = signUpReqActions$
-    .ofTypes([signUpReqActions$.types.sendSuccess])
-    .pipe(
-      map((action) => ({
-        type: "signUpSuccess",
-        payload: action.payload as User,
-      })),
-    );
-
-  const rxLogin = RxBuilder({
+  return RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    sources: [checkLoginStatus$, signUpSuccess$],
+    sources: [checkLoginStatus$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -166,10 +152,5 @@ export const RxAuth = ({
         reducer: () => initialAuthState,
       },
     },
-  });
-
-  return combine({
-    signUpReq: rxSignUpReq,
-    login: rxLogin,
   });
 };

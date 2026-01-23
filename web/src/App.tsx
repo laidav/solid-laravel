@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-      {appState().auth.login.checkingLoginStatus ? (
+      {appState().auth.checkingLoginStatus ? (
         <div>Loading...</div>
       ) : (
         <div>
@@ -22,7 +22,7 @@ function App() {
             <GuardedRoute
               path="/verify-email"
               component={VerifyEmailNotice}
-              when={appState().auth.login.isLoggedIn}
+              when={appState().auth.isLoggedIn}
               redirectTo="/login"
             />
             <Route path="/sign-up" component={SignUp} />
@@ -30,11 +30,11 @@ function App() {
               path="/home"
               component={Home}
               when={Boolean(
-                appState().auth.login.isLoggedIn &&
-                appState().auth.login.currentUser?.emailVerified,
+                appState().auth.isLoggedIn &&
+                appState().auth.currentUser?.emailVerified,
               )}
               redirectTo={
-                !appState().auth.login.isLoggedIn ? "/login" : "/verify-email"
+                !appState().auth.isLoggedIn ? "/login" : "/verify-email"
               }
             />
             <Route path="/login" component={() => <h1>Login</h1>} />
