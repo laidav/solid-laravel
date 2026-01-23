@@ -1,7 +1,6 @@
 import type { Component } from "solid-js";
 import { useContext, createMemo, Show, type Accessor } from "solid-js";
 import { ControlModels } from "@reactables/forms";
-import { type HookedRxForm } from "./Form";
 import { FormContext } from "./FormContext";
 
 export type EventHandler<Event> = (event: Event, name?: string) => void;
@@ -25,7 +24,7 @@ export interface WrappedFieldInputProps extends CommonFieldInputProps {
 
 export interface WrappedFieldProps {
   input: WrappedFieldInputProps;
-  meta: Accessor<ControlModels.FormControl<string>>;
+  meta: ControlModels.FormControl<string>;
 }
 
 export interface FieldProps {
@@ -89,7 +88,7 @@ export const Field = ({
         };
         return (
           <>
-            <Component input={inputProps} meta={c} {...props} />
+            <Component input={inputProps} meta={c()} {...props} />
           </>
         );
       }}
