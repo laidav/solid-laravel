@@ -45,32 +45,30 @@ const SignUp = () => {
   const [formState, formActions] = rxForm;
 
   return (
-    <Show when={formState()}>
-      {(s) => (
-        <div>
-          <Form rxForm={rxForm}>
-            <Field name="name" component={TextInput} label="Username" />
-            <Field name="email" component={EmailInput} label="Email" />
-            <Field name="password" component={PasswordInput} label="Password" />
-            <Field
-              name="passwordConfirmation"
-              component={PasswordInput}
-              label="Confirm Password"
-            />
-            <button type="button" onClick={() => formActions.resetControl([])}>
-              Clear
-            </button>
-            <button
-              type="button"
-              disabled={appState()?.auth.signUpReq.loading || !s().root.valid}
-              onClick={() => appActions.auth.signUpReq.send(s()!.root.value)}
-            >
-              Submit
-            </button>
-          </Form>
-        </div>
-      )}
-    </Show>
+    <div>
+      <Form rxForm={rxForm}>
+        <Field name="name" component={TextInput} label="Username" />
+        <Field name="email" component={EmailInput} label="Email" />
+        <Field name="password" component={PasswordInput} label="Password" />
+        <Field
+          name="passwordConfirmation"
+          component={PasswordInput}
+          label="Confirm Password"
+        />
+        <button type="button" onClick={() => formActions.resetControl([])}>
+          Clear
+        </button>
+        <button
+          type="button"
+          disabled={
+            appState().auth.signUpReq.loading || !formState().root.valid
+          }
+          onClick={() => appActions.auth.signUpReq.send(formState().root.value)}
+        >
+          Submit
+        </button>
+      </Form>
+    </div>
   );
 };
 

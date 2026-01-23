@@ -4,7 +4,7 @@ import type { JSX, Accessor } from "solid-js";
 import { FormContext } from "./FormContext";
 
 export type HookedRxForm = [
-  Accessor<ControlModels.Form<unknown> | undefined>,
+  Accessor<ControlModels.Form<unknown>>,
   RxFormActions,
   ...unknown[],
 ];

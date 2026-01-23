@@ -11,7 +11,7 @@ import type {
 export type HookedReactable<T> = T extends (
   ...args: any[]
 ) => Reactable<infer S, infer U, infer V>
-  ? [Accessor<S | undefined>, U, ActionObservableWithTypes<V>, Observable<S>]
+  ? [Accessor<S>, U, ActionObservableWithTypes<V>, Observable<S>]
   : never;
 
 export const createReactable = <
@@ -38,5 +38,5 @@ export const createReactable = <
     actions.destroy?.();
   });
 
-  return [state, actions, actions$, state$] as const;
+  return [state as Accessor<T>, actions, actions$, state$] as const;
 };

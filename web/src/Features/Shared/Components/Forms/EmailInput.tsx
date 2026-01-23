@@ -5,17 +5,17 @@ export interface InputProps extends WrappedFieldProps {
   label?: string | JSX.Element;
 }
 
-const EmailInput = ({ input, meta, label }: InputProps) => {
+const EmailInput = (props: InputProps) => {
   return (
     <div class="mb-3">
-      {label && <label class="form">{label}</label>}
-      <input {...input} type="text" value={meta().value} />
-      {meta().touched && meta().errors.required && (
+      {props.label && <label class="form">{props.label}</label>}
+      <input {...props.input} type="text" value={props.meta().value} />
+      {props.meta().touched && props.meta().errors.required && (
         <div>
           <small class="text-danger">Field is required</small>
         </div>
       )}
-      {meta().touched && meta().errors.email && (
+      {props.meta().touched && props.meta().errors.email && (
         <div>
           <small class="text-danger">Please enter a valid email</small>
         </div>
