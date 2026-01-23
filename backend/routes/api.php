@@ -17,6 +17,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/sign-up', [AuthController::class, 'signUp'])
             ->name(RouteNames::AUTH_SIGN_UP);
 
+        Route::post('/login', [AuthController::class, 'login'])
+            ->name(RouteNames::AUTH_LOGIN);
+
         Route::get('/check-login-status', [AuthController::class, 'checkLoginStatus'])
             ->name(RouteNames::AUTH_CHECK_LOGIN_STATUS);
 

@@ -13,6 +13,15 @@ export function AuthService(api: API) {
           }) as Promise<AxiosResponse>,
       );
     },
+    login(params: SignUpFormValue) {
+      return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
+        () =>
+          api.post({
+            location: "auth/login",
+            body: params,
+          }) as Promise<AxiosResponse>,
+      );
+    },
     resendEmailVerification() {
       return api.post({
         location: "auth/verification-notification",
@@ -21,12 +30,6 @@ export function AuthService(api: API) {
     checkLoginStatus() {
       return api.get({
         location: "auth/check-login-status",
-      }) as Promise<AxiosResponse>;
-    },
-    login(body: { email: string; password: string }) {
-      return api.post({
-        location: "auth/login",
-        body,
       }) as Promise<AxiosResponse>;
     },
     logout() {

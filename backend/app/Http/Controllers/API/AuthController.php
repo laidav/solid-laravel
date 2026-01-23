@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\API\APIController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
 
 class AuthController extends APIController
 {
@@ -23,12 +24,23 @@ class AuthController extends APIController
             'password_confirmation' => $payload['passwordConfirmation'],
         ]);
 
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'emailVerified' => false,
-        ], Response::HTTP_CREATED);
+        return response()->json(new UserResource($user), Response::HTTP_CREATED);
+    }
+    public function login(Request $request): JsonResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+
+            return response()->json(new UserResource($user), 200);
+        }
+
+        return response()->json(['error' => 'invalid-credentials'], 401);
     }
 
     public function checkLoginStatus(): JsonResponse
@@ -39,11 +51,6 @@ class AuthController extends APIController
             return response()->json('Not authenticated', 401);
         }
 
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'emailVerified' => isset($user->email_verified_at),
-            ], 200);
+        return response()->json(new UserResource($user), 200);
     }
 }

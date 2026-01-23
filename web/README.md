@@ -58,7 +58,11 @@
     - then verified users - DONE
 
 #### Login Page
-- throttling?
+- BACKEND
+  - auth controller - DONE
+  - api - DONE
+- FRONTEND
+  - form
 
 #### Reset Password Page
 
