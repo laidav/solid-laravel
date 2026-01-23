@@ -22,31 +22,27 @@ export interface SignUpFormValue {
 }
 
 const SignUp = () => {
-  const api = useApi();
-  const rxForm = createReactable(() =>
-    combine({
-      form: build<SignUpFormValue>(
-        group({
-          controls: {
-            name: control(["", "required"]),
-            email: control(["", ["required", "email"]]),
-            password: control(["", ["required"]]),
-            passwordConfirmation: control(["", ["required"]]),
-          },
-        }),
-      ),
-      submitRequest: RxRequest({ resource: AuthService(api).signUp }),
-    }),
-  );
-
   const [signUpState, { form: formActions, submitRequest }, signUpActions$] =
-    rxForm;
-
-  const formState = () => signUpState().form;
+    createReactable(() =>
+      combine({
+        form: build<SignUpFormValue>(
+          group({
+            controls: {
+              name: control(["", "required"]),
+              email: control(["", ["required", "email"]]),
+              password: control(["", ["required"]]),
+              passwordConfirmation: control(["", ["required"]]),
+            },
+          }),
+        ),
+        submitRequest: RxRequest({ resource: AuthService(useApi()).signUp }),
+      }),
+    );
 
   const [, appActions] = useRxApp();
 
   const navigate = useNavigate();
+
   signUpActions$
     .ofTypes([signUpActions$.types["[submitRequest] - sendSuccess"]])
     .pipe(take(1))
@@ -54,6 +50,8 @@ const SignUp = () => {
       appActions.auth.loginSuccess({ user: action.payload! as User });
       navigate("/verify-email");
     });
+
+  const formState = () => signUpState().form;
 
   return (
     <div>
