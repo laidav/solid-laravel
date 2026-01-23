@@ -1,4 +1,5 @@
 import { type HookedRxForm } from "./Form";
-import { createContext } from "solid-js";
+import { createContext, type Context } from "solid-js";
 
-export const FormContext = createContext<HookedRxForm | undefined>();
+export const FormContext =
+  createContext<HookedRxForm>() as Context<HookedRxForm>;

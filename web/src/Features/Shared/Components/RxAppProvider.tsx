@@ -1,11 +1,5 @@
 import { type ReactableState } from "@reactables/core";
-import {
-  createContext,
-  useContext,
-  type JSX,
-  Show,
-  type Accessor,
-} from "solid-js";
+import { createContext, useContext, type JSX, type Accessor } from "solid-js";
 import { type HookedReactable } from "../../../reactables/createReactable";
 import { RxApp } from "../Rx/RxApp";
 import { AuthService } from "../../../Services/authService";
@@ -40,19 +34,15 @@ export function useRxApp(): HookedInitializedRxApp {
 
 const RxAppProvider = (props: RxAppProviderProps) => {
   const api = useApi();
-  const [appState, appActions, appActions$, appState$] = createReactable(() => {
+  const rxApp = createReactable(() => {
     const authService = AuthService(api);
     return RxApp({ authService });
   });
 
   return (
-    <Show when={appState()}>
-      {(s) => (
-        <RxAppContext.Provider value={[s, appActions, appActions$, appState$]}>
-          {props.children}
-        </RxAppContext.Provider>
-      )}
-    </Show>
+    <RxAppContext.Provider value={rxApp}>
+      {props.children}
+    </RxAppContext.Provider>
   );
 };
 

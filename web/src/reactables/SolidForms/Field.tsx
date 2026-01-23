@@ -1,7 +1,6 @@
 import type { Component } from "solid-js";
-import { useContext, createMemo, Show, type Accessor } from "solid-js";
+import { useContext, createMemo, Show } from "solid-js";
 import { ControlModels } from "@reactables/forms";
-import { type HookedRxForm } from "./Form";
 import { FormContext } from "./FormContext";
 
 export type EventHandler<Event> = (event: Event, name?: string) => void;
@@ -25,7 +24,7 @@ export interface WrappedFieldInputProps extends CommonFieldInputProps {
 
 export interface WrappedFieldProps {
   input: WrappedFieldInputProps;
-  meta: Accessor<ControlModels.FormControl<string>>;
+  meta: ControlModels.FormControl<string>;
 }
 
 export interface FieldProps {
@@ -41,67 +40,58 @@ export const Field = ({
 }: FieldProps) => {
   const rxForm = useContext(FormContext);
 
-  const control = createMemo(() => {
-    if (!rxForm) return;
+  const c = createMemo(() => {
+    const [state] = rxForm;
 
-    const [state] = rxForm as HookedRxForm;
-
-    return state()?.[name] as ControlModels.FormControl<string>;
+    return state()[name] as ControlModels.FormControl<string>;
   });
-  const actions = createMemo(() => {
-    if (!rxForm) return;
 
-    const [, actions] = rxForm as HookedRxForm;
+  const a = createMemo(() => {
+    const [, actions] = rxForm;
     return actions;
   });
 
   return (
-    <Show when={actions()}>
-      {(a) => (
-        <Show when={control()} fallback={<div>Control Not Found</div>}>
-          {(c) => {
-            const { controlRef } = c();
-            const inputProps = {
-              name,
-              onBlur: () => {
-                if (!c().touched) a().markControlAsTouched({ controlRef });
-              },
-              onInput: (event: Event | unknown) => {
-                let value: unknown;
-                if ((event as Event).currentTarget) {
-                  switch (
-                    ((event as Event).currentTarget as HTMLInputElement).type
-                  ) {
-                    case "checkbox":
-                      value = (
-                        (event as Event).currentTarget as HTMLInputElement
-                      ).checked;
-                      break;
-                    case "email":
-                    case "text":
-                    default:
-                      value = (
-                        (event as Event).currentTarget as HTMLInputElement
-                      ).value;
-                  }
-                } else {
-                  value = event;
-                }
+    <Show when={c()} fallback={<div>Control Not Found</div>}>
+      {(c) => {
+        const { controlRef } = c();
+        const inputProps = {
+          name,
+          onBlur: () => {
+            if (!c().touched) a().markControlAsTouched({ controlRef });
+          },
+          onInput: (event: Event | unknown) => {
+            let value: unknown;
+            if ((event as Event).currentTarget) {
+              switch (
+                ((event as Event).currentTarget as HTMLInputElement).type
+              ) {
+                case "checkbox":
+                  value = ((event as Event).currentTarget as HTMLInputElement)
+                    .checked;
+                  break;
+                case "email":
+                case "text":
+                default:
+                  value = ((event as Event).currentTarget as HTMLInputElement)
+                    .value;
+              }
+            } else {
+              value = event;
+            }
 
-                a().updateValues({
-                  controlRef,
-                  value,
-                });
-              },
-            };
-            return (
-              <>
-                <Component input={inputProps} meta={c} {...props} />
-              </>
-            );
-          }}
-        </Show>
-      )}
+            a().updateValues({
+              controlRef,
+              value,
+            });
+          },
+        };
+        return (
+          <>
+            <Component input={inputProps} meta={c()} {...props} />
+          </>
+        );
+      }}
     </Show>
   );
 };

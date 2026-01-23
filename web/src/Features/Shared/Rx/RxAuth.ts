@@ -65,32 +65,7 @@ export const RxAuth = ({
               mergeMap(({ payload }) => {
                 return from(authService.login(payload)).pipe(
                   map(({ data }) => ({ type: "loginSuccess", payload: data })),
-                  catchError((e) => {
-                    const { response } = e;
-                    const { data } = response;
-                    const { errors } = data;
-
-                    // 2-Factor Authentication Required
-                    if (response.status === 302) {
-                      return of({
-                        type: "twoFactorAuthRequired",
-                        payload: response.data.user,
-                      });
-                    }
-
-                    // Locked out from too many attempts
-                    if (
-                      response.status === 429 &&
-                      data &&
-                      errors &&
-                      errors.email?.length > 0
-                    ) {
-                      return of({ type: "lockedOut" });
-                    }
-
-                    // General login failure
-                    return of({ type: "loginFailure" });
-                  }),
+                  catchError((e) => of({ type: "loginFailure", payload: e })),
                 );
               }),
             ),
@@ -104,15 +79,43 @@ export const RxAuth = ({
         lockedOut: false,
         loginFailure: null,
       }),
+      loginFailure: (state, { payload: e }: Action<any>) => {
+        const { response } = e;
+
+        // 2-Factor Authentication Required
+        if (response?.status === 302) {
+          return {
+            ...state,
+            currentUser: response.data.user as User,
+            loggingIn: false,
+          };
+        }
+
+        // Locked out from too many attempts
+        if (
+          response?.status === 429 &&
+          response?.data &&
+          response?.data?.errors &&
+          response?.data?.errors?.email?.length > 0
+        ) {
+          return {
+            ...state,
+            loggingIn: false,
+            lockedOut: true,
+          };
+        }
+
+        // General login failure
+        return {
+          ...state,
+          loggingIn: false,
+          loginFailure: true,
+        };
+      },
       signUpSuccess: (state, { payload }: Action<{ user: User }>) => ({
         ...state,
         isLoggedIn: true,
         currentUser: payload.user,
-      }),
-      loginFailure: (state) => ({
-        ...state,
-        loggingIn: false,
-        loginFailure: true,
       }),
       lockedOut: (state) => ({
         ...state,
@@ -121,11 +124,6 @@ export const RxAuth = ({
       unlock: (state) => ({
         ...state,
         lockedOut: false,
-      }),
-      twoFactorAuthRequired: (state, action: Action<User>) => ({
-        ...state,
-        currentUser: action.payload,
-        loggingIn: false,
       }),
       twoFactorAuthSuccess: (state) => ({
         ...state,
@@ -150,11 +148,6 @@ export const RxAuth = ({
         ],
       },
       logoutSuccess: () => initialAuthState,
-      logoutFailure: (state) => ({
-        ...state,
-        loggingOut: false,
-        isLoggedIn: false,
-      }),
       checkLoginStatus: (state) => ({
         ...state,
         checkingLoginStatus: true,
