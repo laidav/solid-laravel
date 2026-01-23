@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { useContext, createMemo, Show, type Accessor } from "solid-js";
+import { useContext, createMemo, Show } from "solid-js";
 import { ControlModels } from "@reactables/forms";
 import { FormContext } from "./FormContext";
 
