@@ -39,7 +39,19 @@ function App() {
                     redirectTo="/login"
                   />
                   <Route path="/sign-up" component={SignUp} />
-                  <Route path="/home" component={Home} />
+                  <GuardedRoute
+                    path="/home"
+                    component={Home}
+                    when={Boolean(
+                      appState()!.auth.login.isLoggedIn &&
+                      appState()!.auth.login.currentUser?.emailVerified,
+                    )}
+                    redirectTo={
+                      !appState()!.auth.login.isLoggedIn
+                        ? "/login"
+                        : "/verify-email"
+                    }
+                  />
                   <Route path="/login" component={() => <h1>Login</h1>} />
                 </Router>
               </div>

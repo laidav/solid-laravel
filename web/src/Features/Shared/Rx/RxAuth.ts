@@ -52,7 +52,6 @@ export const RxAuth = ({
   const rxLogin = RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    debug: true,
     sources: [checkLoginStatus$, signUpSuccess$],
     reducers: {
       login: {
