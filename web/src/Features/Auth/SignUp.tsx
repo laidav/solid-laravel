@@ -35,7 +35,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   appActions$
-    .ofTypes([appActions$.types["[auth] - [login] - signUpSuccess"]])
+    .ofTypes([appActions$.types["[auth] - [signUpReq] - sendSuccess"]])
     .pipe(take(1))
     .subscribe(() => {
       navigate("/verify-email");
