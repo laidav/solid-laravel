@@ -48,16 +48,18 @@
 - Backend
   - check login status endpoint - returns user? - DONE
 
-- Frontend - IN PROGRESS  
+- Frontend - DONE  
   - RxApp
-    - RxAuth 
-    - refactor to separate concerns
+    - RxAuth - DONE
+    - refactor to separate concerns - DONE
   - also guards - DONE
     - Guarded component - DONE
     - for both logged in - DONE
-    - then verified users
+    - then verified users - DONE
 
 #### Login Page
 - throttling?
 
 #### Reset Password Page
+
+#### Docker Container

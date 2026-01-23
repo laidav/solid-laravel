@@ -100,6 +100,7 @@ export const RxAuth = ({
         ) {
           return {
             ...state,
+            loggingIn: false,
             lockedOut: true,
           };
         }
