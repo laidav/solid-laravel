@@ -1,7 +1,7 @@
 import { type Action, RxBuilder } from "@reactables/core";
 import { of, from, Observable, concat } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
-import { AuthService } from "../../../Services/authService";
+import { AuthService } from "../../../../Services/authService";
 
 export interface User {
   id: number;
