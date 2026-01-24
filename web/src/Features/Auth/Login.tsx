@@ -39,17 +39,21 @@ const Login = () => {
 
   return (
     <div>
-      <Form rxForm={rxLoginForm}>
-        <Field name="email" component={EmailInput} label="Email" />
-        <Field name="password" component={PasswordInput} label="Password" />
-        <button
-          type="button"
-          disabled={appState().auth.loggingIn || !formState().root.valid}
-          onClick={() => appActions.auth.login(formState().root.value)}
-        >
-          Login
-        </button>
-      </Form>
+      {appState().auth.lockedOut ? (
+        <h1>Sorry too many log in attempts. Please try again later.</h1>
+      ) : (
+        <Form rxForm={rxLoginForm}>
+          <Field name="email" component={EmailInput} label="Email" />
+          <Field name="password" component={PasswordInput} label="Password" />
+          <button
+            type="button"
+            disabled={appState().auth.loggingIn || !formState().root.valid}
+            onClick={() => appActions.auth.login(formState().root.value)}
+          >
+            Login
+          </button>
+        </Form>
+      )}
     </div>
   );
 };

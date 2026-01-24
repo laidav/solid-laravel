@@ -81,12 +81,7 @@ export const RxAuth = ({
         }
 
         // Locked out from too many attempts
-        if (
-          response?.status === 429 &&
-          response?.data &&
-          response?.data?.errors &&
-          response?.data?.errors?.email?.length > 0
-        ) {
+        if (response?.status === 429) {
           return {
             ...state,
             loggingIn: false,

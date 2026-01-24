@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\API\APIController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends APIController
 {
@@ -33,14 +34,22 @@ class AuthController extends APIController
             'password' => ['required'],
         ]);
 
+        $throttleKey = $this->throttleKey($request);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return response()->json(['message' => 'too many attempts'], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
         if (Auth::attempt($credentials)) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
             $user = Auth::user();
 
             return response()->json(new UserResource($user), Response::HTTP_OK);
         }
 
-        return response()->json(['error' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
+        RateLimiter::hit($throttleKey);
+        return response()->json(['message' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
     }
 
     public function checkLoginStatus(): JsonResponse
@@ -52,5 +61,9 @@ class AuthController extends APIController
         }
 
         return response()->json(new UserResource($user), 200);
+    }
+    protected function throttleKey(Request $request): string
+    {
+        return strtolower($request->input('email')).'|'.$request->ip();
     }
 }
