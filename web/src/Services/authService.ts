@@ -1,16 +1,18 @@
 import { type AxiosResponse } from "axios";
 import API from "./API";
 import { type SignUpFormValue } from "../Features/Auth/SignUp";
+import { type User } from "../Features/Shared/Rx/RxAuth";
 
 export function AuthService(api: API) {
   return {
     signUp(params: SignUpFormValue) {
-      return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
-        () =>
+      return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(() =>
+        (
           api.post({
             location: "auth/sign-up",
             body: params,
-          }) as Promise<AxiosResponse>,
+          }) as Promise<AxiosResponse<User>>
+        ).then((response) => response.data),
       );
     },
     login(params: { email: string; password: string }) {
@@ -19,7 +21,7 @@ export function AuthService(api: API) {
           api.post({
             location: "auth/login",
             body: params,
-          }) as Promise<AxiosResponse>,
+          }) as Promise<AxiosResponse<User>>,
       );
     },
     resendEmailVerification() {
