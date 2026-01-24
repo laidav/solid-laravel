@@ -50,18 +50,21 @@ export const RxAuth = ({
             login$.pipe(
               mergeMap(({ payload }) => {
                 return from(authService.login(payload)).pipe(
-                  map(({ data }) => ({ type: "loginSuccess", payload: data })),
+                  map(({ data }) => ({
+                    type: "loginSuccess",
+                    payload: data,
+                  })),
                   catchError((e) => of({ type: "loginFailure", payload: e })),
                 );
               }),
             ),
         ],
       },
-      loginSuccess: (state, { payload }: Action<{ user: User }>) => ({
+      loginSuccess: (state, { payload }: Action<User>) => ({
         ...state,
         loggingIn: false,
         isLoggedIn: true,
-        currentUser: payload.user,
+        currentUser: payload,
         lockedOut: false,
         loginFailure: null,
       }),
