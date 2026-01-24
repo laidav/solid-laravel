@@ -37,10 +37,10 @@ class AuthController extends APIController
             $request->session()->regenerate();
             $user = Auth::user();
 
-            return response()->json(new UserResource($user), 200);
+            return response()->json(new UserResource($user), Response::HTTP_OK);
         }
 
-        return response()->json(['error' => 'invalid-credentials'], 401);
+        return response()->json(['error' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
     }
 
     public function checkLoginStatus(): JsonResponse
