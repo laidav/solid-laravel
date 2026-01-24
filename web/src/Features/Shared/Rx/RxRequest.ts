@@ -43,6 +43,7 @@ const loadableInitialState = {
 
 interface RequestOptionsBase<Data> {
   name?: string;
+  debug?: boolean;
   initialState?: LoadableState<Data>;
   sources?: Observable<Action<any>>[];
 }
@@ -98,6 +99,7 @@ export const RxRequest = <RequestPayload, Data>(
     name,
     initialState,
     sources,
+    debug: options.debug,
     reducers: {
       send: {
         reducer: (state, _: Action<RequestPayload>) => ({

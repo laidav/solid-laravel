@@ -1,5 +1,5 @@
 import { take } from "rxjs/operators";
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, A } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -54,6 +54,8 @@ const Login = () => {
           </button>
         </Form>
       )}
+      <br />
+      <A href="/forgot-password">Forgot Password?</A>
     </div>
   );
 };

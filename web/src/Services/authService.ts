@@ -5,24 +5,30 @@ import { type User } from "../Features/Shared/Rx/RxAuth";
 
 export function AuthService(api: API) {
   return {
-    signUp(params: SignUpFormValue) {
+    signUp(body: SignUpFormValue) {
       return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(() =>
         (
           api.post({
             location: "auth/sign-up",
-            body: params,
+            body,
           }) as Promise<AxiosResponse<User>>
         ).then((response) => response.data),
       );
     },
-    login(params: { email: string; password: string }) {
+    login(body: { email: string; password: string }) {
       return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
         () =>
           api.post({
             location: "auth/login",
-            body: params,
+            body,
           }) as Promise<AxiosResponse<User>>,
       );
+    },
+    forgotPassword(body: { email: string }) {
+      return api.post({
+        location: "auth/forgot-password",
+        body,
+      }) as Promise<AxiosResponse>;
     },
     resendEmailVerification() {
       return api.post({

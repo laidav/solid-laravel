@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\API\APIController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends APIController
@@ -50,6 +52,23 @@ class AuthController extends APIController
 
         RateLimiter::hit($throttleKey);
         return response()->json(['message' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function forgotPassword(Request $request): JsonResponse
+    {
+
+        $request->validate(['email' => 'required|email']);
+
+        $throttleKey = $this->throttleKey($request);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            return response()->json(['message' => 'too many attempts'], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        Password::sendResetLink($request->only('email'));
+        RateLimiter::hit($throttleKey);
+
+        return response()->json([], Response::HTTP_OK);
     }
 
     public function checkLoginStatus(): JsonResponse

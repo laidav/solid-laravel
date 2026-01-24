@@ -5,6 +5,7 @@ import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
 import ApiProvider from "./Features/Shared/Components/ApiProvider";
 import Home from "./Features/Shared/Components/Home";
 import Login from "./Features/Auth/Login";
+import ForgotPassword from "./Features/Auth/ForgotPassword";
 import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
 import { useRxApp } from "./Features/Shared/Components/RxAppProvider";
 import { GuardedRoute } from "./Features/Shared/Components/GuardedRoute";
@@ -28,6 +29,7 @@ function App() {
             />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/login" component={Login} />
+            <Route path="/forgot-password" component={ForgotPassword} />
             <GuardedRoute
               path="/home"
               component={Home}
