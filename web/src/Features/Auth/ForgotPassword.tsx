@@ -33,10 +33,10 @@ const ForgotPassword = () => {
         <h1>Sorry too many attempts. Please try again later.</h1>
       ) : (
         <div>
-          <h1>
+          <h5>
             Enter the email address associated with your account, and we’ll send
             you a link to reset your password.
-          </h1>
+          </h5>
           <Form rxForm={[formState, formActions]}>
             <Field name="email" component={EmailInput} label="Email" />
             <button
