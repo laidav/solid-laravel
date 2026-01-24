@@ -1,8 +1,7 @@
-import { type Action, RxBuilder, combine } from "@reactables/core";
+import { type Action, RxBuilder } from "@reactables/core";
 import { of, from, Observable, concat } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../../../Services/authService";
-import { RxRequest } from "./RxRequest";
 
 export interface User {
   id: number;
@@ -39,6 +38,7 @@ export const RxAuth = ({
     name: "rxAuth",
     initialState: initialAuthState,
     sources: [checkLoginStatus$],
+    debug: true,
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({

@@ -64,9 +64,6 @@ const SignUp = () => {
           component={PasswordInput}
           label="Confirm Password"
         />
-        <button type="button" onClick={() => formActions.resetControl([])}>
-          Clear
-        </button>
         <button
           type="button"
           disabled={
@@ -74,7 +71,7 @@ const SignUp = () => {
           }
           onClick={() => submitRequest.send(formState().root.value)}
         >
-          Submit
+          Sign Up
         </button>
       </Form>
     </div>
