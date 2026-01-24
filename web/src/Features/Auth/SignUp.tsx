@@ -12,7 +12,7 @@ import { useRxApp } from "../Shared/Components/RxAppProvider";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/authService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { type User } from "./RxAuth";
+import { type User } from "../../RxApp/RxAuth";
 
 export interface SignUpFormValue {
   name: string;

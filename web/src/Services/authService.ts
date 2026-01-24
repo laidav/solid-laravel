@@ -1,7 +1,7 @@
 import { type AxiosResponse } from "axios";
 import API from "./API";
 import { type SignUpFormValue } from "../Features/Auth/SignUp";
-import { type User } from "../Features/Auth/RxAuth";
+import { type User } from "../RxApp/RxAuth";
 
 export function AuthService(api: API) {
   return {

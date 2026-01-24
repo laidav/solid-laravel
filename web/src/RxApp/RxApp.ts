@@ -1,6 +1,6 @@
 import { combine } from "@reactables/core";
-import { RxAuth } from "./Features/Auth/RxAuth";
-import { AuthService } from "./Services/authService";
+import { RxAuth } from "./RxAuth";
+import { AuthService } from "../Services/authService";
 
 export const RxApp = ({
   authService,
