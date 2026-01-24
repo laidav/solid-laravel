@@ -61,8 +61,10 @@
 - BACKEND
   - auth controller - DONE
   - api - DONE
+  - throttling
 - FRONTEND
   - form
+  - throtteling
 
 #### Reset Password Page
 

@@ -29,6 +29,7 @@ const Login = () => {
 
   const [appState, appActions, appActions$] = useRxApp();
   const [formState] = rxLoginForm;
+
   appActions$
     .ofTypes([appActions$.types["[auth] - loginSuccess"]])
     .pipe(take(1))
