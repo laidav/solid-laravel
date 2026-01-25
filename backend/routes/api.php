@@ -47,8 +47,11 @@ Route::prefix('v1')->group(function () {
             ->name(RouteNames::VERIFICATION_SEND);
 
         Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-            Route::post('/enable-two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
+            Route::post('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
                 ->name(RouteNames::AUTH_ENABLE_2FA);
+
+            Route::delete('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
+                ->name(RouteNames::AUTH_DISABLE_2FA);
 
             Route::get('/two-factor-qr-code', [TwoFactorQrCodeController::class, 'show'])
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
@@ -61,6 +64,7 @@ Route::prefix('v1')->group(function () {
 
             Route::post('/recovery-codes', [RecoveryCodeController::class, 'store'])
                 ->name(RouteNames::AUTH_REGENERATE_2FA_RECOVERY_CODES);
+
         });
     });
 

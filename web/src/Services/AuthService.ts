@@ -50,6 +50,11 @@ export function AuthService(api: API) {
         location: "auth/enable-two-factor-authentication",
       }) as Promise<AxiosResponse>;
     },
+    disableTwoFactorAuthentication() {
+      return api.delete({
+        location: "auth/enable-two-factor-authentication",
+      }) as Promise<AxiosResponse>;
+    },
     twoFactorQrCode() {
       return api.get({
         location: "auth/two-factor-qr-code",

@@ -12,6 +12,7 @@
 
 #### Two factor auth - IN PROGRESS
 - BE
+  - 2fa set up DONE
 - FE
   - auth service - IN PROGRESS
     - update endpoints - IN PROGRESS
