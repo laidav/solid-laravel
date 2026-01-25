@@ -8,7 +8,11 @@ export interface InputProps extends WrappedFieldProps {
 const TextInput = (props: InputProps) => {
   return (
     <div class="mb-3">
-      {props.label && <label class="form">{props.label}</label>}
+      {props.label && (
+        <label for={props.input.id} class="form">
+          {props.label}
+        </label>
+      )}
       <input {...props.input} value={props.meta.value} type="text" />
       {props.meta.touched && props.meta.errors.required && (
         <div>

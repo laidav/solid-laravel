@@ -9,7 +9,11 @@ interface EmailInputProps extends WrappedFieldProps {
 const EmailInput = (props: EmailInputProps) => {
   return (
     <div class="mb-3">
-      {props.label && <label class="form">{props.label}</label>}
+      {props.label && (
+        <label for={props.input.id} class="form">
+          {props.label}
+        </label>
+      )}
       <input
         {...props.input}
         type="text"

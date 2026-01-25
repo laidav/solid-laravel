@@ -4,9 +4,9 @@
 
 #### Reset Password Page
   - send link - DONE
-  - reset password
-    - BE
-    - FE
+  - reset password - DONE
+    - BE - DONE
+    - FE - DONE
 
 #### Logout
 

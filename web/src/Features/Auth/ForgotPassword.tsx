@@ -40,7 +40,6 @@ const ForgotPassword = () => {
           <Form rxForm={[formState, formActions]}>
             <Field name="email" component={EmailInput} label="Email" />
             <button
-              type="button"
               disabled={
                 state().submitRequest.loading || !formState().root.valid
               }

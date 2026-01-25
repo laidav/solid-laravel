@@ -1,11 +1,18 @@
 import { AuthService } from "../../../Services/authService";
 import { useApi } from "./ApiProvider";
+import LogoutButton from "./LogoutButton";
 
 const Home = () => {
-  const authService = AuthService(useApi());
+  AuthService(useApi()).testAuthenticatedRoute().then(console.log);
 
-  authService.test().then(console.log);
-  return <h1>Home</h1>;
+  return (
+    <>
+      <header>
+        <LogoutButton />
+      </header>
+      <h1>Home</h1>
+    </>
+  );
 };
 
 export default Home;

@@ -20,6 +20,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [AuthController::class, 'login'])
             ->name(RouteNames::AUTH_LOGIN);
 
+        Route::post('/logout', [AuthController::class, 'logout'])
+            ->name(RouteNames::AUTH_LOGOUT);
+
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
             ->name(RouteNames::AUTH_FORGOT_PASSWORD);
 

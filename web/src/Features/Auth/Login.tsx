@@ -46,7 +46,6 @@ const Login = () => {
           <Field name="email" component={EmailInput} label="Email" />
           <Field name="password" component={PasswordInput} label="Password" />
           <button
-            type="button"
             disabled={appState().auth.loggingIn || !formState().root.valid}
             onClick={() => appActions.auth.login(formState().root.value)}
           >

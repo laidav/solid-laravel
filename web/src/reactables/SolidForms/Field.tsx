@@ -6,6 +6,7 @@ import { FormContext } from "./FormContext";
 export type EventHandler<Event> = (event: Event, name?: string) => void;
 
 export interface CommonFieldInputProps {
+  id: string;
   name: string;
   //TODO: these drag drop and focus events
   onDragStart?: EventHandler<DragEvent>;
@@ -56,6 +57,7 @@ export const Field = ({
       {(c) => {
         const { controlRef } = c();
         const inputProps = {
+          id: name,
           name,
           onBlur: () => {
             if (!c().touched) a().markControlAsTouched({ controlRef });

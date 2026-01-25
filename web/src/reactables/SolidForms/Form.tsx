@@ -16,7 +16,7 @@ interface FormProps {
 export const Form = (props: FormProps) => {
   return (
     <FormContext.Provider value={props.rxForm}>
-      {props.children}
+      <form>{props.children}</form>
     </FormContext.Provider>
   );
 };

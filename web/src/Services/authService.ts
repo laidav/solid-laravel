@@ -45,7 +45,7 @@ export function AuthService(api: API) {
         location: "auth/logout",
       }) as Promise<AxiosResponse>;
     },
-    test() {
+    testAuthenticatedRoute() {
       return api.post({
         location: "loggedin-test",
       }) as Promise<AxiosResponse>;

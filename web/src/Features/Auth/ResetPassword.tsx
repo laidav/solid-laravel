@@ -66,7 +66,6 @@ const ResetPassword = () => {
           label="Confirm Password"
         />
         <button
-          type="button"
           disabled={
             resetPasswordState().submitRequest.loading ||
             !formState().root.valid

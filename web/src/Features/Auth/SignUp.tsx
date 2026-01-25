@@ -65,7 +65,6 @@ const SignUp = () => {
           label="Confirm Password"
         />
         <button
-          type="button"
           disabled={
             signUpState().submitRequest.loading || !formState().root.valid
           }
