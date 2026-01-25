@@ -7,9 +7,11 @@ import Home from "./Features/Shared/Components/Home";
 import Login from "./Features/Auth/Login";
 import ForgotPassword from "./Features/Auth/ForgotPassword";
 import ResetPassword from "./Features/Auth/ResetPassword";
+import UserSettings from "./Features/UserSettings/UserSettings";
+import TwoFactorAuthentication from "./Features/UserSettings/TwoFactorAuthentication";
 import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
 import { useRxApp } from "./Features/Shared/Components/RxAppProvider";
-import { GuardedRoute } from "./Features/Shared/Components/GuardedRoute";
+import Guard from "./Features/Shared/Components/Guard";
 
 function App() {
   const [appState] = useRxApp();
@@ -22,27 +24,56 @@ function App() {
         <div>
           <Router>
             <Route path="/" component={() => <h1>Starter App</h1>} />
-            <GuardedRoute
+            <Route
               path="/verify-email"
-              component={VerifyEmailNotice}
-              when={appState().auth.isLoggedIn}
-              redirectTo="/login"
+              component={() => (
+                <Guard when={appState().auth.isLoggedIn} redirectTo="/login">
+                  <VerifyEmailNotice />
+                </Guard>
+              )}
             />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/login" component={Login} />
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/reset-password/:token" component={ResetPassword} />
-            <GuardedRoute
+            <Route
               path="/home"
-              component={Home}
-              when={Boolean(
-                appState().auth.isLoggedIn &&
-                appState().auth.currentUser?.emailVerified,
+              component={(props) => (
+                <Guard
+                  when={Boolean(
+                    appState().auth.isLoggedIn &&
+                    appState().auth.currentUser?.emailVerified,
+                  )}
+                  redirectTo={
+                    !appState().auth.isLoggedIn ? "/login" : "/verify-email"
+                  }
+                >
+                  <Home {...props} />
+                </Guard>
               )}
-              redirectTo={
-                !appState().auth.isLoggedIn ? "/login" : "/verify-email"
-              }
             />
+            <Route
+              path="/user-settings"
+              component={(props) => (
+                <Guard
+                  when={Boolean(
+                    appState().auth.isLoggedIn &&
+                    appState().auth.currentUser?.emailVerified,
+                  )}
+                  redirectTo={
+                    !appState().auth.isLoggedIn ? "/login" : "/verify-email"
+                  }
+                >
+                  <UserSettings {...props} />
+                </Guard>
+              )}
+            >
+              <Route path="/" component={() => <h1>General Settings</h1>} />
+              <Route
+                path="/two-factor-authentication"
+                component={TwoFactorAuthentication}
+              />
+            </Route>
             <Route path="/login" component={() => <h1>Login</h1>} />
           </Router>
         </div>

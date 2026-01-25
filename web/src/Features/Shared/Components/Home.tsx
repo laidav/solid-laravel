@@ -1,10 +1,9 @@
-import { type JSX } from "solid-js";
-import { A } from "@solidjs/router";
+import { A, type RouteSectionProps } from "@solidjs/router";
 import { AuthService } from "../../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import LogoutButton from "./LogoutButton";
 
-const Home = (props: { children: JSX.Element }) => {
+const Home = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
 
   return (
