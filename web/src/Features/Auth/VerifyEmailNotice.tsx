@@ -1,5 +1,5 @@
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { AuthService } from "../../Services/authService";
+import { AuthService } from "../../Services/AuthService";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { createReactable } from "../../reactables/createReactable";
 

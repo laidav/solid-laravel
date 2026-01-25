@@ -5,7 +5,7 @@ import { Field } from "../../reactables/SolidForms/Field";
 import EmailInput from "../Shared/Components/Forms/EmailInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { useApi } from "../Shared/Components/ApiProvider";
-import { AuthService } from "../../Services/authService";
+import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
 
 const ForgotPassword = () => {

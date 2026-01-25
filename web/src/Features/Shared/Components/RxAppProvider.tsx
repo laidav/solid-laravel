@@ -2,7 +2,7 @@ import { type ReactableState } from "@reactables/core";
 import { createContext, useContext, type JSX, type Accessor } from "solid-js";
 import { type HookedReactable } from "../../../reactables/createReactable";
 import { RxApp } from "../../../RxApp/RxApp";
-import { AuthService } from "../../../Services/authService";
+import { AuthService } from "../../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import { createReactable } from "../../../reactables/createReactable";
 

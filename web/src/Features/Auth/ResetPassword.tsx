@@ -8,7 +8,7 @@ import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { useApi } from "../Shared/Components/ApiProvider";
-import { AuthService } from "../../Services/authService";
+import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
 
 export interface ResetPasswordFormValue {

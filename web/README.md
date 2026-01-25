@@ -8,7 +8,7 @@
     - BE - DONE
     - FE - DONE
 
-#### Logout
+#### Logout - DONE
 
 #### Two factor auth
 

@@ -1,4 +1,4 @@
-import { AuthService } from "../../../Services/authService";
+import { AuthService } from "../../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import LogoutButton from "./LogoutButton";
 
