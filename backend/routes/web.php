@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect(sprintf("%s%s",  env('APP_FRONTEND_URL'), '/'));
+    return redirect(sprintf("%s%s",  env('APP_FRONTEND_URL'), '/home'));
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::get('/login', function() {})
