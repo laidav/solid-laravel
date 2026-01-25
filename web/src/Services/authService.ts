@@ -2,6 +2,7 @@ import { type AxiosResponse } from "axios";
 import API from "./API";
 import { type SignUpFormValue } from "../Features/Auth/SignUp";
 import { type User } from "../RxApp/RxAuth";
+import type { ResetPasswordFormValue } from "../Features/Auth/ResetPassword";
 
 export function AuthService(api: API) {
   return {
@@ -25,10 +26,22 @@ export function AuthService(api: API) {
       );
     },
     forgotPassword(body: { email: string }) {
-      return api.post({
-        location: "auth/forgot-password",
-        body,
-      }) as Promise<AxiosResponse>;
+      return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
+        () =>
+          api.post({
+            location: "auth/forgot-password",
+            body,
+          }) as Promise<AxiosResponse>,
+      );
+    },
+    resetPassword(body: ResetPasswordFormValue) {
+      return api.get({ location: "auth/sanctum/csrf-cookie" })?.then(
+        () =>
+          api.post({
+            location: "auth/reset-password",
+            body,
+          }) as Promise<AxiosResponse>,
+      );
     },
     resendEmailVerification() {
       return api.post({
