@@ -5,6 +5,7 @@ use App\Http\RouteNames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
+use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
@@ -53,7 +54,13 @@ Route::prefix('v1')->group(function () {
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
 
             Route::post('/confirm-two-factor', [ConfirmTwoFactorAuthentication::class, 'store'])
+                ->name(RouteNames::AUTH_CONFIRM_2FA);
+
+            Route::get('/recovery-codes', [RecoveryCodeController::class, 'index'])
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
+
+            Route::post('/recovery-codes', [RecoveryCodeController::class, 'store'])
+                ->name(RouteNames::AUTH_REGENERATE_2FA_RECOVERY_CODES);
         });
     });
 

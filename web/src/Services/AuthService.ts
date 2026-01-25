@@ -61,6 +61,16 @@ export function AuthService(api: API) {
         body,
       }) as Promise<AxiosResponse>;
     },
+    getRecoveryCodes() {
+      return api.get({
+        location: "auth/recovery-codes",
+      }) as Promise<AxiosResponse>;
+    },
+    regenerateRecoveryCodes() {
+      return api.post({
+        location: "auth/recovery-codes",
+      }) as Promise<AxiosResponse>;
+    },
     testAuthenticatedRoute() {
       return api.post({
         location: "loggedin-test",
