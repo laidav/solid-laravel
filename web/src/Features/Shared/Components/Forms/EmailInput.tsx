@@ -1,15 +1,21 @@
 import type { JSX } from "solid-js";
 import type { WrappedFieldProps } from "../../../../reactables/SolidForms/Field";
 
-export interface InputProps extends WrappedFieldProps {
+interface EmailInputProps extends WrappedFieldProps {
   label?: string | JSX.Element;
+  readOnly?: boolean;
 }
 
-const EmailInput = (props: InputProps) => {
+const EmailInput = (props: EmailInputProps) => {
   return (
     <div class="mb-3">
       {props.label && <label class="form">{props.label}</label>}
-      <input {...props.input} type="text" value={props.meta.value} />
+      <input
+        {...props.input}
+        type="text"
+        value={props.meta.value}
+        readOnly={props.readOnly}
+      />
       {props.meta.touched && props.meta.errors.required && (
         <div>
           <small class="text-danger">Field is required</small>

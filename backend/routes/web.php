@@ -13,11 +13,13 @@ Route::get('/login', function() {})
     ->name('login');
 
 Route::get('/reset-password/{token}', function (string $token, Request $request) {
-    $spaUrl = env('APP_FRONTEND_URL', '/');
+        $spaUrl = env('APP_FRONTEND_URL', '/');
+        logger($spaUrl);
+        logger('hi');
 
-    $query = http_build_query($request->query());
+        $query = http_build_query($request->query());
 
-    return redirect()->to("{$spaUrl}/reset-password/{$token}?{$query}");
-})
-->middleware('guest')
-->name('password.reset');
+        return redirect("{$spaUrl}/reset-password/{$token}?{$query}");
+    })
+    ->middleware('guest')
+    ->name('password.reset');

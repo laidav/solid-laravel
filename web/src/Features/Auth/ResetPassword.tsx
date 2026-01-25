@@ -1,18 +1,15 @@
-import { combine, type Action } from "@reactables/core";
+import { combine } from "@reactables/core";
 import { take } from "rxjs/operators";
-import { useNavigate } from "@solidjs/router";
+import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
-import TextInput from "../Shared/Components/Forms/TextInput";
 import EmailInput from "../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
-import { useRxApp } from "../Shared/Components/RxAppProvider";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/authService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { type User } from "../../RxApp/RxAuth";
 
 export interface ResetPasswordFormValue {
   token: string;
@@ -22,6 +19,8 @@ export interface ResetPasswordFormValue {
 }
 
 const ResetPassword = () => {
+  const token = useParams().token;
+  const email = useSearchParams()[0].email;
   const [
     resetPasswordState,
     { form: formActions, submitRequest },
@@ -31,12 +30,13 @@ const ResetPassword = () => {
       form: build<ResetPasswordFormValue>(
         group({
           controls: {
-            token: control(["", "required"]),
-            email: control(["", ["required", "email"]]),
+            token: control([token, "required"]),
+            email: control([email, ["required", "email"]]),
             password: control(["", ["required"]]),
             passwordConfirmation: control(["", ["required"]]),
           },
         }),
+        { debug: true },
       ),
       submitRequest: RxRequest({
         resource: AuthService(useApi()).resetPassword,
@@ -58,8 +58,7 @@ const ResetPassword = () => {
   return (
     <div>
       <Form rxForm={[formState, formActions]}>
-        <Field name="name" component={TextInput} label="Username" />
-        <Field name="email" component={EmailInput} label="Email" />
+        <Field name="email" component={EmailInput} label="Email" readOnly />
         <Field name="password" component={PasswordInput} label="Password" />
         <Field
           name="passwordConfirmation"
@@ -74,7 +73,7 @@ const ResetPassword = () => {
           }
           onClick={() => submitRequest.send(formState().root.value)}
         >
-          Sign Up
+          Reset Password
         </button>
       </Form>
     </div>
