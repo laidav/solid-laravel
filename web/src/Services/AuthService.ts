@@ -45,6 +45,22 @@ export function AuthService(api: API) {
         location: "auth/logout",
       }) as Promise<AxiosResponse>;
     },
+    enableTwoFactorAuthentication() {
+      return api.post({
+        location: "auth/enable-two-factor-authentication",
+      }) as Promise<AxiosResponse>;
+    },
+    twoFactorQrCode() {
+      return api.get({
+        location: "auth/two-factor-qr-code",
+      }) as Promise<AxiosResponse>;
+    },
+    confirmTwoFactor(body: { code: number }) {
+      return api.post({
+        location: "auth/confirm-two-factor",
+        body,
+      }) as Promise<AxiosResponse>;
+    },
     testAuthenticatedRoute() {
       return api.post({
         location: "loggedin-test",

@@ -4,6 +4,9 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\RouteNames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
+use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
+use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 Route::prefix('v1')->group(function () {
@@ -41,6 +44,17 @@ Route::prefix('v1')->group(function () {
         })
             ->middleware(['auth:sanctum', 'throttle:6,1'])
             ->name(RouteNames::VERIFICATION_SEND);
+
+        Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+            Route::post('/enable-two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
+                ->name(RouteNames::AUTH_ENABLE_2FA);
+
+            Route::get('/two-factor-qr-code', [TwoFactorQrCodeController::class, 'show'])
+                ->name(RouteNames::AUTH_2FA_QR_CODE);
+
+            Route::post('/confirm-two-factor', [ConfirmTwoFactorAuthentication::class, 'store'])
+                ->name(RouteNames::AUTH_2FA_QR_CODE);
+        });
     });
 
     // AUTHENTICATED ROUTES

@@ -24,6 +24,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'emailVerified' => isset($this->email_verified_at),
+            'twoFactorEnabled' => $this->hasEnabledTwoFactorAuthentication(),
+            'twoFactorConfirmed' => !is_null($this->two_factor_confirmed_at),
         ];
     }
 }
