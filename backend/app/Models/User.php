@@ -44,7 +44,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, CanResetPassword, Notifiable;
+    use CanResetPassword, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

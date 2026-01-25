@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Controllers\API\APIController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends APIController
 {
@@ -29,6 +27,7 @@ class AuthController extends APIController
 
         return response()->json(new UserResource($user), Response::HTTP_CREATED);
     }
+
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -51,6 +50,7 @@ class AuthController extends APIController
         }
 
         RateLimiter::hit($throttleKey);
+
         return response()->json(['message' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
     }
 
@@ -81,6 +81,7 @@ class AuthController extends APIController
 
         return response()->json(new UserResource($user), 200);
     }
+
     protected function throttleKey(Request $request): string
     {
         return strtolower($request->input('email')).'|'.$request->ip();

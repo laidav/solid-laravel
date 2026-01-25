@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\RouteNames;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 Route::prefix('v1')->group(function () {
