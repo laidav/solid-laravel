@@ -38,7 +38,6 @@ export const RxAuth = ({
     name: "rxAuth",
     initialState: initialAuthState,
     sources: [checkLoginStatus$],
-    debug: true,
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({

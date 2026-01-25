@@ -23,21 +23,8 @@ function App() {
       ) : (
         <div>
           <Router>
-            <Route path="/" component={() => <h1>Starter App</h1>} />
             <Route
-              path="/verify-email"
-              component={() => (
-                <Guard when={appState().auth.isLoggedIn} redirectTo="/login">
-                  <VerifyEmailNotice />
-                </Guard>
-              )}
-            />
-            <Route path="/sign-up" component={SignUp} />
-            <Route path="/login" component={Login} />
-            <Route path="/forgot-password" component={ForgotPassword} />
-            <Route path="/reset-password/:token" component={ResetPassword} />
-            <Route
-              path="/home"
+              path="/"
               component={(props) => (
                 <Guard
                   when={Boolean(
@@ -51,29 +38,28 @@ function App() {
                   <Home {...props} />
                 </Guard>
               )}
-            />
+            >
+              <Route path="/" component={() => <h1>Home</h1>} />
+              <Route path="/user-settings" component={UserSettings}>
+                <Route path="/" component={() => <h1>General Settings</h1>} />
+                <Route
+                  path="/two-factor-authentication"
+                  component={TwoFactorAuthentication}
+                />
+              </Route>
+            </Route>
             <Route
-              path="/user-settings"
-              component={(props) => (
-                <Guard
-                  when={Boolean(
-                    appState().auth.isLoggedIn &&
-                    appState().auth.currentUser?.emailVerified,
-                  )}
-                  redirectTo={
-                    !appState().auth.isLoggedIn ? "/login" : "/verify-email"
-                  }
-                >
-                  <UserSettings {...props} />
+              path="/verify-email"
+              component={() => (
+                <Guard when={appState().auth.isLoggedIn} redirectTo="/login">
+                  <VerifyEmailNotice />
                 </Guard>
               )}
-            >
-              <Route path="/" component={() => <h1>General Settings</h1>} />
-              <Route
-                path="/two-factor-authentication"
-                component={TwoFactorAuthentication}
-              />
-            </Route>
+            />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/login" component={Login} />
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/reset-password/:token" component={ResetPassword} />
             <Route path="/login" component={() => <h1>Login</h1>} />
           </Router>
         </div>

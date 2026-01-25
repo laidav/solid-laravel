@@ -21,7 +21,6 @@ const Home = (props: RouteSectionProps) => {
         </nav>
         <LogoutButton />
       </header>
-      <h1>Home</h1>
       <div>{props.children}</div>
     </>
   );
