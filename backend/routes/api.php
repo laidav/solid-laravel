@@ -23,6 +23,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
             ->name(RouteNames::AUTH_FORGOT_PASSWORD);
 
+        Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+            ->name(RouteNames::AUTH_RESET_PASSWORD);
+
         Route::get('/check-login-status', [AuthController::class, 'checkLoginStatus'])
             ->name(RouteNames::AUTH_CHECK_LOGIN_STATUS);
 

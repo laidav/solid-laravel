@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +69,28 @@ class AuthController extends APIController
 
         Password::sendResetLink($request->only('email'));
         RateLimiter::hit($throttleKey);
+
+        return response()->json([], Response::HTTP_OK);
+    }
+
+    public function resetPassword(Request $request, ResetUserPassword $resetUserPassword): JsonResponse
+    {
+
+        $payload = $request->all();
+        $email = $payload['email'];
+
+        $user = User::where('email', $email)->first();
+        if (! $user) {
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Create the user using Fortify's action
+        $resetUserPassword->reset($user, [
+            'token' => $payload['token'],
+            'email' => $email,
+            'password' => $payload['password'],
+            'password_confirmation' => $payload['passwordConfirmation'],
+        ]);
 
         return response()->json([], Response::HTTP_OK);
     }
