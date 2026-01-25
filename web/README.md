@@ -11,6 +11,29 @@
 #### Logout - DONE
 
 #### Two factor auth - IN PROGRESS
+- BE
+- FE
+  - auth service - IN PROGRESS
+    - update endpoints - IN PROGRESS
+    - post to enable, 
+      - once successful 
+        - display the qr code by calling the get
+          - scan with authenticator app to get a code
+          - then post the code to confrim 2fa setup
+            - then display
+              - get recovery codes
+              - regenerate recovery codes
+
+    - delete to disabled
+
+  - update header, 
+    - home
+    - user settings
+      - enable 2fa and disable 2fa
+        - once enabled show the recovery codes and have a button to regenerate them
+    - logout button
+
+
 
 #### Settle on folder structure
 
