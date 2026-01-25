@@ -10,8 +10,10 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect(sprintf('%s%s', env('APP_FRONTEND_URL'), '/home'));
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/login', function () {})
-    ->name('login');
+Route::get('/login', function () {
+
+    return redirect(sprintf('%s%s', env('APP_FRONTEND_URL'), '/login'));
+})->name('login');
 
 Route::get('/reset-password/{token}', function (string $token, Request $request) {
     $spaUrl = env('APP_FRONTEND_URL', '/');
@@ -19,6 +21,4 @@ Route::get('/reset-password/{token}', function (string $token, Request $request)
     $query = http_build_query($request->query());
 
     return redirect("{$spaUrl}/reset-password/{$token}?{$query}");
-})
-    ->middleware('guest')
-    ->name('password.reset');
+})->middleware('guest')->name('password.reset');

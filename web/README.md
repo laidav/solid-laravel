@@ -10,7 +10,7 @@
 
 #### Logout - DONE
 
-#### Two factor auth
+#### Two factor auth - IN PROGRESS
 
 #### Settle on folder structure
 
