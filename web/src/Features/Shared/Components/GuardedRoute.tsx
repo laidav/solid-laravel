@@ -3,7 +3,7 @@ import type { Component, Accessor } from "solid-js";
 
 type GuardedRouteProps = {
   path: string;
-  component: Component;
+  component: Component<any>;
   when: boolean | Accessor<boolean>;
   redirectTo: string;
 };
