@@ -34,7 +34,7 @@ const Login = () => {
     .ofTypes([appActions$.types["[auth] - loginSuccess"]])
     .pipe(take(1))
     .subscribe(() => {
-      navigate("/home");
+      navigate("/");
     });
 
   return (

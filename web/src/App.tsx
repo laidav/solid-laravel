@@ -3,7 +3,7 @@ import { Route, Router } from "@solidjs/router";
 import SignUp from "./Features/Auth/SignUp";
 import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
 import ApiProvider from "./Features/Shared/Components/ApiProvider";
-import Home from "./Features/Shared/Components/Home";
+import MainLayout from "./Features/Shared/Components/MainLayout";
 import Login from "./Features/Auth/Login";
 import ForgotPassword from "./Features/Auth/ForgotPassword";
 import ResetPassword from "./Features/Auth/ResetPassword";
@@ -35,13 +35,13 @@ function App() {
                     !appState().auth.isLoggedIn ? "/login" : "/verify-email"
                   }
                 >
-                  <Home {...props} />
+                  <MainLayout {...props} />
                 </Guard>
               )}
             >
               <Route path="/" component={() => <h1>Home</h1>} />
               <Route path="/user-settings" component={UserSettings}>
-                <Route path="/" component={() => <h1>General Settings</h1>} />
+                <Route path="/" component={() => <h3>General Settings</h3>} />
                 <Route
                   path="/two-factor-authentication"
                   component={TwoFactorAuthentication}

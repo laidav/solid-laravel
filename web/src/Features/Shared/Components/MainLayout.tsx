@@ -3,7 +3,7 @@ import { AuthService } from "../../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import LogoutButton from "./LogoutButton";
 
-const Home = (props: RouteSectionProps) => {
+const MainLayout = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
 
   return (
@@ -26,4 +26,4 @@ const Home = (props: RouteSectionProps) => {
   );
 };
 
-export default Home;
+export default MainLayout;
