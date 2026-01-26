@@ -47,7 +47,7 @@ const SignUp = () => {
     .ofTypes([signUpActions$.types["[submitRequest] - sendSuccess"]])
     .pipe(take(1))
     .subscribe((action: Action) => {
-      appActions.auth.loginSuccess(action.payload! as User);
+      appActions.auth.login.loginSuccess(action.payload! as User);
       navigate("/verify-email");
     });
 
