@@ -7,6 +7,7 @@ import { Form } from "../../reactables/SolidForms/Form";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
+import { A } from "@solidjs/router";
 
 const ForgotPassword = () => {
   const [state, { form: formActions, submitRequest }] = createReactable(() =>
@@ -19,7 +20,6 @@ const ForgotPassword = () => {
         }),
       ),
       submitRequest: RxRequest({
-        debug: true,
         resource: AuthService(useApi()).forgotPassword,
       }),
     }),
@@ -47,6 +47,10 @@ const ForgotPassword = () => {
             >
               Send
             </button>
+            <br />
+            <strong>OR</strong>
+            <br />
+            <A href="/login">Login</A>
           </Form>
         </div>
       )}

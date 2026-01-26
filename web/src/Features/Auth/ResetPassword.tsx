@@ -36,7 +36,6 @@ const ResetPassword = () => {
             passwordConfirmation: control(["", ["required"]]),
           },
         }),
-        { debug: true },
       ),
       submitRequest: RxRequest({
         resource: AuthService(useApi()).resetPassword,

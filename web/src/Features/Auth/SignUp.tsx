@@ -1,6 +1,6 @@
 import { combine, type Action } from "@reactables/core";
 import { take } from "rxjs/operators";
-import { useNavigate } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -72,6 +72,10 @@ const SignUp = () => {
         >
           Sign Up
         </button>
+        <br />
+        <strong>OR</strong>
+        <br />
+        <A href="/login">Login</A>
       </Form>
     </div>
   );

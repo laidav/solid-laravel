@@ -55,6 +55,10 @@ const Login = () => {
       )}
       <br />
       <A href="/forgot-password">Forgot Password?</A>
+      <br />
+      <strong>OR</strong>
+      <br />
+      <A href="/sign-up">Sign Up</A>
     </div>
   );
 };
