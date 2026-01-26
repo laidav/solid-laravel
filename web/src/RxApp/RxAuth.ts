@@ -31,17 +31,21 @@ export const RxAuth = ({
   /**2FA Settings */
 
   const rxTwoFactorAuthentication = combine({
-    enable: RxRequest<undefined, unknown>({
-      resource: () =>
-        authService
-          .enableTwoFactorAuthentication()
-          .then(() => authService.twoFactorQrCode()),
+    enable: RxRequest({
+      resource: () => authService.enableTwoFactorAuthentication(),
     }),
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
     }),
+    getQrCode: RxRequest({
+      resource: () => authService.twoFactorQrCode(),
+    }),
     confirm: RxRequest<{ code: number }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
+    }),
+    getRecoveryCodes: RxRequest({ resource: authService.getRecoveryCodes }),
+    regenerateRecoveryCodes: RxRequest({
+      resource: authService.regenerateRecoveryCodes,
     }),
   });
 
@@ -182,7 +186,11 @@ export const RxAuth = ({
       checkLoginStatusFailure: () => initialAuthState,
       twoFactorEnabled: (state, { payload }: Action<boolean>) => ({
         ...state,
-        currentUser: { ...state.currentUser!, twoFactorEnabled: payload },
+        currentUser: {
+          ...state.currentUser!,
+          twoFactorEnabled: payload,
+          twoFactorConfirmed: false,
+        },
       }),
       unauthorizedResponse: {
         reducer: () => initialAuthState,

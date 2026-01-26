@@ -47,12 +47,12 @@ export function AuthService(api: API) {
     },
     enableTwoFactorAuthentication() {
       return api.post({
-        location: "auth/enable-two-factor-authentication",
+        location: "auth/two-factor-authentication",
       }) as Promise<AxiosResponse>;
     },
     disableTwoFactorAuthentication() {
       return api.delete({
-        location: "auth/enable-two-factor-authentication",
+        location: "auth/two-factor-authentication",
       }) as Promise<AxiosResponse>;
     },
     twoFactorQrCode() {
