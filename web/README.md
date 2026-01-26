@@ -28,3 +28,5 @@
 #### Settle on folder structure
 
 #### Docker Container
+
+#### selectors and clean up

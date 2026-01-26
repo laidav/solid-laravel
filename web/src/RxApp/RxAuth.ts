@@ -1,5 +1,5 @@
 import { type Action, RxBuilder, combine } from "@reactables/core";
-import { of, from, Observable, concat } from "rxjs";
+import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../Services/AuthService";
 import { RxRequest } from "../Features/Shared/Rx/RxRequest";
@@ -73,10 +73,18 @@ export const RxAuth = ({
       })),
     );
 
+  const twoFactorConfirmed$ = twoFactorActions$
+    .ofTypes([twoFactorActions$.types["[confirm] - sendSuccess"]])
+    .pipe(
+      map(() => ({
+        type: "twoFactorConfirmed",
+      })),
+    );
+
   const rxLogin = RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    sources: [checkLoginStatus$, twoFactorEnabled$],
+    sources: [checkLoginStatus$, twoFactorEnabled$, twoFactorConfirmed$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -190,6 +198,13 @@ export const RxAuth = ({
           ...state.currentUser!,
           twoFactorEnabled: payload,
           twoFactorConfirmed: false,
+        },
+      }),
+      twoFactorConfirmed: (state) => ({
+        ...state,
+        currentUser: {
+          ...state.currentUser!,
+          twoFactorConfirmed: true,
         },
       }),
       unauthorizedResponse: {
