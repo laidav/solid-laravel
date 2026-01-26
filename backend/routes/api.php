@@ -58,6 +58,7 @@ Route::prefix('v1')->group(function () {
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
 
             Route::post('/confirm-two-factor', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
+                ->middleware(['throttle:6,1'])
                 ->name(RouteNames::AUTH_CONFIRM_2FA);
 
             Route::get('/recovery-codes', [RecoveryCodeController::class, 'index'])

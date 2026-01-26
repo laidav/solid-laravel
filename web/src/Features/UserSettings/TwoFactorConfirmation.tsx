@@ -43,25 +43,29 @@ const TwoFactorConfirmation = () => {
           <button type="button" onClick={getQrCode}>
             Regenerate QR Code
           </button>
-          <Form rxForm={rxForm}>
-            <Field
-              component={TextInput}
-              name="code"
-              label="Enter code for confirmation"
-            />
-            <button
-              disabled={
-                !formState().root.valid || twoFactorState().confirm.loading
-              }
-              onClick={() =>
-                twoFactorActions.confirm.send({
-                  code: formState().root.value.code,
-                })
-              }
-            >
-              Submit
-            </button>
-          </Form>
+          {twoFactorState().confirm.error?.httpStatus === 429 ? (
+            <h3>Too many attempts. Try again later</h3>
+          ) : (
+            <Form rxForm={rxForm}>
+              <Field
+                component={TextInput}
+                name="code"
+                label="Enter code for confirmation"
+              />
+              <button
+                disabled={
+                  !formState().root.valid || twoFactorState().confirm.loading
+                }
+                onClick={() =>
+                  twoFactorActions.confirm.send({
+                    code: formState().root.value.code,
+                  })
+                }
+              >
+                Submit
+              </button>
+            </Form>
+          )}
         </>
       )}
     </div>
