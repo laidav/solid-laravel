@@ -60,7 +60,7 @@ export function AuthService(api: API) {
         location: "auth/two-factor-qr-code",
       }) as Promise<AxiosResponse>;
     },
-    confirmTwoFactor(body: { code: number }) {
+    confirmTwoFactor(body: { code: string }) {
       return api.post({
         location: "auth/confirm-two-factor",
         body,

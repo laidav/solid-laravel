@@ -37,10 +37,10 @@ export const RxAuth = ({
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
     }),
-    getQrCode: RxRequest({
-      resource: () => authService.twoFactorQrCode(),
+    getQrCode: RxRequest<undefined, { svg: string }>({
+      resource: () => authService.twoFactorQrCode().then(({ data }) => data),
     }),
-    confirm: RxRequest<{ code: number }, unknown>({
+    confirm: RxRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
     }),
     getRecoveryCodes: RxRequest({ resource: authService.getRecoveryCodes }),
