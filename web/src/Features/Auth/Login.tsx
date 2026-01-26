@@ -31,7 +31,7 @@ const Login = () => {
   const [formState] = rxLoginForm;
 
   appActions$
-    .ofTypes([appActions$.types["[auth] - loginSuccess"]])
+    .ofTypes([appActions$.types["[auth] - [login] - loginSuccess"]])
     .pipe(take(1))
     .subscribe(() => {
       navigate("/");
@@ -39,15 +39,17 @@ const Login = () => {
 
   return (
     <div>
-      {appState().auth.lockedOut ? (
+      {appState().auth.login.lockedOut ? (
         <h1>Sorry too many log in attempts. Please try again later.</h1>
       ) : (
         <Form rxForm={rxLoginForm}>
           <Field name="email" component={EmailInput} label="Email" />
           <Field name="password" component={PasswordInput} label="Password" />
           <button
-            disabled={appState().auth.loggingIn || !formState().root.valid}
-            onClick={() => appActions.auth.login(formState().root.value)}
+            disabled={
+              appState().auth.login.loggingIn || !formState().root.valid
+            }
+            onClick={() => appActions.auth.login.login(formState().root.value)}
           >
             Login
           </button>

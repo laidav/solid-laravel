@@ -25,17 +25,6 @@
               - get recovery codes
               - regenerate recovery codes
 
-    - delete to disabled
-
-  - update header, 
-    - home
-    - user settings
-      - enable 2fa and disable 2fa
-        - once enabled show the recovery codes and have a button to regenerate them
-    - logout button
-
-
-
 #### Settle on folder structure
 
 #### Docker Container

@@ -18,7 +18,7 @@ function App() {
 
   return (
     <>
-      {appState().auth.checkingLoginStatus ? (
+      {appState().auth.login.checkingLoginStatus ? (
         <div>Loading...</div>
       ) : (
         <div>
@@ -28,11 +28,13 @@ function App() {
               component={(props) => (
                 <Guard
                   when={Boolean(
-                    appState().auth.isLoggedIn &&
-                    appState().auth.currentUser?.emailVerified,
+                    appState().auth.login.isLoggedIn &&
+                    appState().auth.login.currentUser?.emailVerified,
                   )}
                   redirectTo={
-                    !appState().auth.isLoggedIn ? "/login" : "/verify-email"
+                    !appState().auth.login.isLoggedIn
+                      ? "/login"
+                      : "/verify-email"
                   }
                 >
                   <MainLayout {...props} />
@@ -51,7 +53,10 @@ function App() {
             <Route
               path="/verify-email"
               component={() => (
-                <Guard when={appState().auth.isLoggedIn} redirectTo="/login">
+                <Guard
+                  when={appState().auth.login.isLoggedIn}
+                  redirectTo="/login"
+                >
                   <VerifyEmailNotice />
                 </Guard>
               )}

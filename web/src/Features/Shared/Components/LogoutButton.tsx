@@ -7,15 +7,15 @@ const LogoutButton = () => {
   const navigate = useNavigate();
 
   appActions$
-    .ofTypes([appActions$.types["[auth] - logoutSuccess"]])
+    .ofTypes([appActions$.types["[auth] - [login] - logoutSuccess"]])
     .pipe(take(1))
     .subscribe(() => navigate("/login"));
 
   return (
     <button
       type="button"
-      onClick={appActions.auth.logout}
-      disabled={appState().auth.loggingOut}
+      onClick={appActions.auth.login.logout}
+      disabled={appState().auth.login.loggingOut}
     >
       Logout
     </button>

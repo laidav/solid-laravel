@@ -1,13 +1,16 @@
-import { type Action, RxBuilder } from "@reactables/core";
+import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../Services/AuthService";
+import { RxRequest } from "../Features/Shared/Rx/RxRequest";
 
 export interface User {
   id: number;
   name: string;
   email: string;
   emailVerified: boolean;
+  twoFactorEnabled: boolean;
+  twoFactorConfirmed: boolean;
 }
 
 const initialAuthState = {
@@ -25,6 +28,23 @@ export const RxAuth = ({
 }: {
   authService: ReturnType<typeof AuthService>;
 }) => {
+  /**2FA Settings */
+
+  const rxTwoFactorAuthentication = combine({
+    enable: RxRequest<undefined, unknown>({
+      resource: () =>
+        authService
+          .enableTwoFactorAuthentication()
+          .then(() => authService.twoFactorQrCode()),
+    }),
+    disable: RxRequest({
+      resource: () => authService.disableTwoFactorAuthentication(),
+    }),
+    confirm: RxRequest<{ code: number }, unknown>({
+      resource: (body) => authService.confirmTwoFactor(body),
+    }),
+  });
+
   /** LOGIN **/
   const checkLoginStatus$ = concat(
     of({ type: "checkLoginStatus" }),
@@ -34,10 +54,25 @@ export const RxAuth = ({
     ),
   );
 
-  return RxBuilder({
+  const [, , twoFactorActions$] = rxTwoFactorAuthentication;
+
+  const twoFactorEnabled$ = twoFactorActions$
+    .ofTypes([
+      twoFactorActions$.types["[enable] - sendSuccess"],
+      twoFactorActions$.types["[disable] - sendSuccess"],
+    ])
+    .pipe(
+      map((action) => ({
+        type: "twoFactorEnabled",
+        payload:
+          action.type === twoFactorActions$.types["[enable] - sendSuccess"],
+      })),
+    );
+
+  const rxLogin = RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    sources: [checkLoginStatus$],
+    sources: [checkLoginStatus$, twoFactorEnabled$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -145,9 +180,18 @@ export const RxAuth = ({
         loginFailure: null,
       }),
       checkLoginStatusFailure: () => initialAuthState,
+      twoFactorEnabled: (state, { payload }: Action<boolean>) => ({
+        ...state,
+        currentUser: { ...state.currentUser!, twoFactorEnabled: payload },
+      }),
       unauthorizedResponse: {
         reducer: () => initialAuthState,
       },
     },
+  });
+
+  return combine({
+    twoFactorAuthentication: rxTwoFactorAuthentication,
+    login: rxLogin,
   });
 };
