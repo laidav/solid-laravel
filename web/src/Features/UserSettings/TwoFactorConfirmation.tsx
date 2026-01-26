@@ -7,7 +7,7 @@ import TextInput from "../Shared/Components/Forms/TextInput";
 
 const TwoFactorConfirmation = () => {
   const rxForm = createReactable(() =>
-    build(
+    build<{ code: string }>(
       group({
         controls: {
           code: control(["", "required"]),
@@ -28,6 +28,7 @@ const TwoFactorConfirmation = () => {
 
   const twoFactorState = () => appState().auth.twoFactorAuthentication;
 
+  const [formState] = rxForm;
   return (
     <div>
       {twoFactorState().getQrCode.loading ? (
@@ -48,6 +49,18 @@ const TwoFactorConfirmation = () => {
               name="code"
               label="Enter code for confirmation"
             />
+            <button
+              disabled={
+                !formState().root.valid || twoFactorState().confirm.loading
+              }
+              onClick={() =>
+                twoFactorActions.confirm.send({
+                  code: formState().root.value.code,
+                })
+              }
+            >
+              Submit
+            </button>
           </Form>
         </>
       )}
