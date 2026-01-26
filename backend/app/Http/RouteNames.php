@@ -13,6 +13,7 @@ final class RouteNames
     public const AUTH_SIGN_UP = self::API_V1.'auth.sign-up';
 
     public const AUTH_LOGIN = self::API_V1.'auth.login';
+    public const AUTH_2FA_CHALLENGE = self::API_V1.'auth.show-two-factor-challenge';
     public const AUTH_LOGOUT = self::API_V1.'auth.logout';
 
     public const AUTH_FORGOT_PASSWORD = self::API_V1.'auth.forgot-password';

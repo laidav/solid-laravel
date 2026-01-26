@@ -5,8 +5,10 @@ use App\Http\RouteNames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
+use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
@@ -22,8 +24,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/sign-up', [AuthController::class, 'signUp'])
             ->name(RouteNames::AUTH_SIGN_UP);
 
-        Route::post('/login', [AuthController::class, 'login'])
+        Route::post('/login', [AuthenticatedSessionController::class, 'store'])
             ->name(RouteNames::AUTH_LOGIN);
+
+        Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
+            ->name(RouteNames::AUTH_2FA_CHALLENGE);
 
         Route::post('/logout', [AuthController::class, 'logout'])
             ->name(RouteNames::AUTH_LOGOUT);
