@@ -1,6 +1,7 @@
 import { Show } from "solid-js";
 import { useRxApp } from "../Shared/Components/RxAppProvider";
 import TwoFactorConfirmation from "./TwoFactorConfirmation";
+import TwoFactorRecoveryCodes from "./TwoFactorRecoveryCodes";
 const TwoFactorAuthentication = () => {
   const [
     appState,
@@ -35,11 +36,18 @@ const TwoFactorAuthentication = () => {
           </button>
         </div>
       )}
-      <Show when={user()?.twoFactorEnabled && !user()?.twoFactorConfirmed}>
-        <TwoFactorConfirmation />
-      </Show>
-      {user()?.twoFactorConfirmed && user()?.twoFactorConfirmed && (
-        <div>2FA Enabled!</div>
+      {user()?.twoFactorEnabled && (
+        <>
+          {user()?.twoFactorConfirmed ? (
+            <div>
+              <h3>Two factor authentication enabled.</h3>
+              <br />
+              <TwoFactorRecoveryCodes />
+            </div>
+          ) : (
+            <TwoFactorConfirmation />
+          )}
+        </>
       )}
     </div>
   );

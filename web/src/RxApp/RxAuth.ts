@@ -43,10 +43,6 @@ export const RxAuth = ({
     confirm: RxRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
     }),
-    getRecoveryCodes: RxRequest({ resource: authService.getRecoveryCodes }),
-    regenerateRecoveryCodes: RxRequest({
-      resource: authService.regenerateRecoveryCodes,
-    }),
   });
 
   /** LOGIN **/
