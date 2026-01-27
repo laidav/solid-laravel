@@ -34,7 +34,7 @@ Route::prefix('v1')->group(function () {
             ->name(RouteNames::AUTH_LOGIN);
 
         Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
-            ->middleware(['throttle:5,1'])
+            ->middleware(['throttle:5,1', 'guest:web'])
             ->name(RouteNames::AUTH_2FA_CHALLENGE);
 
         Route::post('/logout', [AuthController::class, 'logout'])

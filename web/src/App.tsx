@@ -6,6 +6,7 @@ import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
 import ApiProvider from "./Features/Shared/Components/ApiProvider";
 import MainLayout from "./Features/Shared/Components/MainLayout";
 import Login from "./Features/Auth/Login";
+import TwoFactorChallenge from "./Features/Auth/TwoFactorChallenge";
 import ForgotPassword from "./Features/Auth/ForgotPassword";
 import ResetPassword from "./Features/Auth/ResetPassword";
 import UserSettings from "./Features/UserSettings/UserSettings";
@@ -30,6 +31,10 @@ function App() {
             {/* Public Routes */}
             <Route path="/sign-up" component={SignUp} />
             <Route path="/login" component={Login} />
+            <Route
+              path="/two-factor-challenge"
+              component={TwoFactorChallenge}
+            />
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/reset-password/:token" component={ResetPassword} />
             <Route path="/login" component={() => <h1>Login</h1>} />

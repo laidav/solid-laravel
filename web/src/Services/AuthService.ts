@@ -16,7 +16,13 @@ export function AuthService(api: API) {
       return api.post({
         location: "auth/login",
         body,
-      }) as Promise<AxiosResponse<User>>;
+      }) as Promise<AxiosResponse<{ two_factor: boolean }>>;
+    },
+    twoFactorChallenge(body: { code: string }) {
+      return api.post({
+        location: "auth/two-factor-challenge",
+        body,
+      }) as Promise<AxiosResponse>;
     },
     forgotPassword(body: { email: string }) {
       return api.post({

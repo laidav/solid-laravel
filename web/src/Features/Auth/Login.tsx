@@ -37,6 +37,13 @@ const Login = () => {
       navigate("/");
     });
 
+  appActions$
+    .ofTypes([appActions$.types["[auth] - [login] - twoFactorRequired"]])
+    .pipe(take(1))
+    .subscribe(() => {
+      navigate("/two-factor-challenge");
+    });
+
   return (
     <div>
       {appState().auth.login.lockedOut ? (

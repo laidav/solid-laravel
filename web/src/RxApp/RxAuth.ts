@@ -6,6 +6,7 @@ import {
   loadableInitialState,
   RxRequest,
   passwordConfirmationHandler,
+  serializeAxiosError,
   type LoadableState,
 } from "../Features/Shared/Rx/RxRequest";
 
@@ -56,9 +57,8 @@ export const RxAuth = ({
             login$.pipe(
               mergeMap(({ payload }) => {
                 return from(authService.login(payload)).pipe(
-                  map(({ data }) => ({
-                    type: "loginSuccess",
-                    payload: data,
+                  map(({ data: { two_factor } }) => ({
+                    type: two_factor ? "twoFactorRequired" : "loginSuccess",
                   })),
                   catchError((e) => of({ type: "loginFailure", payload: e })),
                 );
@@ -66,6 +66,34 @@ export const RxAuth = ({
             ),
         ],
       },
+      twoFactorChallenge: {
+        reducer: (state, _: Action<{ code: string }>) => ({
+          ...state,
+          loggingIn: true,
+        }),
+        effects: [
+          (twoFactorChallenge$: Observable<Action<{ code: string }>>) =>
+            twoFactorChallenge$.pipe(
+              mergeMap(({ payload }) => {
+                return from(authService.twoFactorChallenge(payload)).pipe(
+                  map(() => ({
+                    type: "loginSuccess",
+                  })),
+                  catchError((e) =>
+                    of({
+                      type: "loginFailure",
+                      payload: serializeAxiosError(e),
+                    }),
+                  ),
+                );
+              }),
+            ),
+        ],
+      },
+      twoFactorRequired: (state) => ({
+        ...state,
+        loggingIn: false,
+      }),
       loginSuccess: (state) => ({
         ...state,
         loggingIn: false,
