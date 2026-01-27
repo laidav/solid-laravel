@@ -1,11 +1,29 @@
+import { Show } from "solid-js";
 import { A, type RouteSectionProps } from "@solidjs/router";
 import { AuthService } from "../../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import LogoutButton from "./LogoutButton";
 import ConfirmPasswordModal from "./ConfirmPasswordModal";
+import { useRxApp } from "./RxAppProvider";
 
 const MainLayout = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
+  const [appState] = useRxApp();
+
+  const showConfirmPasswordModal = () => {
+    const {
+      auth: {
+        twoFactorAuthentication: { enable, disable, getQrCode, confirm },
+      },
+    } = appState();
+
+    return (
+      enable.requiresPasswordConfirmation ||
+      disable.requiresPasswordConfirmation ||
+      getQrCode.requiresPasswordConfirmation ||
+      confirm.requiresPasswordConfirmation
+    );
+  };
 
   return (
     <>
@@ -24,7 +42,9 @@ const MainLayout = (props: RouteSectionProps) => {
         <LogoutButton />
       </header>
       <div>{props.children}</div>
-      <ConfirmPasswordModal show={true} />
+      <Show when={showConfirmPasswordModal()}>
+        {(s) => <ConfirmPasswordModal show={s()} />}
+      </Show>
     </>
   );
 };

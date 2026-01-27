@@ -45,6 +45,9 @@ const ConfirmPasswordModal = (props: ModalProps) => {
       <h3>Please confirm your password to continue.</h3>
       <Form rxForm={rxForm}>
         <Field name="password" component={PasswordInput} label="Password" />
+        <button onClick={appActions.auth.passwordConfirmation.resetState}>
+          Cancel
+        </button>
         <button
           disabled={
             appState().auth.passwordConfirmation.loading ||
@@ -53,7 +56,9 @@ const ConfirmPasswordModal = (props: ModalProps) => {
           onClick={() =>
             appActions.auth.passwordConfirmation.send(formState().root.value)
           }
-        ></button>
+        >
+          Submit
+        </button>
       </Form>
     </dialog>
   );
