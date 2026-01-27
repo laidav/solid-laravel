@@ -223,12 +223,15 @@ export const RxAuth = ({
     }),
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
+      catchErrorHandler,
     }),
     getQrCode: RxRequest<undefined, { svg: string }>({
       resource: () => authService.twoFactorQrCode().then(({ data }) => data),
+      catchErrorHandler,
     }),
     confirm: RxRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
+      catchErrorHandler,
     }),
   });
 
