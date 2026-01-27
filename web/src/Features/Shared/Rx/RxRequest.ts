@@ -1,7 +1,15 @@
 import axios from "axios";
 import { type Action, RxBuilder } from "@reactables/core";
-import { type OperatorFunction, type Observable, from, of, defer } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import {
+  type OperatorFunction,
+  type Observable,
+  from,
+  of,
+  defer,
+  merge,
+  concat,
+} from "rxjs";
+import { catchError, map, switchMap, mergeMap } from "rxjs/operators";
 
 export type SerializableError = {
   message: string;
@@ -77,11 +85,75 @@ export type RequestOptions<RequestPayload, Data> =
   | RequestOptionsWithEffect<RequestPayload, Data>
   | RequestOptionsWithResource<RequestPayload, Data>;
 
+/**
+ * @description default request error handler
+ */
 export const defaultCatchErrorHandler = (_?: Observable<any>) => (e: any) =>
   of({
     type: "sendFailure",
     payload: serializeAxiosError(e),
   });
+
+/**
+ * @description handles requests that require password confirmation
+ */
+export const passwordConfirmationHandler =
+  (
+    passwordConfirmSuccess$: Observable<any>,
+    passwordConfirmCancelled$: Observable<any>,
+  ) =>
+  (originalRequest$?: Observable<any>) =>
+  (e: any): Observable<Action<any>> => {
+    if (!originalRequest$) {
+      return defaultCatchErrorHandler()(e);
+    }
+
+    if (axios.isAxiosError(e) && e.response?.status === 423) {
+      /**
+       * Signal RxRequest that password confirmation is required
+       */
+      const requiresPasswordConfirmation$ = of({
+        type: "requiresPasswordConfirmation",
+      });
+
+      /**
+       * Send appropriate actions to RxRequest state once user has acted on
+       * the password confirmation.
+       */
+
+      const handlePasswordConfirmation$ = merge(
+        passwordConfirmSuccess$.pipe(
+          mergeMap(() =>
+            concat(
+              of({ type: "passwordConfirmed" }),
+              originalRequest$.pipe(
+                map((response) => ({
+                  type: "sendSuccess",
+                  payload: response,
+                })),
+                catchError(defaultCatchErrorHandler()),
+              ),
+            ),
+          ),
+        ),
+        passwordConfirmCancelled$.pipe(
+          mergeMap(() => of({ type: "sendFailure" })),
+        ),
+      );
+
+      const flow$ = concat(
+        requiresPasswordConfirmation$,
+        handlePasswordConfirmation$,
+      );
+
+      return flow$;
+    }
+
+    return of({
+      type: "sendFailure",
+      payload: serializeAxiosError(e),
+    });
+  };
 
 /**
  * @description Given an effect or resource,

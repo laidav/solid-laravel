@@ -1,13 +1,11 @@
-import axios from "axios";
 import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../Services/AuthService";
 import {
-  serializeAxiosError,
   loadableInitialState,
   RxRequest,
-  defaultCatchErrorHandler,
+  passwordConfirmationHandler,
   type LoadableState,
 } from "../Features/Shared/Rx/RxRequest";
 
@@ -163,64 +161,6 @@ export const RxAuth = ({
   });
 
   /**2FA Settings */
-
-  const passwordConfirmationHandler =
-    (
-      passwordConfirmSuccess$: Observable<any>,
-      passwordConfirmCancelled$: Observable<any>,
-    ) =>
-    (originalRequest$?: Observable<any>) =>
-    (e: any): Observable<Action<any>> => {
-      if (!originalRequest$) {
-        return defaultCatchErrorHandler()(e);
-      }
-
-      if (axios.isAxiosError(e) && e.response?.status === 423) {
-        /**
-         * Signal RxRequest that password confirmation is required
-         */
-        const requiresPasswordConfirmation$ = of({
-          type: "requiresPasswordConfirmation",
-        });
-
-        /**
-         * Send appropriate actions to RxRequest state once user has acted on
-         * the password confirmation.
-         */
-
-        const handlePasswordConfirmation$ = merge(
-          passwordConfirmSuccess$.pipe(
-            mergeMap(() =>
-              concat(
-                of({ type: "passwordConfirmed" }),
-                originalRequest$.pipe(
-                  map((response) => ({
-                    type: "sendSuccess",
-                    payload: response,
-                  })),
-                  catchError(defaultCatchErrorHandler()),
-                ),
-              ),
-            ),
-          ),
-          passwordConfirmCancelled$.pipe(
-            mergeMap(() => of({ type: "sendFailure" })),
-          ),
-        );
-
-        const flow$ = concat(
-          requiresPasswordConfirmation$,
-          handlePasswordConfirmation$,
-        );
-
-        return flow$;
-      }
-
-      return of({
-        type: "sendFailure",
-        payload: serializeAxiosError(e),
-      });
-    };
 
   const [, , passwordActions$] = rxPasswordConfirmation;
 
