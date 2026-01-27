@@ -10,7 +10,7 @@ const MainLayout = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
   const [appState] = useRxApp();
 
-  const showConfirmPasswordModal = () => {
+  const twoFactorRequiresPassword = () => {
     const {
       auth: {
         twoFactorAuthentication: { enable, disable, getQrCode, confirm },
@@ -42,8 +42,8 @@ const MainLayout = (props: RouteSectionProps) => {
         <LogoutButton />
       </header>
       <div>{props.children}</div>
-      <Show when={showConfirmPasswordModal()}>
-        {(s) => <ConfirmPasswordModal show={s()} />}
+      <Show when={twoFactorRequiresPassword()}>
+        <ConfirmPasswordModal />
       </Show>
     </>
   );
