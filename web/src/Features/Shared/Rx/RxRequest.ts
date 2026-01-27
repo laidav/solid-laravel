@@ -120,7 +120,6 @@ export const passwordConfirmationHandler =
        * Send appropriate actions to RxRequest state once user has acted on
        * the password confirmation.
        */
-
       const handlePasswordConfirmation$ = merge(
         passwordConfirmSuccess$.pipe(
           mergeMap(() =>

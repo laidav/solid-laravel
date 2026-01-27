@@ -7,24 +7,26 @@ import { useRxApp } from "../Shared/Components/RxAppProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest, passwordConfirmationHandler } from "../Shared/Rx/RxRequest";
 
+const usePasswordConfirmationHandler = () => {
+  const [, , appActions$] = useRxApp();
+
+  return passwordConfirmationHandler(
+    appActions$.ofTypes([
+      appActions$.types["[auth] - [passwordConfirmation] - sendSuccess"],
+    ]),
+    appActions$.ofTypes([
+      appActions$.types["[auth] - [passwordConfirmation] - resetState"],
+    ]),
+  );
+};
+
 const TwoFactorRecoveryCodes = () => {
   const [state, actions] = createReactable(() => {
     const authService = AuthService(useApi());
 
-    const [, , appActions$] = useRxApp();
-
-    const catchErrorHandler = passwordConfirmationHandler(
-      appActions$.ofTypes([
-        appActions$.types["[auth] - [passwordConfirmation] - sendSuccess"],
-      ]),
-      appActions$.ofTypes([
-        appActions$.types["[auth] - [passwordConfirmation] - resetState"],
-      ]),
-    );
-
     const rxRegenerateRecoveryCodes = RxRequest({
       resource: authService.regenerateRecoveryCodes,
-      catchErrorHandler,
+      catchErrorHandler: usePasswordConfirmationHandler(),
     });
 
     const [, , regenCodesActions$] = rxRegenerateRecoveryCodes;
@@ -35,7 +37,7 @@ const TwoFactorRecoveryCodes = () => {
 
     const rxRecoveryCodes = RxRequest<undefined, { data: string[] }>({
       resource: authService.getRecoveryCodes,
-      catchErrorHandler,
+      catchErrorHandler: usePasswordConfirmationHandler(),
       sources: [
         merge(of({}), codesRengerated$).pipe(map(() => ({ type: "send" }))),
       ],
