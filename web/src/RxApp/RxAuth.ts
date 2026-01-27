@@ -1,6 +1,8 @@
+import axios from "axios";
 import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
+import { serializeAxiosError } from "../Features/Shared/Rx/RxRequest";
 import { AuthService } from "../Services/AuthService";
 import {
   loadableInitialState,
@@ -154,6 +156,23 @@ export const RxAuth = ({
   });
 
   /**2FA Settings */
+
+  const catchErrorHandler =
+    ($originalRequest: Observable<any>) =>
+    (e: any): Observable<Action<any>> => {
+      if (axios.isAxiosError(e) && e.response?.status === 423) {
+        const requiresPasswordConfirmation$ = of({
+          type: "requiresPasswordConfirmation",
+        });
+
+        const flow$ = concat();
+      }
+
+      return of({
+        type: "sendFailure",
+        payload: serializeAxiosError(e),
+      });
+    };
 
   const rxTwoFactorAuthentication = combine({
     enable: RxRequest({
