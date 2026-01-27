@@ -1,6 +1,6 @@
 import axios from "axios";
 import { type Action, RxBuilder } from "@reactables/core";
-import { type OperatorFunction, type Observable, from, of } from "rxjs";
+import { type OperatorFunction, type Observable, from, of, defer } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 export type SerializableError = {
@@ -47,7 +47,9 @@ interface RequestOptionsBase<Data> {
   name?: string;
   debug?: boolean;
   initialState?: LoadableState<Data | null>;
-  catchErrorHandler?: (e: any) => Observable<Action<any>>;
+  catchErrorHandler?: (
+    originalRequest: Observable<any>,
+  ) => (e: any) => Observable<Action<any>>;
   sources?: Observable<Action<any>>[];
   reducers?: {
     [key: string]: (
@@ -86,7 +88,7 @@ export const RxRequest = <RequestPayload, Data>(
     name = "rxRequest",
     initialState = loadableInitialState,
     sources = [],
-    catchErrorHandler = (e) =>
+    catchErrorHandler = (_) => (e: any) =>
       of({
         type: "sendFailure",
         payload: serializeAxiosError(e),
@@ -101,10 +103,12 @@ export const RxRequest = <RequestPayload, Data>(
     effect = (actions$: Observable<Action<RequestPayload>>) =>
       actions$.pipe(
         map(({ payload }) =>
-          from(
-            (
-              options as RequestOptionsWithResource<RequestPayload, Data>
-            ).resource(payload as RequestPayload),
+          defer(() =>
+            from(
+              (
+                options as RequestOptionsWithResource<RequestPayload, Data>
+              ).resource(payload as RequestPayload),
+            ),
           ),
         ),
       );
@@ -130,7 +134,7 @@ export const RxRequest = <RequestPayload, Data>(
                     type: "sendSuccess",
                     payload: response,
                   })),
-                  catchError(catchErrorHandler),
+                  catchError(catchErrorHandler(request$)),
                 ),
               ),
             ),
