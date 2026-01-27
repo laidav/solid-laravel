@@ -5,7 +5,9 @@ use App\Http\RouteNames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
+use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\ConfirmablePasswordController;
 use Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
@@ -14,9 +16,12 @@ use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 Route::prefix('v1')->group(function () {
+    $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
+        ? [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm']
+        : [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')];
 
     // AUTH ROUTES
-    Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->group(function () use ($twoFactorMiddleware) {
 
         Route::get('/sanctum/csrf-cookie', [CsrfCookieController::class, 'show'])
             ->name(RouteNames::AUTH_CSRF_COOKIE);
@@ -57,24 +62,32 @@ Route::prefix('v1')->group(function () {
             ->middleware(['auth:sanctum', 'throttle:6,1'])
             ->name(RouteNames::VERIFICATION_SEND);
 
-        Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+        Route::middleware(['auth:sanctum', 'verified'])->group(function () use ($twoFactorMiddleware) {
+            Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store'])
+                ->name(RouteNames::AUTH_CONFIRM_PASSWORD);
+
             Route::post('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
+                ->middleware($twoFactorMiddleware)
                 ->name(RouteNames::AUTH_ENABLE_2FA);
 
             Route::delete('/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy'])
+                ->middleware($twoFactorMiddleware)
                 ->name(RouteNames::AUTH_DISABLE_2FA);
 
             Route::get('/two-factor-qr-code', [TwoFactorQrCodeController::class, 'show'])
+                ->middleware($twoFactorMiddleware)
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
 
             Route::post('/confirm-two-factor', [ConfirmedTwoFactorAuthenticationController::class, 'store'])
-                ->middleware(['throttle:6,1'])
+                ->middleware(['throttle:6,1', ...$twoFactorMiddleware])
                 ->name(RouteNames::AUTH_CONFIRM_2FA);
 
             Route::get('/recovery-codes', [RecoveryCodeController::class, 'index'])
+                ->middleware($twoFactorMiddleware)
                 ->name(RouteNames::AUTH_2FA_QR_CODE);
 
             Route::post('/recovery-codes', [RecoveryCodeController::class, 'store'])
+                ->middleware($twoFactorMiddleware)
                 ->name(RouteNames::AUTH_REGENERATE_2FA_RECOVERY_CODES);
 
         });

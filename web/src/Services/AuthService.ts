@@ -50,6 +50,11 @@ export function AuthService(api: API) {
         location: "auth/logout",
       }) as Promise<AxiosResponse>;
     },
+    confirmPassword() {
+      return api.post({
+        location: "auth/confirm-password",
+      }) as Promise<AxiosResponse>;
+    },
     enableTwoFactorAuthentication() {
       return api.post({
         location: "auth/two-factor-authentication",

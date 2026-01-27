@@ -10,7 +10,7 @@ export type SerializableError = {
   details?: unknown;
 };
 
-const serializeAxiosError = (e: unknown): SerializableError => {
+export const serializeAxiosError = (e: unknown): SerializableError => {
   if (axios.isAxiosError(e)) {
     return {
       message: e.response?.data?.message ?? e.message,
@@ -32,6 +32,7 @@ export interface LoadableState<T> {
   loading: boolean;
   success: boolean;
   error: SerializableError | null;
+  requiresPasswordConfirmation: boolean;
 }
 
 export const loadableInitialState = {
@@ -39,12 +40,14 @@ export const loadableInitialState = {
   data: null,
   success: false,
   error: null,
+  requiresPasswordConfirmation: false,
 };
 
 interface RequestOptionsBase<Data> {
   name?: string;
   debug?: boolean;
   initialState?: LoadableState<Data | null>;
+  catchErrorHandler?: (e: any) => Observable<Action<any>>;
   sources?: Observable<Action<any>>[];
   reducers?: {
     [key: string]: (
@@ -83,6 +86,11 @@ export const RxRequest = <RequestPayload, Data>(
     name = "rxRequest",
     initialState = loadableInitialState,
     sources = [],
+    catchErrorHandler = (e) =>
+      of({
+        type: "sendFailure",
+        payload: serializeAxiosError(e),
+      }),
   } = options;
 
   let effect: OperatorFunction<Action<RequestPayload>, Observable<any>>;
@@ -122,12 +130,7 @@ export const RxRequest = <RequestPayload, Data>(
                     type: "sendSuccess",
                     payload: response,
                   })),
-                  catchError((e) =>
-                    of({
-                      type: "sendFailure",
-                      payload: serializeAxiosError(e),
-                    }),
-                  ),
+                  catchError(catchErrorHandler),
                 ),
               ),
             ),
@@ -145,6 +148,14 @@ export const RxRequest = <RequestPayload, Data>(
         loading: false,
         success: false,
         error: action.payload,
+      }),
+      passwordConfirmed: (state) => ({
+        ...state,
+        requiresPasswordConfirmation: false,
+      }),
+      requiresPasswordConfirmation: (state) => ({
+        ...state,
+        requiresPasswordConfirmation: true,
       }),
       resetState: () => loadableInitialState as LoadableState<Data>,
       ...(options.reducers ? options.reducers : {}),
