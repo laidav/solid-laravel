@@ -169,6 +169,23 @@ export const RxAuth = ({
     passwordActions$.ofTypes([passwordActions$.types.resetState]),
   );
 
+  const rxRegenerateRecoveryCodes = RxRequest({
+    resource: authService.regenerateRecoveryCodes,
+    catchErrorHandler,
+  });
+
+  const [, , regenCodesActions$] = rxRegenerateRecoveryCodes;
+
+  const codesRengerated$ = regenCodesActions$.ofTypes([
+    regenCodesActions$.types.sendSuccess,
+  ]);
+
+  const rxRecoveryCodes = RxRequest<unknown, { data: string[] }>({
+    resource: authService.getRecoveryCodes,
+    catchErrorHandler,
+    sources: [codesRengerated$.pipe(map(() => ({ type: "send" })))],
+  });
+
   const rxTwoFactorAuthentication = combine({
     enable: RxRequest({
       resource: () => authService.enableTwoFactorAuthentication(),
@@ -186,6 +203,8 @@ export const RxAuth = ({
       resource: (body) => authService.confirmTwoFactor(body),
       catchErrorHandler,
     }),
+    regenerateRecoveryCodes: rxRegenerateRecoveryCodes,
+    recoveryCodes: rxRecoveryCodes,
   });
 
   const [, , loginActions$] = rxLogin;

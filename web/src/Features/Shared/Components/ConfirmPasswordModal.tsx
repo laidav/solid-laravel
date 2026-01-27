@@ -32,7 +32,10 @@ const ConfirmPasswordModal = () => {
       <h3>Please confirm your password to continue.</h3>
       <Form rxForm={rxForm}>
         <Field name="password" component={PasswordInput} label="Password" />
-        <button onClick={appActions.auth.passwordConfirmation.resetState}>
+        <button
+          type="button"
+          onClick={appActions.auth.passwordConfirmation.resetState}
+        >
           Cancel
         </button>
         <button

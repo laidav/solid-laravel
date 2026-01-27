@@ -1,53 +1,10 @@
-import { combine } from "@reactables/core";
-import { of, merge } from "rxjs";
-import { map } from "rxjs/operators";
-import { createReactable } from "../../reactables/createReactable";
-import { useApi } from "../Shared/Components/ApiProvider";
+import { Show } from "solid-js";
 import { useRxApp } from "../Shared/Components/RxAppProvider";
-import { AuthService } from "../../Services/AuthService";
-import { RxRequest, passwordConfirmationHandler } from "../Shared/Rx/RxRequest";
-
-const usePasswordConfirmationHandler = () => {
-  const [, , appActions$] = useRxApp();
-
-  return passwordConfirmationHandler(
-    appActions$.ofTypes([
-      appActions$.types["[auth] - [passwordConfirmation] - sendSuccess"],
-    ]),
-    appActions$.ofTypes([
-      appActions$.types["[auth] - [passwordConfirmation] - resetState"],
-    ]),
-  );
-};
 
 const TwoFactorRecoveryCodes = () => {
-  const [state, actions] = createReactable(() => {
-    const authService = AuthService(useApi());
-
-    const rxRegenerateRecoveryCodes = RxRequest({
-      resource: authService.regenerateRecoveryCodes,
-      catchErrorHandler: usePasswordConfirmationHandler(),
-    });
-
-    const [, , regenCodesActions$] = rxRegenerateRecoveryCodes;
-
-    const codesRengerated$ = regenCodesActions$.ofTypes([
-      regenCodesActions$.types.sendSuccess,
-    ]);
-
-    const rxRecoveryCodes = RxRequest<undefined, { data: string[] }>({
-      resource: authService.getRecoveryCodes,
-      catchErrorHandler: usePasswordConfirmationHandler(),
-      sources: [
-        merge(of({}), codesRengerated$).pipe(map(() => ({ type: "send" }))),
-      ],
-    });
-
-    return combine({
-      recoveryCodes: rxRecoveryCodes,
-      regenerateRecoveryCodes: rxRegenerateRecoveryCodes,
-    });
-  });
+  const [appState, appActions] = useRxApp();
+  const state = () => appState().auth.twoFactorAuthentication;
+  const recoveryCodes = () => state().recoveryCodes.data?.data;
 
   return (
     <div>
@@ -56,15 +13,35 @@ const TwoFactorRecoveryCodes = () => {
       ) : (
         <div>
           <h3>Recovery Codes</h3>
-          <ul>
-            {state().recoveryCodes.data?.data.map((code) => (
-              <li>{code}</li>
-            ))}
-          </ul>
+          <Show
+            when={recoveryCodes()}
+            fallback={
+              <button
+                onClick={
+                  appActions.auth.twoFactorAuthentication.recoveryCodes.send
+                }
+              >
+                Get Recovery Codes
+              </button>
+            }
+          >
+            {(codes) => (
+              <>
+                <ul>
+                  {codes()?.map((code) => (
+                    <li>{code}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Show>
           <button
             type="button"
             disabled={state().regenerateRecoveryCodes.loading}
-            onClick={actions.regenerateRecoveryCodes.send}
+            onClick={
+              appActions.auth.twoFactorAuthentication.regenerateRecoveryCodes
+                .send
+            }
           >
             Regenerate Recovery Codes
           </button>
