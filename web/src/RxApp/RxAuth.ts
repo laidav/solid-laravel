@@ -172,7 +172,6 @@ export const RxAuth = ({
   const refreshUser$ = merge(
     loginActions$.ofTypes([
       loginActions$.types.loginSuccess,
-      loginActions$.types.checkLoginStatusSuccess,
       loginActions$.types.signUpSuccess,
     ]),
     twoFactorActions$.ofTypes([
@@ -188,7 +187,13 @@ export const RxAuth = ({
 
   const rxUser = RxRequest<undefined, User>({
     resource: () => authService.getCurrentUser().then(({ data }) => data),
-    sources: [refreshUser$, clearUser$],
+    sources: [refreshUser$, clearUser$, loginActions$],
+    reducers: {
+      checkLoginStatusSuccess: (state, action) => ({
+        ...state,
+        data: action.payload,
+      }),
+    },
     debug: true,
   });
 

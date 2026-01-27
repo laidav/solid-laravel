@@ -46,6 +46,12 @@ interface RequestOptionsBase<Data> {
   debug?: boolean;
   initialState?: LoadableState<Data>;
   sources?: Observable<Action<any>>[];
+  reducers?: {
+    [key: string]: (
+      state: LoadableState<Data>,
+      action: Action<any>,
+    ) => LoadableState<Data>;
+  };
 }
 
 interface RequestOptionsWithEffect<
@@ -141,6 +147,7 @@ export const RxRequest = <RequestPayload, Data>(
         error: action.payload,
       }),
       resetState: () => loadableInitialState as LoadableState<Data>,
+      ...(options.reducers ? options.reducers : {}),
     },
   });
 };
