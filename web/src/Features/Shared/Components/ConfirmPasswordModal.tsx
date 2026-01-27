@@ -7,27 +7,15 @@ import { useRxApp } from "./RxAppProvider";
 
 import { createReactable } from "../../../reactables/createReactable";
 
-type ModalProps = {
-  show: boolean;
-};
-
-const ConfirmPasswordModal = (props: ModalProps) => {
+const ConfirmPasswordModal = () => {
   let dialog!: HTMLDialogElement;
 
   createEffect(() => {
-    if (props.show) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
-    } else {
-      if (dialog.open) {
-        dialog.close();
-      }
-    }
+    dialog.showModal();
   });
 
   const rxForm = createReactable(() =>
-    build(
+    build<{ password: string }>(
       group({
         controls: {
           password: control(["", "required"]),
@@ -37,8 +25,7 @@ const ConfirmPasswordModal = (props: ModalProps) => {
   );
 
   const [appState, appActions] = useRxApp();
-
-  const formState = () => rxForm[0]();
+  const [formState] = rxForm;
 
   return (
     <dialog ref={dialog}>
