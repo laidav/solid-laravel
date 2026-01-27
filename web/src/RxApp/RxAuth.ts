@@ -2,7 +2,11 @@ import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../Services/AuthService";
-import { RxRequest } from "../Features/Shared/Rx/RxRequest";
+import {
+  loadableInitialState,
+  RxRequest,
+  type LoadableState,
+} from "../Features/Shared/Rx/RxRequest";
 
 export interface User {
   id: number;
@@ -187,14 +191,29 @@ export const RxAuth = ({
 
   const rxUser = RxRequest<undefined, User>({
     resource: () => authService.getCurrentUser().then(({ data }) => data),
-    sources: [refreshUser$, clearUser$, loginActions$],
+    initialState: {
+      ...(loadableInitialState as LoadableState<User | null>),
+      loading: true,
+    },
+    sources: [
+      refreshUser$,
+      clearUser$,
+      loginActions$.ofTypes([
+        loginActions$.types.checkLoginStatusSuccess,
+        loginActions$.types.checkLoginStatusFailure,
+      ]),
+    ],
     reducers: {
-      checkLoginStatusSuccess: (state, action) => ({
+      [loginActions$.types.checkLoginStatusSuccess]: (state, action) => ({
         ...state,
         data: action.payload,
+        loading: false,
+      }),
+      [loginActions$.types.checkLoginStatusFailure]: (state) => ({
+        ...state,
+        loading: false,
       }),
     },
-    debug: true,
   });
 
   return combine({

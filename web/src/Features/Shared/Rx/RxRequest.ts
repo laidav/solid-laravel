@@ -27,14 +27,14 @@ const serializeAxiosError = (e: unknown): SerializableError => {
   return { message: "Unknown error" };
 };
 
-interface LoadableState<T> {
+export interface LoadableState<T> {
   data: T;
   loading: boolean;
   success: boolean;
   error: SerializableError | null;
 }
 
-const loadableInitialState = {
+export const loadableInitialState = {
   loading: false,
   data: null,
   success: false,
@@ -44,7 +44,7 @@ const loadableInitialState = {
 interface RequestOptionsBase<Data> {
   name?: string;
   debug?: boolean;
-  initialState?: LoadableState<Data>;
+  initialState?: LoadableState<Data | null>;
   sources?: Observable<Action<any>>[];
   reducers?: {
     [key: string]: (

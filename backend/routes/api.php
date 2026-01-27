@@ -44,6 +44,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/check-login-status', [AuthController::class, 'checkLoginStatus'])
             ->name(RouteNames::AUTH_CHECK_LOGIN_STATUS);
 
+        Route::get('/user', [AuthController::class, 'checkLoginStatus'])
+            ->name(RouteNames::AUTH_CHECK_LOGIN_STATUS);
+
         Route::post('/verification-notification', function (Request $request) {
             $request->user()->sendEmailVerificationNotification();
 

@@ -42,7 +42,7 @@ export function AuthService(api: API) {
     },
     getCurrentUser() {
       return api.get({
-        location: "auth/check-login-status",
+        location: "auth/user",
       }) as Promise<AxiosResponse>;
     },
     logout() {

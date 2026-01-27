@@ -25,32 +25,13 @@ function App() {
       ) : (
         <div>
           <Router>
-            <Route
-              path="/"
-              component={(props) => (
-                <Guard
-                  when={Boolean(
-                    appState().auth.login.isLoggedIn && user()?.emailVerified,
-                  )}
-                  redirectTo={
-                    !appState().auth.login.isLoggedIn
-                      ? "/login"
-                      : "/verify-email"
-                  }
-                >
-                  <MainLayout {...props} />
-                </Guard>
-              )}
-            >
-              <Route path="/" component={() => <h1>Home</h1>} />
-              <Route path="/user-settings" component={UserSettings}>
-                <Route path="/" component={() => <h3>General Settings</h3>} />
-                <Route
-                  path="/two-factor-authentication"
-                  component={TwoFactorAuthentication}
-                />
-              </Route>
-            </Route>
+            {/* Public Routes */}
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/login" component={Login} />
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/reset-password/:token" component={ResetPassword} />
+            <Route path="/login" component={() => <h1>Login</h1>} />
+            {/* Guarded Routes */}
             <Route
               path="/verify-email"
               component={() => (
@@ -62,11 +43,40 @@ function App() {
                 </Guard>
               )}
             />
-            <Route path="/sign-up" component={SignUp} />
-            <Route path="/login" component={Login} />
-            <Route path="/forgot-password" component={ForgotPassword} />
-            <Route path="/reset-password/:token" component={ResetPassword} />
-            <Route path="/login" component={() => <h1>Login</h1>} />
+            {!(appState().auth.user.loading && !user()) && (
+              <>
+                <Route
+                  path="/"
+                  component={(props) => (
+                    <Guard
+                      when={Boolean(
+                        appState().auth.login.isLoggedIn &&
+                        user()?.emailVerified,
+                      )}
+                      redirectTo={
+                        !appState().auth.login.isLoggedIn
+                          ? "/login"
+                          : "/verify-email"
+                      }
+                    >
+                      <MainLayout {...props} />
+                    </Guard>
+                  )}
+                >
+                  <Route path="/" component={() => <h1>Home</h1>} />
+                  <Route path="/user-settings" component={UserSettings}>
+                    <Route
+                      path="/"
+                      component={() => <h3>General Settings</h3>}
+                    />
+                    <Route
+                      path="/two-factor-authentication"
+                      component={TwoFactorAuthentication}
+                    />
+                  </Route>
+                </Route>
+              </>
+            )}
           </Router>
         </div>
       )}

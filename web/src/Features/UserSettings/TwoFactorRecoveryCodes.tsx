@@ -45,7 +45,11 @@ const TwoFactorRecoveryCodes = () => {
               <li>{code}</li>
             ))}
           </ul>
-          <button type="button" onClick={actions.regenerateRecoveryCodes.send}>
+          <button
+            type="button"
+            disabled={state().regenerateRecoveryCodes.loading}
+            onClick={actions.regenerateRecoveryCodes.send}
+          >
             Regenerate Recovery Codes
           </button>
         </div>
