@@ -185,11 +185,7 @@ export const RxAuth = ({
     ]),
   ).pipe(map(() => ({ type: "send" })));
 
-  const clearUser$ = loginActions$
-    .ofTypes([loginActions$.types.logoutSuccess])
-    .pipe(map(() => ({ type: "resetState" })));
-
-  const rxUser = RxRequest<undefined, User>({
+  const rxUser = RxRequest<undefined, User | null>({
     resource: () => authService.getCurrentUser().then(({ data }) => data),
     initialState: {
       ...(loadableInitialState as LoadableState<User | null>),
@@ -197,10 +193,10 @@ export const RxAuth = ({
     },
     sources: [
       refreshUser$,
-      clearUser$,
       loginActions$.ofTypes([
         loginActions$.types.checkLoginStatusSuccess,
         loginActions$.types.checkLoginStatusFailure,
+        loginActions$.types.logoutSuccess,
       ]),
     ],
     reducers: {
@@ -213,6 +209,8 @@ export const RxAuth = ({
         ...state,
         loading: false,
       }),
+      [loginActions$.types.logoutSuccess]: () =>
+        loadableInitialState as LoadableState<User | null>,
     },
   });
 
