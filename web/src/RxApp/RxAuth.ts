@@ -1,12 +1,13 @@
 import axios from "axios";
 import { type Action, RxBuilder, combine } from "@reactables/core";
-import { of, from, Observable, concat, merge } from "rxjs";
+import { of, from, Observable, concat, merge, EMPTY } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
-import { serializeAxiosError } from "../Features/Shared/Rx/RxRequest";
 import { AuthService } from "../Services/AuthService";
 import {
+  serializeAxiosError,
   loadableInitialState,
   RxRequest,
+  defaultCatchErrorHandler,
   type LoadableState,
 } from "../Features/Shared/Rx/RxRequest";
 
@@ -155,17 +156,58 @@ export const RxAuth = ({
     },
   });
 
+  /**Password Confirmation **/
+
+  const rxPasswordConfirmation = RxRequest({
+    resource: authService.confirmPassword,
+  });
+
   /**2FA Settings */
 
   const catchErrorHandler =
-    ($originalRequest: Observable<any>) =>
+    (originalRequest$?: Observable<any>) =>
     (e: any): Observable<Action<any>> => {
+      if (!originalRequest$) {
+        return defaultCatchErrorHandler()(e);
+      }
+
       if (axios.isAxiosError(e) && e.response?.status === 423) {
         const requiresPasswordConfirmation$ = of({
           type: "requiresPasswordConfirmation",
         });
 
-        const flow$ = concat();
+        const [, , passwordConfirmationActions$] = rxPasswordConfirmation;
+        const handlePasswordConfirmation$ = passwordConfirmationActions$.pipe(
+          mergeMap((action) => {
+            const { type } = action;
+
+            if (type === passwordConfirmationActions$.types.sendSuccess) {
+              return concat(
+                of({ type: "passwordConfirmed" }),
+                originalRequest$.pipe(
+                  map((response) => ({
+                    type: "sendSuccess",
+                    payload: response,
+                  })),
+                  catchError(defaultCatchErrorHandler()),
+                ),
+              );
+            }
+
+            if (type === passwordConfirmationActions$.types.resetState) {
+              return of({ type: "sendFailure" });
+            }
+
+            return EMPTY;
+          }),
+        );
+
+        const flow$ = concat(
+          requiresPasswordConfirmation$,
+          handlePasswordConfirmation$,
+        );
+
+        return flow$;
       }
 
       return of({
@@ -177,6 +219,7 @@ export const RxAuth = ({
   const rxTwoFactorAuthentication = combine({
     enable: RxRequest({
       resource: () => authService.enableTwoFactorAuthentication(),
+      catchErrorHandler,
     }),
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),

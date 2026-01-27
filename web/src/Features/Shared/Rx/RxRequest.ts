@@ -48,7 +48,7 @@ interface RequestOptionsBase<Data> {
   debug?: boolean;
   initialState?: LoadableState<Data | null>;
   catchErrorHandler?: (
-    originalRequest: Observable<any>,
+    originalRequest?: Observable<any>,
   ) => (e: any) => Observable<Action<any>>;
   sources?: Observable<Action<any>>[];
   reducers?: {
@@ -77,6 +77,12 @@ export type RequestOptions<RequestPayload, Data> =
   | RequestOptionsWithEffect<RequestPayload, Data>
   | RequestOptionsWithResource<RequestPayload, Data>;
 
+export const defaultCatchErrorHandler = (_?: Observable<any>) => (e: any) =>
+  of({
+    type: "sendFailure",
+    payload: serializeAxiosError(e),
+  });
+
 /**
  * @description Given an effect or resource,
  * RxRequest sends the request and handles loading, success and error states
@@ -88,11 +94,7 @@ export const RxRequest = <RequestPayload, Data>(
     name = "rxRequest",
     initialState = loadableInitialState,
     sources = [],
-    catchErrorHandler = (_) => (e: any) =>
-      of({
-        type: "sendFailure",
-        payload: serializeAxiosError(e),
-      }),
+    catchErrorHandler = defaultCatchErrorHandler,
   } = options;
 
   let effect: OperatorFunction<Action<RequestPayload>, Observable<any>>;
@@ -152,6 +154,7 @@ export const RxRequest = <RequestPayload, Data>(
         loading: false,
         success: false,
         error: action.payload,
+        requiresPasswordConfirmation: false,
       }),
       passwordConfirmed: (state) => ({
         ...state,
