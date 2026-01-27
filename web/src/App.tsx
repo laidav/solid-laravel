@@ -1,4 +1,5 @@
 import "./App.css";
+import { Show } from "solid-js";
 import { Route, Router } from "@solidjs/router";
 import SignUp from "./Features/Auth/SignUp";
 import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
@@ -20,9 +21,10 @@ function App() {
 
   return (
     <>
-      {appState().auth.login.checkingLoginStatus ? (
-        <div>Loading...</div>
-      ) : (
+      <Show
+        when={!appState().auth.login.checkingLoginStatus}
+        fallback={<div>Loading...</div>}
+      >
         <div>
           <Router>
             {/* Public Routes */}
@@ -43,7 +45,7 @@ function App() {
                 </Guard>
               )}
             />
-            {!(appState().auth.user.loading && !user()) && (
+            <Show when={!(appState().auth.user.loading && !user())}>
               <>
                 <Route
                   path="/"
@@ -76,10 +78,10 @@ function App() {
                   </Route>
                 </Route>
               </>
-            )}
+            </Show>
           </Router>
         </div>
-      )}
+      </Show>
     </>
   );
 }
