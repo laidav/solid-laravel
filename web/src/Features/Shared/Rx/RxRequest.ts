@@ -92,7 +92,7 @@ export const defaultCatchErrorHandler = (_?: Observable<any>) => (e: any) =>
   of({
     type: "sendFailure",
     payload: serializeAxiosError(e),
-  });
+  }) as Observable<Action<any>>;
 
 /**
  * @description handles requests that require password confirmation
