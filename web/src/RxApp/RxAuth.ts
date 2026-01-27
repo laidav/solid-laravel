@@ -164,7 +164,7 @@ export const RxAuth = ({
 
   /**2FA Settings */
 
-  const catchErrorHandler =
+  const passwordConfirmationHandler =
     (originalRequest$?: Observable<any>) =>
     (e: any): Observable<Action<any>> => {
       if (!originalRequest$) {
@@ -172,11 +172,18 @@ export const RxAuth = ({
       }
 
       if (axios.isAxiosError(e) && e.response?.status === 423) {
+        /**
+         * Signal RxRequest that password confirmation is required
+         */
         const requiresPasswordConfirmation$ = of({
           type: "requiresPasswordConfirmation",
         });
 
         const [, , passwordConfirmationActions$] = rxPasswordConfirmation;
+        /**
+         * Send appropriate actions to RxRequest state once user has acted on
+         * the password confirmation.
+         */
         const handlePasswordConfirmation$ = passwordConfirmationActions$.pipe(
           mergeMap((action) => {
             const { type } = action;
@@ -219,19 +226,19 @@ export const RxAuth = ({
   const rxTwoFactorAuthentication = combine({
     enable: RxRequest({
       resource: () => authService.enableTwoFactorAuthentication(),
-      catchErrorHandler,
+      catchErrorHandler: passwordConfirmationHandler,
     }),
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
-      catchErrorHandler,
+      catchErrorHandler: passwordConfirmationHandler,
     }),
     getQrCode: RxRequest<undefined, { svg: string }>({
       resource: () => authService.twoFactorQrCode().then(({ data }) => data),
-      catchErrorHandler,
+      catchErrorHandler: passwordConfirmationHandler,
     }),
     confirm: RxRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
-      catchErrorHandler,
+      catchErrorHandler: passwordConfirmationHandler,
     }),
   });
 
@@ -283,5 +290,6 @@ export const RxAuth = ({
     twoFactorAuthentication: rxTwoFactorAuthentication,
     login: rxLogin,
     user: rxUser,
+    passwordConfirmation: rxPasswordConfirmation,
   });
 };
