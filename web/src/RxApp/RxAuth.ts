@@ -1,6 +1,6 @@
 import axios from "axios";
 import { type Action, RxBuilder, combine } from "@reactables/core";
-import { of, from, Observable, concat, merge, EMPTY } from "rxjs";
+import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
 import { AuthService } from "../Services/AuthService";
 import {
@@ -165,6 +165,10 @@ export const RxAuth = ({
   /**2FA Settings */
 
   const passwordConfirmationHandler =
+    (
+      passwordConfirmSuccess$: Observable<any>,
+      passwordConfirmCancelled$: Observable<any>,
+    ) =>
     (originalRequest$?: Observable<any>) =>
     (e: any): Observable<Action<any>> => {
       if (!originalRequest$) {
@@ -179,17 +183,15 @@ export const RxAuth = ({
           type: "requiresPasswordConfirmation",
         });
 
-        const [, , passwordConfirmationActions$] = rxPasswordConfirmation;
         /**
          * Send appropriate actions to RxRequest state once user has acted on
          * the password confirmation.
          */
-        const handlePasswordConfirmation$ = passwordConfirmationActions$.pipe(
-          mergeMap((action) => {
-            const { type } = action;
 
-            if (type === passwordConfirmationActions$.types.sendSuccess) {
-              return concat(
+        const handlePasswordConfirmation$ = merge(
+          passwordConfirmSuccess$.pipe(
+            mergeMap(() =>
+              concat(
                 of({ type: "passwordConfirmed" }),
                 originalRequest$.pipe(
                   map((response) => ({
@@ -198,15 +200,12 @@ export const RxAuth = ({
                   })),
                   catchError(defaultCatchErrorHandler()),
                 ),
-              );
-            }
-
-            if (type === passwordConfirmationActions$.types.resetState) {
-              return of({ type: "sendFailure" });
-            }
-
-            return EMPTY;
-          }),
+              ),
+            ),
+          ),
+          passwordConfirmCancelled$.pipe(
+            mergeMap(() => of({ type: "sendFailure" })),
+          ),
         );
 
         const flow$ = concat(
@@ -223,22 +222,29 @@ export const RxAuth = ({
       });
     };
 
+  const [, , passwordActions$] = rxPasswordConfirmation;
+
+  const catchErrorHandler = passwordConfirmationHandler(
+    passwordActions$.ofTypes([passwordActions$.types.sendSuccess]),
+    passwordActions$.ofTypes([passwordActions$.types.resetState]),
+  );
+
   const rxTwoFactorAuthentication = combine({
     enable: RxRequest({
       resource: () => authService.enableTwoFactorAuthentication(),
-      catchErrorHandler: passwordConfirmationHandler,
+      catchErrorHandler,
     }),
     disable: RxRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
-      catchErrorHandler: passwordConfirmationHandler,
+      catchErrorHandler,
     }),
     getQrCode: RxRequest<undefined, { svg: string }>({
       resource: () => authService.twoFactorQrCode().then(({ data }) => data),
-      catchErrorHandler: passwordConfirmationHandler,
+      catchErrorHandler,
     }),
     confirm: RxRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
-      catchErrorHandler: passwordConfirmationHandler,
+      catchErrorHandler,
     }),
   });
 
