@@ -16,6 +16,8 @@ import Guard from "./Features/Shared/Components/Guard";
 function App() {
   const [appState] = useRxApp();
 
+  const user = () => appState().auth.user.data;
+
   return (
     <>
       {appState().auth.login.checkingLoginStatus ? (
@@ -28,8 +30,7 @@ function App() {
               component={(props) => (
                 <Guard
                   when={Boolean(
-                    appState().auth.login.isLoggedIn &&
-                    appState().auth.login.currentUser?.emailVerified,
+                    appState().auth.login.isLoggedIn && user()?.emailVerified,
                   )}
                   redirectTo={
                     !appState().auth.login.isLoggedIn

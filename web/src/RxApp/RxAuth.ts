@@ -18,7 +18,6 @@ const initialAuthState = {
   checkingLoginStatus: false,
   loggingIn: false,
   loggingOut: false,
-  currentUser: null as User | null,
   loginFailure: null as boolean | null,
   lockedOut: false,
 };
@@ -28,23 +27,6 @@ export const RxAuth = ({
 }: {
   authService: ReturnType<typeof AuthService>;
 }) => {
-  /**2FA Settings */
-
-  const rxTwoFactorAuthentication = combine({
-    enable: RxRequest({
-      resource: () => authService.enableTwoFactorAuthentication(),
-    }),
-    disable: RxRequest({
-      resource: () => authService.disableTwoFactorAuthentication(),
-    }),
-    getQrCode: RxRequest<undefined, { svg: string }>({
-      resource: () => authService.twoFactorQrCode().then(({ data }) => data),
-    }),
-    confirm: RxRequest<{ code: string }, unknown>({
-      resource: (body) => authService.confirmTwoFactor(body),
-    }),
-  });
-
   /** LOGIN **/
   const checkLoginStatus$ = concat(
     of({ type: "checkLoginStatus" }),
@@ -54,33 +36,10 @@ export const RxAuth = ({
     ),
   );
 
-  const [, , twoFactorActions$] = rxTwoFactorAuthentication;
-
-  const twoFactorEnabled$ = twoFactorActions$
-    .ofTypes([
-      twoFactorActions$.types["[enable] - sendSuccess"],
-      twoFactorActions$.types["[disable] - sendSuccess"],
-    ])
-    .pipe(
-      map((action) => ({
-        type: "twoFactorEnabled",
-        payload:
-          action.type === twoFactorActions$.types["[enable] - sendSuccess"],
-      })),
-    );
-
-  const twoFactorConfirmed$ = twoFactorActions$
-    .ofTypes([twoFactorActions$.types["[confirm] - sendSuccess"]])
-    .pipe(
-      map(() => ({
-        type: "twoFactorConfirmed",
-      })),
-    );
-
   const rxLogin = RxBuilder({
     name: "rxAuth",
     initialState: initialAuthState,
-    sources: [checkLoginStatus$, twoFactorEnabled$, twoFactorConfirmed$],
+    sources: [checkLoginStatus$],
     reducers: {
       login: {
         reducer: (state, _: Action<{ email: string; password: string }>) => ({
@@ -102,11 +61,10 @@ export const RxAuth = ({
             ),
         ],
       },
-      loginSuccess: (state, { payload }: Action<User>) => ({
+      loginSuccess: (state) => ({
         ...state,
         loggingIn: false,
         isLoggedIn: true,
-        currentUser: payload,
         lockedOut: false,
         loginFailure: null,
       }),
@@ -117,7 +75,6 @@ export const RxAuth = ({
         if (response?.status === 302) {
           return {
             ...state,
-            currentUser: response.data.user as User,
             loggingIn: false,
           };
         }
@@ -138,10 +95,9 @@ export const RxAuth = ({
           loginFailure: true,
         };
       },
-      signUpSuccess: (state, { payload }: Action<{ user: User }>) => ({
+      signUpSuccess: (state) => ({
         ...state,
         isLoggedIn: true,
-        currentUser: payload.user,
       }),
       lockedOut: (state) => ({
         ...state,
@@ -178,39 +134,67 @@ export const RxAuth = ({
         ...state,
         checkingLoginStatus: true,
       }),
-      checkLoginStatusSuccess: (state, { payload }: Action<User>) => ({
+      checkLoginStatusSuccess: (state) => ({
         ...state,
         checkingLoginStatus: false,
         loggingIn: false,
         isLoggedIn: true,
-        currentUser: payload,
         lockedOut: false,
         loginFailure: null,
       }),
       checkLoginStatusFailure: () => initialAuthState,
-      twoFactorEnabled: (state, { payload }: Action<boolean>) => ({
-        ...state,
-        currentUser: {
-          ...state.currentUser!,
-          twoFactorEnabled: payload,
-          twoFactorConfirmed: false,
-        },
-      }),
-      twoFactorConfirmed: (state) => ({
-        ...state,
-        currentUser: {
-          ...state.currentUser!,
-          twoFactorConfirmed: true,
-        },
-      }),
       unauthorizedResponse: {
         reducer: () => initialAuthState,
       },
     },
   });
 
+  /**2FA Settings */
+
+  const rxTwoFactorAuthentication = combine({
+    enable: RxRequest({
+      resource: () => authService.enableTwoFactorAuthentication(),
+    }),
+    disable: RxRequest({
+      resource: () => authService.disableTwoFactorAuthentication(),
+    }),
+    getQrCode: RxRequest<undefined, { svg: string }>({
+      resource: () => authService.twoFactorQrCode().then(({ data }) => data),
+    }),
+    confirm: RxRequest<{ code: string }, unknown>({
+      resource: (body) => authService.confirmTwoFactor(body),
+    }),
+  });
+
+  const [, , loginActions$] = rxLogin;
+  const [, , twoFactorActions$] = rxTwoFactorAuthentication;
+
+  const refreshUser$ = merge(
+    loginActions$.ofTypes([
+      loginActions$.types.loginSuccess,
+      loginActions$.types.checkLoginStatusSuccess,
+      loginActions$.types.signUpSuccess,
+    ]),
+    twoFactorActions$.ofTypes([
+      twoFactorActions$.types["[enable] - sendSuccess"],
+      twoFactorActions$.types["[confirm] - sendSuccess"],
+      twoFactorActions$.types["[disable] - sendSuccess"],
+    ]),
+  ).pipe(map(() => ({ type: "send" })));
+
+  const clearUser$ = loginActions$
+    .ofTypes([loginActions$.types.logoutSuccess])
+    .pipe(map(() => ({ type: "resetState" })));
+
+  const rxUser = RxRequest<undefined, User>({
+    resource: () => authService.getCurrentUser().then(({ data }) => data),
+    sources: [refreshUser$, clearUser$],
+    debug: true,
+  });
+
   return combine({
     twoFactorAuthentication: rxTwoFactorAuthentication,
     login: rxLogin,
+    user: rxUser,
   });
 };

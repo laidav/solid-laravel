@@ -40,6 +40,11 @@ export function AuthService(api: API) {
         location: "auth/check-login-status",
       }) as Promise<AxiosResponse>;
     },
+    getCurrentUser() {
+      return api.get({
+        location: "auth/check-login-status",
+      }) as Promise<AxiosResponse>;
+    },
     logout() {
       return api.post({
         location: "auth/logout",

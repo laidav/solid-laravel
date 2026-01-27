@@ -1,4 +1,3 @@
-import { Show } from "solid-js";
 import { useRxApp } from "../Shared/Components/RxAppProvider";
 import TwoFactorConfirmation from "./TwoFactorConfirmation";
 import TwoFactorRecoveryCodes from "./TwoFactorRecoveryCodes";
@@ -11,7 +10,7 @@ const TwoFactorAuthentication = () => {
   ] = useRxApp();
 
   const twoFactorAuthState = () => appState().auth.twoFactorAuthentication;
-  const user = () => appState().auth.login.currentUser;
+  const user = () => appState().auth.user.data;
   return (
     <div>
       <h3>Two Factor Authentication</h3>

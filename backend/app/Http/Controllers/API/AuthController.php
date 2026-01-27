@@ -30,31 +30,6 @@ class AuthController extends APIController
         return response()->json(new UserResource($user), Response::HTTP_CREATED);
     }
 
-    public function login(Request $request): JsonResponse
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        $throttleKey = $this->throttleKey($request);
-
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-            return response()->json(['message' => 'too many attempts'], Response::HTTP_TOO_MANY_REQUESTS);
-        }
-
-        if (Auth::attempt($credentials)) {
-            RateLimiter::clear($throttleKey);
-            $request->session()->regenerate();
-            $user = Auth::user();
-
-            return response()->json(new UserResource($user), Response::HTTP_OK);
-        }
-
-        RateLimiter::hit($throttleKey);
-
-        return response()->json(['message' => 'invalid-credentials'], Response::HTTP_UNAUTHORIZED);
-    }
     public function logout(Request $request): JsonResponse
     {
         Auth::logout();

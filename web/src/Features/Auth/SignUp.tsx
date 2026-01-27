@@ -1,4 +1,4 @@
-import { combine, type Action } from "@reactables/core";
+import { combine } from "@reactables/core";
 import { take } from "rxjs/operators";
 import { A, useNavigate } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
@@ -12,7 +12,6 @@ import { useRxApp } from "../Shared/Components/RxAppProvider";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { type User } from "../../RxApp/RxAuth";
 
 export interface SignUpFormValue {
   name: string;
@@ -46,8 +45,8 @@ const SignUp = () => {
   signUpActions$
     .ofTypes([signUpActions$.types["[submitRequest] - sendSuccess"]])
     .pipe(take(1))
-    .subscribe((action: Action) => {
-      appActions.auth.login.loginSuccess(action.payload! as User);
+    .subscribe(() => {
+      appActions.auth.login.loginSuccess();
       navigate("/verify-email");
     });
 

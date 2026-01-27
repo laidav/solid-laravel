@@ -11,19 +11,8 @@
 #### Logout - DONE
 
 #### Two factor auth - IN PROGRESS
-- BE
-  - 2fa set up DONE
-- FE
-  - auth service - IN PROGRESS
-    - update endpoints - IN PROGRESS
-    - post to enable, 
-      - once successful 
-        - display the qr code by calling the get
-          - scan with authenticator app to get a code
-          - then post the code to confrim 2fa setup
-            - then display
-              - get recovery codes
-              - regenerate recovery codes
+- refactor current user
+  - should be in its own reactable
 
 #### Settle on folder structure
 
