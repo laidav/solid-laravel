@@ -23,9 +23,9 @@ const ConfirmPasswordModal = () => {
       }),
     ),
   );
+  const [formState] = rxForm;
 
   const [appState, appActions] = useRxApp();
-  const [formState] = rxForm;
 
   return (
     <dialog ref={dialog}>
