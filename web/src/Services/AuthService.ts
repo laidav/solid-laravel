@@ -1,7 +1,7 @@
 import { type AxiosResponse } from "axios";
 import API from "./API";
 import { type SignUpFormValue } from "../Features/Auth/SignUp";
-import { type User } from "../RxApp/RxAuth";
+import { type User } from "../App/RxApp/RxAuth";
 import type { ResetPasswordFormValue } from "../Features/Auth/ResetPassword";
 
 export function AuthService(api: API) {

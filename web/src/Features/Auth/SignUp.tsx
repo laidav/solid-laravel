@@ -4,14 +4,14 @@ import { A, useNavigate } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
-import TextInput from "../Shared/Components/Forms/TextInput";
-import EmailInput from "../Shared/Components/Forms/EmailInput";
-import PasswordInput from "../Shared/Components/Forms/PasswordInput";
+import TextInput from "../../Shared/Components/Forms/TextInput";
+import EmailInput from "../../Shared/Components/Forms/EmailInput";
+import PasswordInput from "../../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
-import { useRxApp } from "../Shared/Components/RxAppProvider";
-import { useApi } from "../Shared/Components/ApiProvider";
+import { useRxApp } from "../../Shared/Components/RxAppProvider";
+import { useApi } from "../../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
-import { RxRequest } from "../Shared/Rx/RxRequest";
+import { RxRequest } from "../../Shared/Rx/RxRequest";
 
 export interface SignUpFormValue {
   name: string;

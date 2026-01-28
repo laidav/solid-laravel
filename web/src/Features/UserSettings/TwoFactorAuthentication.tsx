@@ -1,4 +1,4 @@
-import { useRxApp } from "../Shared/Components/RxAppProvider";
+import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import TwoFactorConfirmation from "./TwoFactorConfirmation";
 import TwoFactorRecoveryCodes from "./TwoFactorRecoveryCodes";
 const TwoFactorAuthentication = () => {

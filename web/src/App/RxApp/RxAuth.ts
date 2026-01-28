@@ -1,14 +1,14 @@
 import { type Action, RxBuilder, combine } from "@reactables/core";
 import { of, from, Observable, concat, merge } from "rxjs";
 import { mergeMap, map, catchError } from "rxjs/operators";
-import { AuthService } from "../Services/AuthService";
+import { AuthService } from "../../Services/AuthService";
 import {
   loadableInitialState,
   RxRequest,
   passwordConfirmationHandler,
   serializeAxiosError,
   type LoadableState,
-} from "../Features/Shared/Rx/RxRequest";
+} from "../../Shared/Rx/RxRequest";
 
 export interface User {
   id: number;

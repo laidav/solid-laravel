@@ -1,10 +1,10 @@
 import { type ReactableState } from "@reactables/core";
 import { createContext, useContext, type JSX, type Accessor } from "solid-js";
-import { type HookedReactable } from "../../../reactables/createReactable";
-import { RxApp } from "../../../RxApp/RxApp";
-import { AuthService } from "../../../Services/AuthService";
+import { type HookedReactable } from "../../reactables/createReactable";
+import { RxApp } from "../../App/RxApp/RxApp";
+import { AuthService } from "../../Services/AuthService";
 import { useApi } from "./ApiProvider";
-import { createReactable } from "../../../reactables/createReactable";
+import { createReactable } from "../../reactables/createReactable";
 
 type RxAppState = ReactableState<typeof RxApp>;
 type HookedRxApp = HookedReactable<typeof RxApp>;

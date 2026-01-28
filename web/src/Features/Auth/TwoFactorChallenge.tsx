@@ -2,10 +2,10 @@ import { useNavigate } from "@solidjs/router";
 import { take } from "rxjs/operators";
 import { createReactable } from "../../reactables/createReactable";
 import { build, group, control } from "@reactables/forms";
-import TextInput from "../Shared/Components/Forms/TextInput";
+import TextInput from "../../Shared/Components/Forms/TextInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { Field } from "../../reactables/SolidForms/Field";
-import { useRxApp } from "../Shared/Components/RxAppProvider";
+import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import { A } from "@solidjs/router";
 
 const TwoFactorChallenge = () => {

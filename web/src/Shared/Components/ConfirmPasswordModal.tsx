@@ -1,11 +1,11 @@
 import { build, group, control } from "@reactables/forms";
 import { createEffect } from "solid-js";
-import { Form } from "../../../reactables/SolidForms/Form";
-import { Field } from "../../../reactables/SolidForms/Field";
+import { Form } from "../../reactables/SolidForms/Form";
+import { Field } from "../../reactables/SolidForms/Field";
 import PasswordInput from "./Forms/PasswordInput";
 import { useRxApp } from "./RxAppProvider";
 
-import { createReactable } from "../../../reactables/createReactable";
+import { createReactable } from "../../reactables/createReactable";
 
 const ConfirmPasswordModal = () => {
   let dialog!: HTMLDialogElement;

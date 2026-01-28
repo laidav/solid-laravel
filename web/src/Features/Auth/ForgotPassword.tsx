@@ -4,11 +4,11 @@ import { Show } from "solid-js";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
-import EmailInput from "../Shared/Components/Forms/EmailInput";
+import EmailInput from "../../Shared/Components/Forms/EmailInput";
 import { Form } from "../../reactables/SolidForms/Form";
-import { useApi } from "../Shared/Components/ApiProvider";
+import { useApi } from "../../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
-import { RxRequest } from "../Shared/Rx/RxRequest";
+import { RxRequest } from "../../Shared/Rx/RxRequest";
 
 const ForgotPassword = () => {
   const [state, { form: formActions, submitRequest }] = createReactable(() =>

@@ -4,12 +4,12 @@ import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
-import EmailInput from "../Shared/Components/Forms/EmailInput";
-import PasswordInput from "../Shared/Components/Forms/PasswordInput";
+import EmailInput from "../../Shared/Components/Forms/EmailInput";
+import PasswordInput from "../../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
-import { useApi } from "../Shared/Components/ApiProvider";
+import { useApi } from "../../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
-import { RxRequest } from "../Shared/Rx/RxRequest";
+import { RxRequest } from "../../Shared/Rx/RxRequest";
 
 export interface ResetPasswordFormValue {
   token: string;

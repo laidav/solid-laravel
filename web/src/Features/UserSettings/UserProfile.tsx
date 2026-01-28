@@ -1,4 +1,4 @@
-import { useRxApp } from "../Shared/Components/RxAppProvider";
+import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import { Show } from "solid-js";
 
 const UserProfile = () => {

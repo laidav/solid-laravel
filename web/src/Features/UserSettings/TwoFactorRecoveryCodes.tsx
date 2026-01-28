@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { useRxApp } from "../Shared/Components/RxAppProvider";
+import { useRxApp } from "../../Shared/Components/RxAppProvider";
 
 const TwoFactorRecoveryCodes = () => {
   const [appState, appActions] = useRxApp();

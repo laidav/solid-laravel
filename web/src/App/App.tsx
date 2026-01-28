@@ -1,20 +1,20 @@
 import "./App.css";
 import { Show } from "solid-js";
 import { Route, Router } from "@solidjs/router";
-import SignUp from "./Features/Auth/SignUp";
-import VerifyEmailNotice from "./Features/Auth/VerifyEmailNotice";
-import ApiProvider from "./Features/Shared/Components/ApiProvider";
-import MainLayout from "./Features/Shared/Components/MainLayout";
-import Login from "./Features/Auth/Login";
-import TwoFactorChallenge from "./Features/Auth/TwoFactorChallenge";
-import ForgotPassword from "./Features/Auth/ForgotPassword";
-import ResetPassword from "./Features/Auth/ResetPassword";
-import UserSettings from "./Features/UserSettings/UserSettings";
-import UserProfile from "./Features/UserSettings/UserProfile";
-import TwoFactorAuthentication from "./Features/UserSettings/TwoFactorAuthentication";
-import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
-import { useRxApp } from "./Features/Shared/Components/RxAppProvider";
-import Guard from "./Features/Shared/Components/Guard";
+import SignUp from "../Features/Auth/SignUp";
+import VerifyEmailNotice from "../Features/Auth/VerifyEmailNotice";
+import ApiProvider from "../Shared/Components/ApiProvider";
+import MainLayout from "../Shared/Components/MainLayout";
+import Login from "../Features/Auth/Login";
+import TwoFactorChallenge from "../Features/Auth/TwoFactorChallenge";
+import ForgotPassword from "../Features/Auth/ForgotPassword";
+import ResetPassword from "../Features/Auth/ResetPassword";
+import UserSettings from "../Features/UserSettings/UserSettings";
+import UserProfile from "../Features/UserSettings/UserProfile";
+import TwoFactorAuthentication from "../Features/UserSettings/TwoFactorAuthentication";
+import RxAppProvider from "../Shared/Components/RxAppProvider";
+import { useRxApp } from "../Shared/Components/RxAppProvider";
+import Guard from "../Shared/Components/Guard";
 
 function App() {
   const [appState] = useRxApp();

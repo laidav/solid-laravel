@@ -1,5 +1,5 @@
 import { createContext, type JSX, useContext } from "solid-js";
-import API from "../../../Services/API";
+import API from "../../Services/API";
 
 export const ApiContext = createContext<
   { apiWithCredentials: API; apiNoCredentials: API } | undefined

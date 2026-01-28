@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import { A, type RouteSectionProps } from "@solidjs/router";
-import { AuthService } from "../../../Services/AuthService";
+import { AuthService } from "../../Services/AuthService";
 import { useApi } from "./ApiProvider";
 import LogoutButton from "./LogoutButton";
 import ConfirmPasswordModal from "./ConfirmPasswordModal";
