@@ -46,7 +46,7 @@ const TwoFactorChallenge = () => {
       </button>
       <br />
       <strong>OR</strong>
-      <A href="./login">Back to Login</A>
+      <A href="/login">Back to Login</A>
     </Form>
   );
 };
