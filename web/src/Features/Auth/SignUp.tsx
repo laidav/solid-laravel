@@ -38,14 +38,12 @@ const SignUp = () => {
       }),
     );
 
-  const [, appActions] = useRxApp();
-
   useNavigateOnAction(
     [
       {
         on: signUpActions$.types["[submitRequest] - sendSuccess"],
         navigateTo: "/verify-email",
-        callback: appActions.auth.login.loginSuccess,
+        callback: useRxApp()[1].auth.login.loginSuccess,
       },
     ],
     signUpActions$,
