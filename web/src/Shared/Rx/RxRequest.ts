@@ -125,6 +125,7 @@ export const passwordConfirmationHandler =
           mergeMap(() =>
             concat(
               of({ type: "passwordConfirmed" }),
+              // Once password confirm, try the request again
               originalRequest$.pipe(
                 map((response) => ({
                   type: "sendSuccess",
