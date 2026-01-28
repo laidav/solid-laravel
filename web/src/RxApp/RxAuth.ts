@@ -188,14 +188,14 @@ export const RxAuth = ({
     resource: authService.confirmPassword,
   });
 
-  /**2FA Settings */
-
   const [, , passwordActions$] = rxPasswordConfirmation;
 
   const catchErrorHandler = passwordConfirmationHandler(
     passwordActions$.ofTypes([passwordActions$.types.sendSuccess]),
     passwordActions$.ofTypes([passwordActions$.types.resetState]),
   );
+
+  /**2FA Settings */
 
   const rxRegenerateRecoveryCodes = RxRequest({
     resource: authService.regenerateRecoveryCodes,
@@ -250,6 +250,9 @@ export const RxAuth = ({
     ]),
   ).pipe(map(() => ({ type: "send" })));
 
+  /**
+   * User profile
+   */
   const rxUser = RxRequest<undefined, User | null>({
     resource: () => authService.getCurrentUser().then(({ data }) => data),
     initialState: {
