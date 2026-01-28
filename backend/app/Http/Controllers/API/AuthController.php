@@ -69,7 +69,6 @@ class AuthController extends APIController
             return response()->json([], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Create the user using Fortify's action
         $resetUserPassword->reset($user, [
             'token' => $payload['token'],
             'email' => $email,
