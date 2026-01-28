@@ -13,7 +13,7 @@ const TwoFactorAuthentication = () => {
   const user = () => appState().auth.user.data;
   return (
     <div>
-      <h3>Two Factor Authentication</h3>
+      <h2>Two Factor Authentication</h2>
       {user()?.twoFactorEnabled ? (
         <div>
           <button

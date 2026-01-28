@@ -10,6 +10,7 @@ import TwoFactorChallenge from "./Features/Auth/TwoFactorChallenge";
 import ForgotPassword from "./Features/Auth/ForgotPassword";
 import ResetPassword from "./Features/Auth/ResetPassword";
 import UserSettings from "./Features/UserSettings/UserSettings";
+import UserProfile from "./Features/UserSettings/UserProfile";
 import TwoFactorAuthentication from "./Features/UserSettings/TwoFactorAuthentication";
 import RxAppProvider from "./Features/Shared/Components/RxAppProvider";
 import { useRxApp } from "./Features/Shared/Components/RxAppProvider";
@@ -72,10 +73,7 @@ function App() {
                 >
                   <Route path="/" component={() => <h1>Home</h1>} />
                   <Route path="/user-settings" component={UserSettings}>
-                    <Route
-                      path="/"
-                      component={() => <h3>General Settings</h3>}
-                    />
+                    <Route path="/" component={UserProfile} />
                     <Route
                       path="/two-factor-authentication"
                       component={TwoFactorAuthentication}

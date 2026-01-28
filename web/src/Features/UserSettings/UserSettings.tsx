@@ -6,7 +6,7 @@ const UserSettings = (props: RouteSectionProps) => {
       <nav>
         <ul>
           <li>
-            <A href="/user-settings">General Settings</A>
+            <A href="/user-settings">User Profile</A>
           </li>
           <li>
             <A href="/user-settings/two-factor-authentication">

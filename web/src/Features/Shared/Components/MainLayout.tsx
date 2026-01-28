@@ -13,7 +13,14 @@ const MainLayout = (props: RouteSectionProps) => {
   const twoFactorRequiresPassword = () => {
     const {
       auth: {
-        twoFactorAuthentication: { enable, disable, getQrCode, confirm },
+        twoFactorAuthentication: {
+          enable,
+          disable,
+          getQrCode,
+          confirm,
+          recoveryCodes,
+          regenerateRecoveryCodes,
+        },
       },
     } = appState();
 
@@ -21,7 +28,9 @@ const MainLayout = (props: RouteSectionProps) => {
       enable.requiresPasswordConfirmation ||
       disable.requiresPasswordConfirmation ||
       getQrCode.requiresPasswordConfirmation ||
-      confirm.requiresPasswordConfirmation
+      confirm.requiresPasswordConfirmation ||
+      recoveryCodes.requiresPasswordConfirmation ||
+      regenerateRecoveryCodes.requiresPasswordConfirmation
     );
   };
 

@@ -104,14 +104,6 @@ export const RxAuth = ({
       loginFailure: (state, { payload: e }: Action<any>) => {
         const { response } = e;
 
-        // 2-Factor Authentication Required
-        if (response?.status === 302) {
-          return {
-            ...state,
-            loggingIn: false,
-          };
-        }
-
         // Locked out from too many attempts
         if (response?.status === 429) {
           return {
@@ -182,7 +174,7 @@ export const RxAuth = ({
     },
   });
 
-  /**Password Confirmation **/
+  /**PASSWORD CONFIRMATION **/
 
   const rxPasswordConfirmation = RxRequest({
     resource: authService.confirmPassword,
@@ -190,12 +182,13 @@ export const RxAuth = ({
 
   const [, , passwordActions$] = rxPasswordConfirmation;
 
+  /**2FA SETTINGS */
+
+  // Handle flows when user hits an api route requiring password confirmation
   const catchErrorHandler = passwordConfirmationHandler(
     passwordActions$.ofTypes([passwordActions$.types.sendSuccess]),
     passwordActions$.ofTypes([passwordActions$.types.resetState]),
   );
-
-  /**2FA Settings */
 
   const rxRegenerateRecoveryCodes = RxRequest({
     resource: authService.regenerateRecoveryCodes,
@@ -251,7 +244,7 @@ export const RxAuth = ({
   ).pipe(map(() => ({ type: "send" })));
 
   /**
-   * User profile
+   * USER PROFILE
    */
   const rxUser = RxRequest<undefined, User | null>({
     resource: () => authService.getCurrentUser().then(({ data }) => data),
