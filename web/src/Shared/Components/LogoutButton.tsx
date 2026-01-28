@@ -7,6 +7,7 @@ const LogoutButton = () => {
   appActions$
     .ofTypes([appActions$.types["[auth] - [login] - logoutSuccess"]])
     .pipe(take(1))
+    //Reloading app to safely clear state in app.
     .subscribe(() => (window.location.href = "/login"));
 
   return (

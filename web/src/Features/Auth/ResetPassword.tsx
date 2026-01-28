@@ -1,6 +1,5 @@
 import { combine } from "@reactables/core";
-import { take } from "rxjs/operators";
-import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
+import { useParams, useSearchParams } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -10,6 +9,7 @@ import { Form } from "../../reactables/SolidForms/Form";
 import { useApi } from "../../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../../Shared/Rx/RxRequest";
+import { useNavigateOnAction } from "../../Shared/Composables/useNavigationOnAction";
 
 export interface ResetPasswordFormValue {
   token: string;
@@ -43,14 +43,15 @@ const ResetPassword = () => {
     }),
   );
 
-  const navigate = useNavigate();
-
-  resetPasswordActions$
-    .ofTypes([resetPasswordActions$.types["[submitRequest] - sendSuccess"]])
-    .pipe(take(1))
-    .subscribe(() => {
-      navigate("/login");
-    });
+  useNavigateOnAction(
+    [
+      {
+        on: resetPasswordActions$.types["[submitRequest] - sendSuccess"],
+        navigateTo: "/login",
+      },
+    ],
+    resetPasswordActions$,
+  );
 
   const formState = () => resetPasswordState().form;
 

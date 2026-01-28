@@ -1,5 +1,4 @@
-import { take } from "rxjs/operators";
-import { useNavigate, A } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -7,6 +6,7 @@ import EmailInput from "../../Shared/Components/Forms/EmailInput";
 import PasswordInput from "../../Shared/Components/Forms/PasswordInput";
 import { Form } from "../../reactables/SolidForms/Form";
 import { useRxApp } from "../../Shared/Components/RxAppProvider";
+import { useNavigateOnAction } from "../../Shared/Composables/useNavigationOnAction";
 
 export interface LoginFormValue {
   email: string;
@@ -25,24 +25,19 @@ const Login = () => {
     ),
   );
 
-  const navigate = useNavigate();
-
   const [appState, appActions, appActions$] = useRxApp();
   const [formState] = rxLoginForm;
 
-  appActions$
-    .ofTypes([appActions$.types["[auth] - [login] - loginSuccess"]])
-    .pipe(take(1))
-    .subscribe(() => {
-      navigate("/");
-    });
-
-  appActions$
-    .ofTypes([appActions$.types["[auth] - [login] - twoFactorRequired"]])
-    .pipe(take(1))
-    .subscribe(() => {
-      navigate("/two-factor-challenge");
-    });
+  useNavigateOnAction([
+    {
+      on: appActions$.types["[auth] - [login] - loginSuccess"],
+      navigateTo: "/",
+    },
+    {
+      on: appActions$.types["[auth] - [login] - twoFactorRequired"],
+      navigateTo: "/two-factor-challenge",
+    },
+  ]);
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { build, group, control } from "@reactables/forms";
-import { createEffect } from "solid-js";
+import { onMount } from "solid-js";
 import { Form } from "../../reactables/SolidForms/Form";
 import { Field } from "../../reactables/SolidForms/Field";
 import PasswordInput from "./Forms/PasswordInput";
@@ -10,7 +10,7 @@ import { createReactable } from "../../reactables/createReactable";
 const ConfirmPasswordModal = () => {
   let dialog!: HTMLDialogElement;
 
-  createEffect(() => {
+  onMount(() => {
     dialog.showModal();
   });
 

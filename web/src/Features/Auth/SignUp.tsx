@@ -1,6 +1,5 @@
 import { combine } from "@reactables/core";
-import { take } from "rxjs/operators";
-import { A, useNavigate } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -12,6 +11,7 @@ import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import { useApi } from "../../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../../Shared/Rx/RxRequest";
+import { useNavigateOnAction } from "../../Shared/Composables/useNavigationOnAction";
 
 export interface SignUpFormValue {
   name: string;
@@ -40,15 +40,16 @@ const SignUp = () => {
 
   const [, appActions] = useRxApp();
 
-  const navigate = useNavigate();
-
-  signUpActions$
-    .ofTypes([signUpActions$.types["[submitRequest] - sendSuccess"]])
-    .pipe(take(1))
-    .subscribe(() => {
-      appActions.auth.login.loginSuccess();
-      navigate("/verify-email");
-    });
+  useNavigateOnAction(
+    [
+      {
+        on: signUpActions$.types["[submitRequest] - sendSuccess"],
+        navigateTo: "/verify-email",
+        callback: appActions.auth.login.loginSuccess,
+      },
+    ],
+    signUpActions$,
+  );
 
   const formState = () => signUpState().form;
 

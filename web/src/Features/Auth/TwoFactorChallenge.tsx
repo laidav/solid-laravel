@@ -1,5 +1,3 @@
-import { useNavigate } from "@solidjs/router";
-import { take } from "rxjs/operators";
 import { createReactable } from "../../reactables/createReactable";
 import { build, group, control } from "@reactables/forms";
 import TextInput from "../../Shared/Components/Forms/TextInput";
@@ -7,6 +5,7 @@ import { Form } from "../../reactables/SolidForms/Form";
 import { Field } from "../../reactables/SolidForms/Field";
 import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import { A } from "@solidjs/router";
+import { useNavigateOnAction } from "../../Shared/Composables/useNavigationOnAction";
 
 const TwoFactorChallenge = () => {
   const rxForm = createReactable(() =>
@@ -23,14 +22,12 @@ const TwoFactorChallenge = () => {
 
   const [formState] = rxForm;
 
-  const navigate = useNavigate();
-
-  appActions$
-    .ofTypes([appActions$.types["[auth] - [login] - loginSuccess"]])
-    .pipe(take(1))
-    .subscribe(() => {
-      navigate("/");
-    });
+  useNavigateOnAction([
+    {
+      on: appActions$.types["[auth] - [login] - loginSuccess"],
+      navigateTo: "/",
+    },
+  ]);
 
   return (
     <Form rxForm={rxForm}>
