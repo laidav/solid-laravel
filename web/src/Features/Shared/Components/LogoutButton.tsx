@@ -1,15 +1,13 @@
-import { useNavigate } from "@solidjs/router";
 import { useRxApp } from "./RxAppProvider";
 import { take } from "rxjs";
 
 const LogoutButton = () => {
   const [appState, appActions, appActions$] = useRxApp();
-  const navigate = useNavigate();
 
   appActions$
     .ofTypes([appActions$.types["[auth] - [login] - logoutSuccess"]])
     .pipe(take(1))
-    .subscribe(() => navigate("/login"));
+    .subscribe(() => (window.location.href = "/login"));
 
   return (
     <button

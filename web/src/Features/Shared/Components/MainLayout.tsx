@@ -28,7 +28,6 @@ const MainLayout = (props: RouteSectionProps) => {
   return (
     <>
       <header>
-        <div>Main Nav</div>
         <nav>
           <ul>
             <li>

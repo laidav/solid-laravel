@@ -1,4 +1,6 @@
 import { combine } from "@reactables/core";
+import { A } from "@solidjs/router";
+import { Show } from "solid-js";
 import { build, group, control } from "@reactables/forms";
 import { createReactable } from "../../reactables/createReactable";
 import { Field } from "../../reactables/SolidForms/Field";
@@ -7,7 +9,6 @@ import { Form } from "../../reactables/SolidForms/Form";
 import { useApi } from "../Shared/Components/ApiProvider";
 import { AuthService } from "../../Services/AuthService";
 import { RxRequest } from "../Shared/Rx/RxRequest";
-import { A } from "@solidjs/router";
 
 const ForgotPassword = () => {
   const [state, { form: formActions, submitRequest }] = createReactable(() =>
@@ -28,7 +29,12 @@ const ForgotPassword = () => {
   const formState = () => state().form;
 
   return (
-    <>
+    <Show
+      when={!state().submitRequest.success}
+      fallback={
+        <h2>An email has been sent to you for resetting your password.</h2>
+      }
+    >
       {state().submitRequest.error?.httpStatus === 429 ? (
         <h1>Sorry too many attempts. Please try again later.</h1>
       ) : (
@@ -54,7 +60,7 @@ const ForgotPassword = () => {
           </Form>
         </div>
       )}
-    </>
+    </Show>
   );
 };
 
