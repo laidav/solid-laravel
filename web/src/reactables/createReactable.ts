@@ -7,14 +7,14 @@ import type {
   DestroyAction,
 } from "@reactables/core";
 
-type AccessorWithSelectors<
+export type AccessorWithSelectors<
   State,
   BoundSelectors extends { [key: string]: () => any } = {},
 > = (() => State) & {
   select: BoundSelectors;
 };
 
-type BoundSelectorsResult<Selectors> = {
+export type BoundSelectorsResult<Selectors> = {
   [K in keyof Selectors]: () => Selectors[K] extends (state: any) => infer P
     ? P
     : never;

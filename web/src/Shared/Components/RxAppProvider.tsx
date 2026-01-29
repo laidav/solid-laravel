@@ -4,12 +4,16 @@ import { type HookedReactable } from "../../reactables/createReactable";
 import RxApp from "../../App/RxApp/RxApp";
 import { AuthService } from "../../Services/AuthService";
 import { useApi } from "./ApiProvider";
-import { createReactable } from "../../reactables/createReactable";
+import {
+  createReactable,
+  type AccessorWithSelectors,
+  type BoundSelectorsResult,
+} from "../../reactables/createReactable";
 
 type RxAppState = ReactableState<typeof RxApp>;
 type HookedRxApp = HookedReactable<typeof RxApp, typeof RxApp.selectors>;
 type HookedInitializedRxApp = [
-  Accessor<RxAppState>,
+  HookedRxApp[0],
   HookedRxApp[1],
   HookedRxApp[2],
   HookedRxApp[3],

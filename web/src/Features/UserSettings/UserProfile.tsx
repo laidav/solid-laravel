@@ -4,9 +4,8 @@ import { Show } from "solid-js";
 const UserProfile = () => {
   const [appState] = useRxApp();
 
-  const user = () => appState().auth.user.data;
   return (
-    <Show when={user()}>
+    <Show when={appState.select.getUser()}>
       {(u) => (
         <div>
           <h2>User Profile</h2>
