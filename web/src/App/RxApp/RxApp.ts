@@ -10,6 +10,7 @@ const RxApp = ({
 }) => {
   return combine({
     auth: RxAuth({ authService }),
+    /// ... more slices to app state can be added as needed
   });
 };
 
