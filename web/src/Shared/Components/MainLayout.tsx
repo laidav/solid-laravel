@@ -8,11 +8,7 @@ import { useRxApp } from "./RxAppProvider";
 
 const MainLayout = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
-  const [
-    {
-      select: { twoFactorRequiresPassword },
-    },
-  ] = useRxApp();
+  const [{ select }] = useRxApp();
 
   return (
     <>
@@ -30,7 +26,7 @@ const MainLayout = (props: RouteSectionProps) => {
         <LogoutButton />
       </header>
       <div>{props.children}</div>
-      <Show when={twoFactorRequiresPassword()}>
+      <Show when={select.twoFactorRequiresPassword()}>
         <ConfirmPasswordModal />
       </Show>
     </>

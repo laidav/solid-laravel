@@ -2,10 +2,10 @@ import { useRxApp } from "../../Shared/Components/RxAppProvider";
 import { Show } from "solid-js";
 
 const UserProfile = () => {
-  const [appState] = useRxApp();
+  const [{ select }] = useRxApp();
 
   return (
-    <Show when={appState.select.getUser()}>
+    <Show when={select.getUser()}>
       {(u) => (
         <div>
           <h2>User Profile</h2>

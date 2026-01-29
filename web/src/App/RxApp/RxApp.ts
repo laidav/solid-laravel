@@ -16,6 +16,9 @@ const RxApp = ({
 type AppState = ReactableState<typeof RxApp>;
 
 RxApp.selectors = {
+  /**
+   * AUTH SELECTORS
+   */
   getUser: (state: AppState) => state.auth.user.data,
   loadingUser: (state: AppState) => state.auth.user.loading,
   isLockedOut: (state: AppState) => state.auth.login.lockedOut,
@@ -29,6 +32,24 @@ RxApp.selectors = {
     Object.values(twoFactorAuthentication).some(
       ({ requiresPasswordConfirmation }) => requiresPasswordConfirmation,
     ),
+  isDisablingTwoFactor: (state: AppState) =>
+    state.auth.twoFactorAuthentication.disable.loading,
+  isEnablingTwoFactor: (state: AppState) =>
+    state.auth.twoFactorAuthentication.enable.loading,
+  loadingTwoFactorQrCodes: (state: AppState) =>
+    state.auth.twoFactorAuthentication.getQrCode.loading,
+  twoFactorQrCode: (state: AppState) =>
+    state.auth.twoFactorAuthentication.getQrCode.data?.svg,
+  tooManyTwoFactorConfirmationAttempts: (state: AppState) =>
+    state.auth.twoFactorAuthentication.confirm.error?.httpStatus === 429,
+  isSubmittingTwoFactorConfirmation: (state: AppState) =>
+    state.auth.twoFactorAuthentication.confirm.loading,
+  getRecoveringCodes: (state: AppState) =>
+    state.auth.twoFactorAuthentication.recoveryCodes.data?.data,
+  isLoadingRecoveringCodes: (state: AppState) =>
+    state.auth.twoFactorAuthentication.recoveryCodes.loading,
+  isRegeneratingRecoveryCodes: (state: AppState) =>
+    state.auth.twoFactorAuthentication.regenerateRecoveryCodes.loading,
 };
 
 export default RxApp;
