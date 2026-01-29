@@ -7,7 +7,7 @@ import { useApi } from "./ApiProvider";
 import { createReactable } from "../../reactables/createReactable";
 
 type RxAppState = ReactableState<typeof RxApp>;
-type HookedRxApp = HookedReactable<typeof RxApp>;
+type HookedRxApp = HookedReactable<typeof RxApp, typeof RxApp.selectors>;
 type HookedInitializedRxApp = [
   Accessor<RxAppState>,
   HookedRxApp[1],
@@ -35,6 +35,8 @@ export function useRxApp(): HookedInitializedRxApp {
 const RxAppProvider = (props: RxAppProviderProps) => {
   const authService = AuthService(useApi());
   const rxApp = createReactable(RxApp, { authService });
+
+  const [s] = rxApp;
 
   return (
     <RxAppContext.Provider value={rxApp}>

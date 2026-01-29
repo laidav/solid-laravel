@@ -1,4 +1,3 @@
-import type { Accessor } from "solid-js";
 import { createSignal, onCleanup } from "solid-js";
 
 import { Observable } from "rxjs";
@@ -6,28 +5,56 @@ import type {
   Reactable,
   ActionObservableWithTypes,
   DestroyAction,
+  ReactableState,
 } from "@reactables/core";
 
-export type HookedReactable<T> = T extends (
+type AccessorWithSelectors<
+  State,
+  Selectors extends { [key: string]: (state: State) => any } = {},
+> = (() => State) & {
+  select: Selectors;
+};
+
+export type HookedReactable<T, Selectors> = T extends (
   ...args: any[]
-) => Reactable<infer S, infer U, infer V>
-  ? [Accessor<S>, U, ActionObservableWithTypes<V>, Observable<S>]
+) => Reactable<infer State, infer Actions, infer Types>
+  ? [
+      AccessorWithSelectors<
+        State,
+        { [K in keyof Selectors]: (state: State) => any }
+      >,
+      Actions,
+      ActionObservableWithTypes<Types>,
+      Observable<State>,
+    ]
   : never;
 
 export const createReactable = <
-  T,
-  S extends DestroyAction,
-  U extends unknown[],
-  V extends Record<string, string>,
+  State,
+  Actions extends DestroyAction,
+  Types extends Record<string, string>,
+  Props extends unknown[],
+  Selectors extends { [key: string]: (state: State) => any },
 >(
-  reactableFactory: (...props: U) => Reactable<T, S, V>,
-  ...props: U
-): HookedReactable<typeof reactableFactory> => {
+  reactableFactory: ((...props: Props) => Reactable<State, Actions, Types>) & {
+    selectors?: Selectors;
+  },
+  ...props: Props
+): HookedReactable<typeof reactableFactory, Selectors> => {
   // instantiate the reactable
   const [state$, actions, actions$] = reactableFactory(...props);
 
   // create a Solid signal for state
-  const [state, setState] = createSignal<T>();
+  const [state, setState] = createSignal<State>();
+
+  const stateAccessorWithSelectors = (() => state()!) as AccessorWithSelectors<
+    State,
+    Selectors
+  >;
+
+  // bind selectors from the Factory
+  const selectors = reactableFactory.selectors || {};
+  stateAccessorWithSelectors.select = (selectors || {}) as Selectors;
 
   // subscribe signal to state observable
   const stateSub = state$.subscribe(setState);
@@ -38,5 +65,5 @@ export const createReactable = <
     actions.destroy?.();
   });
 
-  return [() => state()!, actions, actions$, state$] as const;
+  return [stateAccessorWithSelectors, actions, actions$, state$] as const;
 };
