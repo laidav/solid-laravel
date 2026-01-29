@@ -9,16 +9,22 @@ import type {
 
 type AccessorWithSelectors<
   State,
-  Selectors extends { [key: string]: () => any } = {},
+  BoundSelectors extends { [key: string]: () => any } = {},
 > = (() => State) & {
-  select: Selectors;
+  select: BoundSelectors;
+};
+
+type BoundSelectorsResult<Selectors> = {
+  [K in keyof Selectors]: () => Selectors[K] extends (state: any) => infer P
+    ? P
+    : never;
 };
 
 export type HookedReactable<T, Selectors> = T extends (
   ...args: any[]
 ) => Reactable<infer State, infer Actions, infer Types>
   ? [
-      AccessorWithSelectors<State, { [K in keyof Selectors]: () => any }>,
+      AccessorWithSelectors<State, BoundSelectorsResult<Selectors>>,
       Actions,
       ActionObservableWithTypes<Types>,
       Observable<State>,
@@ -45,22 +51,22 @@ export const createReactable = <
 
   const stateAccessorWithSelectors = (() => state()!) as AccessorWithSelectors<
     State,
-    { [K in keyof Selectors]: () => any }
+    BoundSelectorsResult<Selectors>
   >;
 
   // bind selectors from the Factory
   const selectors = (reactableFactory.selectors || {}) as Selectors;
-  const finalSelectors = Object.entries(selectors).reduce(
+  const boundSelectors = Object.entries(selectors).reduce(
     (acc, [key, selector]) => {
       return {
         ...acc,
         [key]: () => selector(state()!),
       };
     },
-    {} as { [K in keyof Selectors]: () => any },
-  );
+    {},
+  ) as BoundSelectorsResult<Selectors>;
 
-  stateAccessorWithSelectors.select = finalSelectors;
+  stateAccessorWithSelectors.select = boundSelectors;
 
   // subscribe signal to state observable
   const stateSub = state$.subscribe(setState);

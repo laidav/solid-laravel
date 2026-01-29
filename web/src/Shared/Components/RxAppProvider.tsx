@@ -36,8 +36,6 @@ const RxAppProvider = (props: RxAppProviderProps) => {
   const authService = AuthService(useApi());
   const rxApp = createReactable(RxApp, { authService });
 
-  const [s] = rxApp;
-
   return (
     <RxAppContext.Provider value={rxApp}>
       {props.children}
