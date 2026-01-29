@@ -17,24 +17,18 @@ type AppState = ReactableState<typeof RxApp>;
 
 RxApp.selectors = {
   getUser: (state: AppState) => state.auth.user.data,
+  loadingUser: (state: AppState) => state.auth.user.loading,
+  isLockedOut: (state: AppState) => state.auth.login.lockedOut,
+  isLoggedIn: (state: AppState) => state.auth.login.isLoggedIn,
+  isLoggingIn: (state: AppState) => state.auth.login.loggingIn,
+  isCheckingLoginStatus: (state: AppState) =>
+    state.auth.login.checkingLoginStatus,
   twoFactorRequiresPassword: ({
-    auth: {
-      twoFactorAuthentication: {
-        enable,
-        disable,
-        getQrCode,
-        confirm,
-        recoveryCodes,
-        regenerateRecoveryCodes,
-      },
-    },
+    auth: { twoFactorAuthentication },
   }: AppState) =>
-    enable.requiresPasswordConfirmation ||
-    disable.requiresPasswordConfirmation ||
-    getQrCode.requiresPasswordConfirmation ||
-    confirm.requiresPasswordConfirmation ||
-    recoveryCodes.requiresPasswordConfirmation ||
-    regenerateRecoveryCodes.requiresPasswordConfirmation,
+    Object.values(twoFactorAuthentication).some(
+      ({ requiresPasswordConfirmation }) => requiresPasswordConfirmation,
+    ),
 };
 
 export default RxApp;
