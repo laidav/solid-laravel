@@ -17,8 +17,7 @@ import { useRxApp } from "../Shared/Components/RxAppProvider";
 import Guard from "../Shared/Components/Guard";
 
 function App() {
-  const [appState] = useRxApp();
-  const { select } = appState;
+  const [{ select }] = useRxApp();
 
   return (
     <>
@@ -42,10 +41,7 @@ function App() {
             <Route
               path="/verify-email"
               component={() => (
-                <Guard
-                  when={appState().auth.login.isLoggedIn}
-                  redirectTo="/login"
-                >
+                <Guard when={select.isLoggedIn()} redirectTo="/login">
                   <VerifyEmailNotice />
                 </Guard>
               )}
