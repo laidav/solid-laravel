@@ -5,12 +5,11 @@ import type {
   Reactable,
   ActionObservableWithTypes,
   DestroyAction,
-  ReactableState,
 } from "@reactables/core";
 
 type AccessorWithSelectors<
   State,
-  Selectors extends { [key: string]: (state: State) => any } = {},
+  Selectors extends { [key: string]: () => any } = {},
 > = (() => State) & {
   select: Selectors;
 };
@@ -19,10 +18,7 @@ export type HookedReactable<T, Selectors> = T extends (
   ...args: any[]
 ) => Reactable<infer State, infer Actions, infer Types>
   ? [
-      AccessorWithSelectors<
-        State,
-        { [K in keyof Selectors]: (state: State) => any }
-      >,
+      AccessorWithSelectors<State, { [K in keyof Selectors]: () => any }>,
       Actions,
       ActionObservableWithTypes<Types>,
       Observable<State>,
@@ -49,12 +45,22 @@ export const createReactable = <
 
   const stateAccessorWithSelectors = (() => state()!) as AccessorWithSelectors<
     State,
-    Selectors
+    { [K in keyof Selectors]: () => any }
   >;
 
   // bind selectors from the Factory
-  const selectors = reactableFactory.selectors || {};
-  stateAccessorWithSelectors.select = (selectors || {}) as Selectors;
+  const selectors = (reactableFactory.selectors || {}) as Selectors;
+  const finalSelectors = Object.entries(selectors).reduce(
+    (acc, [key, selector]) => {
+      return {
+        ...acc,
+        [key]: () => selector(state()!),
+      };
+    },
+    {} as { [K in keyof Selectors]: () => any },
+  );
+
+  stateAccessorWithSelectors.select = finalSelectors;
 
   // subscribe signal to state observable
   const stateSub = state$.subscribe(setState);
