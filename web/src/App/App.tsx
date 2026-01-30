@@ -46,15 +46,13 @@ function App() {
                 </Guard>
               )}
             />
-            <Show when={!(select.loadingUser() && !select.getUser())}>
+            <Show when={select.userLoaded()}>
               <>
                 <Route
                   path="/"
                   component={(props) => (
                     <Guard
-                      when={Boolean(
-                        select.isLoggedIn() && select.getUser()?.emailVerified,
-                      )}
+                      when={Boolean(select.userVerified())}
                       redirectTo={
                         !select.isLoggedIn() ? "/login" : "/verify-email"
                       }

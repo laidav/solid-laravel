@@ -20,7 +20,15 @@ RxApp.selectors = {
   /**
    * AUTH SELECTORS
    */
+  userLoaded: (state: AppState) => {
+    const {
+      user: { loading, data },
+    } = state.auth;
+    return !(loading && !data);
+  },
   getUser: (state: AppState) => state.auth.user.data,
+  userVerified: (state: AppState) =>
+    state.auth.login.isLoggedIn && state.auth.user.data?.emailVerified,
   loadingUser: (state: AppState) => state.auth.user.loading,
   isLockedOut: (state: AppState) => state.auth.login.lockedOut,
   isLoggedIn: (state: AppState) => state.auth.login.isLoggedIn,

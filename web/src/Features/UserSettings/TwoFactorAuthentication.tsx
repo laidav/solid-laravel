@@ -16,7 +16,7 @@ const TwoFactorAuthentication = () => {
         <div>
           <button
             type="button"
-            disabled={select.isDisablingTwoFactor()}
+            disabled={select.isDisablingTwoFactor() || select.loadingUser()}
             onClick={twoFactorActions.disable.send}
           >
             Disable 2FA
@@ -26,7 +26,7 @@ const TwoFactorAuthentication = () => {
         <div>
           <button
             type="button"
-            disabled={select.isEnablingTwoFactor()}
+            disabled={select.isEnablingTwoFactor() || select.loadingUser()}
             onClick={twoFactorActions.enable.send}
           >
             Enable 2FA
