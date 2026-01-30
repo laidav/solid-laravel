@@ -2,7 +2,7 @@ import { useRxApp } from "./RxAppProvider";
 import { take } from "rxjs";
 
 const LogoutButton = () => {
-  const [appState, appActions, appActions$] = useRxApp();
+  const [{ select }, appActions, appActions$] = useRxApp();
 
   appActions$
     .ofTypes([appActions$.types["[auth] - [login] - logoutSuccess"]])
@@ -14,7 +14,7 @@ const LogoutButton = () => {
     <button
       type="button"
       onClick={appActions.auth.login.logout}
-      disabled={appState().auth.login.loggingOut}
+      disabled={select.isLoggingOut()}
     >
       Logout
     </button>

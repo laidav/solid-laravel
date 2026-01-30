@@ -33,6 +33,7 @@ RxApp.selectors = {
   isLockedOut: (state: AppState) => state.auth.login.lockedOut,
   isLoggedIn: (state: AppState) => state.auth.login.isLoggedIn,
   isLoggingIn: (state: AppState) => state.auth.login.loggingIn,
+  isLoggingOut: (state: AppState) => state.auth.login.loggingOut,
   isCheckingLoginStatus: (state: AppState) =>
     state.auth.login.checkingLoginStatus,
   twoFactorRequiresPassword: ({
