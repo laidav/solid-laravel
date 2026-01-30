@@ -25,7 +25,7 @@ const Login = () => {
     ),
   );
 
-  const [appState, appActions, appActions$] = useRxApp();
+  const [{ select }, appActions, appActions$] = useRxApp();
   const [formState] = rxLoginForm;
 
   useNavigateOnAction([
@@ -41,16 +41,14 @@ const Login = () => {
 
   return (
     <div>
-      {appState().auth.login.lockedOut ? (
+      {select.isLockedOut() ? (
         <h1>Sorry too many log in attempts. Please try again later.</h1>
       ) : (
         <Form rxForm={rxLoginForm}>
           <Field name="email" component={EmailInput} label="Email" />
           <Field name="password" component={PasswordInput} label="Password" />
           <button
-            disabled={
-              appState().auth.login.loggingIn || !formState().root.valid
-            }
+            disabled={select.isLoggingIn() || !formState().root.valid}
             onClick={() => appActions.auth.login.login(formState().root.value)}
           >
             Login

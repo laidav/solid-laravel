@@ -2,19 +2,17 @@ import { Show } from "solid-js";
 import { useRxApp } from "../../Shared/Components/RxAppProvider";
 
 const TwoFactorRecoveryCodes = () => {
-  const [appState, appActions] = useRxApp();
-  const state = () => appState().auth.twoFactorAuthentication;
-  const recoveryCodes = () => state().recoveryCodes.data?.data;
+  const [{ select }, appActions] = useRxApp();
 
   return (
     <div>
-      {state().recoveryCodes.loading ? (
+      {select.isLoadingRecoveringCodes() ? (
         <div>Loading Recovery Codes</div>
       ) : (
         <div>
           <h3>Recovery Codes</h3>
           <Show
-            when={recoveryCodes()}
+            when={select.getRecoveringCodes()}
             fallback={
               <button
                 onClick={
@@ -37,7 +35,7 @@ const TwoFactorRecoveryCodes = () => {
           </Show>
           <button
             type="button"
-            disabled={state().regenerateRecoveryCodes.loading}
+            disabled={select.isRegeneratingRecoveryCodes()}
             onClick={
               appActions.auth.twoFactorAuthentication.regenerateRecoveryCodes
                 .send

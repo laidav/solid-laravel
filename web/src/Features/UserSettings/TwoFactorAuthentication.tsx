@@ -3,22 +3,20 @@ import TwoFactorConfirmation from "./TwoFactorConfirmation";
 import TwoFactorRecoveryCodes from "./TwoFactorRecoveryCodes";
 const TwoFactorAuthentication = () => {
   const [
-    appState,
+    { select },
     {
       auth: { twoFactorAuthentication: twoFactorActions },
     },
   ] = useRxApp();
 
-  const twoFactorAuthState = () => appState().auth.twoFactorAuthentication;
-  const user = () => appState().auth.user.data;
   return (
     <div>
       <h2>Two Factor Authentication</h2>
-      {user()?.twoFactorEnabled ? (
+      {select.getUser()?.twoFactorEnabled ? (
         <div>
           <button
             type="button"
-            disabled={twoFactorAuthState().disable.loading}
+            disabled={select.isDisablingTwoFactor()}
             onClick={twoFactorActions.disable.send}
           >
             Disable 2FA
@@ -28,16 +26,16 @@ const TwoFactorAuthentication = () => {
         <div>
           <button
             type="button"
-            disabled={twoFactorAuthState().enable.loading}
+            disabled={select.isEnablingTwoFactor()}
             onClick={twoFactorActions.enable.send}
           >
             Enable 2FA
           </button>
         </div>
       )}
-      {user()?.twoFactorEnabled && (
+      {select.getUser()?.twoFactorEnabled && (
         <>
-          {user()?.twoFactorConfirmed ? (
+          {select.getUser()?.twoFactorConfirmed ? (
             <div>
               <h3>Two factor authentication enabled.</h3>
               <br />

@@ -18,7 +18,7 @@ const TwoFactorChallenge = () => {
     ),
   );
 
-  const [appState, appActions, appActions$] = useRxApp();
+  const [{ select }, appActions, appActions$] = useRxApp();
 
   const [formState] = rxForm;
 
@@ -34,7 +34,7 @@ const TwoFactorChallenge = () => {
       <h3>Enter the verification code.</h3>
       <Field name="code" component={TextInput} label="Code" />
       <button
-        disabled={appState().auth.login.loggingIn || !formState().root.valid}
+        disabled={select.isLoggingIn() || !formState().root.valid}
         onClick={() =>
           appActions.auth.login.twoFactorChallenge(formState().root.value)
         }

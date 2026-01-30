@@ -8,31 +8,7 @@ import { useRxApp } from "./RxAppProvider";
 
 const MainLayout = (props: RouteSectionProps) => {
   AuthService(useApi()).testAuthenticatedRoute().then(console.log);
-  const [appState] = useRxApp();
-
-  const twoFactorRequiresPassword = () => {
-    const {
-      auth: {
-        twoFactorAuthentication: {
-          enable,
-          disable,
-          getQrCode,
-          confirm,
-          recoveryCodes,
-          regenerateRecoveryCodes,
-        },
-      },
-    } = appState();
-
-    return (
-      enable.requiresPasswordConfirmation ||
-      disable.requiresPasswordConfirmation ||
-      getQrCode.requiresPasswordConfirmation ||
-      confirm.requiresPasswordConfirmation ||
-      recoveryCodes.requiresPasswordConfirmation ||
-      regenerateRecoveryCodes.requiresPasswordConfirmation
-    );
-  };
+  const [{ select }] = useRxApp();
 
   return (
     <>
@@ -50,7 +26,7 @@ const MainLayout = (props: RouteSectionProps) => {
         <LogoutButton />
       </header>
       <div>{props.children}</div>
-      <Show when={twoFactorRequiresPassword()}>
+      <Show when={select.twoFactorRequiresPassword()}>
         <ConfirmPasswordModal />
       </Show>
     </>

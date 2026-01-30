@@ -17,7 +17,7 @@ const TwoFactorConfirmation = () => {
   );
 
   const [
-    appState,
+    { select },
     {
       auth: { twoFactorAuthentication: twoFactorActions },
     },
@@ -26,12 +26,11 @@ const TwoFactorConfirmation = () => {
   const getQrCode = () => twoFactorActions.getQrCode.send(undefined);
   getQrCode();
 
-  const twoFactorState = () => appState().auth.twoFactorAuthentication;
-
   const [formState] = rxForm;
+
   return (
     <div>
-      {twoFactorState().getQrCode.loading ? (
+      {select.loadingTwoFactorQrCodes() ? (
         <div>Generating QR Code...</div>
       ) : (
         <>
@@ -39,11 +38,11 @@ const TwoFactorConfirmation = () => {
             Please scan the QR code into your authenticator app and confirm your
             two factor authentication
           </h3>
-          <div innerHTML={twoFactorState().getQrCode.data?.svg}></div>
+          <div innerHTML={select.twoFactorQrCode()}></div>
           <button type="button" onClick={getQrCode}>
             Regenerate QR Code
           </button>
-          {twoFactorState().confirm.error?.httpStatus === 429 ? (
+          {select.tooManyTwoFactorConfirmationAttempts() ? (
             <h3>Too many attempts. Try again later</h3>
           ) : (
             <Form rxForm={rxForm}>
@@ -54,7 +53,8 @@ const TwoFactorConfirmation = () => {
               />
               <button
                 disabled={
-                  !formState().root.valid || twoFactorState().confirm.loading
+                  !formState().root.valid ||
+                  select.isSubmittingTwoFactorConfirmation()
                 }
                 onClick={() =>
                   twoFactorActions.confirm.send({

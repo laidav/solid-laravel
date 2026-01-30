@@ -17,14 +17,12 @@ import { useRxApp } from "../Shared/Components/RxAppProvider";
 import Guard from "../Shared/Components/Guard";
 
 function App() {
-  const [appState] = useRxApp();
-
-  const user = () => appState().auth.user.data;
+  const [{ select }] = useRxApp();
 
   return (
     <>
       <Show
-        when={!appState().auth.login.checkingLoginStatus}
+        when={!select.isCheckingLoginStatus()}
         fallback={<div>Loading...</div>}
       >
         <div>
@@ -43,28 +41,22 @@ function App() {
             <Route
               path="/verify-email"
               component={() => (
-                <Guard
-                  when={appState().auth.login.isLoggedIn}
-                  redirectTo="/login"
-                >
+                <Guard when={select.isLoggedIn()} redirectTo="/login">
                   <VerifyEmailNotice />
                 </Guard>
               )}
             />
-            <Show when={!(appState().auth.user.loading && !user())}>
+            <Show when={!(select.loadingUser() && !select.getUser())}>
               <>
                 <Route
                   path="/"
                   component={(props) => (
                     <Guard
                       when={Boolean(
-                        appState().auth.login.isLoggedIn &&
-                        user()?.emailVerified,
+                        select.isLoggedIn() && select.getUser()?.emailVerified,
                       )}
                       redirectTo={
-                        !appState().auth.login.isLoggedIn
-                          ? "/login"
-                          : "/verify-email"
+                        !select.isLoggedIn() ? "/login" : "/verify-email"
                       }
                     >
                       <MainLayout {...props} />
