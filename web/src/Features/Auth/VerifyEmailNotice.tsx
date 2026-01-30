@@ -4,10 +4,8 @@ import { useApi } from "../../Shared/Components/ApiProvider";
 import { createReactable } from "../../reactables/createReactable";
 
 const VerifyEmailNotice = () => {
-  const [state, actions] = createReactable(() => {
-    return RxRequest({
-      resource: AuthService(useApi()).resendEmailVerification,
-    });
+  const [state, actions] = createReactable(RxRequest, {
+    resource: AuthService(useApi()).resendEmailVerification,
   });
 
   return (

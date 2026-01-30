@@ -23,8 +23,7 @@ export function useRxApp(): HookedRxApp {
 }
 
 const RxAppProvider = (props: RxAppProviderProps) => {
-  const authService = AuthService(useApi());
-  const rxApp = createReactable(RxApp, { authService });
+  const rxApp = createReactable(RxApp, { authService: AuthService(useApi()) });
 
   return (
     <RxAppContext.Provider value={rxApp}>
