@@ -124,14 +124,6 @@ export const RxAuth = ({
         ...state,
         isLoggedIn: true,
       }),
-      lockedOut: (state) => ({
-        ...state,
-        lockedOut: true,
-      }),
-      unlock: (state) => ({
-        ...state,
-        lockedOut: false,
-      }),
       twoFactorAuthSuccess: (state) => ({
         ...state,
         isLoggedIn: true,

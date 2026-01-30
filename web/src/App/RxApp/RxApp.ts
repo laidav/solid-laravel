@@ -42,9 +42,11 @@ RxApp.selectors = {
       ({ requiresPasswordConfirmation }) => requiresPasswordConfirmation,
     ),
   isDisablingTwoFactor: (state: AppState) =>
-    state.auth.twoFactorAuthentication.disable.loading,
+    state.auth.twoFactorAuthentication.disable.loading ||
+    state.auth.user.loading,
   isEnablingTwoFactor: (state: AppState) =>
-    state.auth.twoFactorAuthentication.enable.loading,
+    state.auth.twoFactorAuthentication.enable.loading ||
+    state.auth.user.loading,
   loadingTwoFactorQrCodes: (state: AppState) =>
     state.auth.twoFactorAuthentication.getQrCode.loading,
   twoFactorQrCode: (state: AppState) =>

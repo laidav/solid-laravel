@@ -1,4 +1,5 @@
 import { useRxApp } from "../../Shared/Components/RxAppProvider";
+import { Show } from "solid-js";
 import { createReactable } from "../../reactables/createReactable";
 import { build, group, control } from "@reactables/forms";
 import { Form } from "../../reactables/SolidForms/Form";
@@ -33,7 +34,15 @@ const TwoFactorConfirmation = () => {
       {select.loadingTwoFactorQrCodes() ? (
         <div>Generating QR Code...</div>
       ) : (
-        <>
+        <Show
+          when={select.twoFactorQrCode()}
+          fallback={
+            <div>
+              You have to verify your password to finish with the 2FA setup.
+              Please refresh the page and try again.
+            </div>
+          }
+        >
           <h3>
             Please scan the QR code into your authenticator app and confirm your
             two factor authentication
@@ -66,7 +75,7 @@ const TwoFactorConfirmation = () => {
               </button>
             </Form>
           )}
-        </>
+        </Show>
       )}
     </div>
   );
