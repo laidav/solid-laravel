@@ -11,6 +11,109 @@ import {
 } from "rxjs";
 import { catchError, map, switchMap, mergeMap } from "rxjs/operators";
 
+export interface LoadableState<T> {
+  data: T;
+  loading: boolean;
+  success: boolean;
+  error: SerializableError | null;
+  requiresPasswordConfirmation: boolean;
+}
+
+export const loadableInitialState = {
+  loading: false,
+  data: null,
+  success: false,
+  error: null,
+  requiresPasswordConfirmation: false,
+};
+
+/**
+ * @description Given an effect or resource,
+ * RxRequest sends the request and handles loading, success and error states
+ */
+export const RxRequest = <RequestPayload, Data>(
+  options: RequestOptions<RequestPayload, Data>,
+) => {
+  const {
+    name = "rxRequest",
+    initialState = loadableInitialState,
+    sources = [],
+    catchErrorHandler = defaultCatchErrorHandler,
+  } = options;
+
+  let effect: OperatorFunction<Action<RequestPayload>, Observable<any>>;
+
+  if ((options as RequestOptionsWithEffect<RequestPayload, Data>).effect) {
+    effect = (options as RequestOptionsWithEffect<RequestPayload, Data>).effect;
+  } else {
+    effect = (actions$: Observable<Action<RequestPayload>>) =>
+      actions$.pipe(
+        map(({ payload }) =>
+          defer(() =>
+            from(
+              (
+                options as RequestOptionsWithResource<RequestPayload, Data>
+              ).resource(payload as RequestPayload),
+            ),
+          ),
+        ),
+      );
+  }
+  return RxBuilder({
+    name,
+    initialState,
+    sources,
+    debug: options.debug,
+    reducers: {
+      send: {
+        reducer: (state, _: Action<RequestPayload>) => ({
+          ...state,
+          loading: true,
+        }),
+        effects: [
+          (send$: Observable<any>) =>
+            send$.pipe(
+              effect,
+              switchMap((request$) =>
+                request$.pipe(
+                  map((response) => ({
+                    type: "sendSuccess",
+                    payload: response,
+                  })),
+                  catchError(catchErrorHandler(request$)),
+                ),
+              ),
+            ),
+        ],
+      },
+      sendSuccess: (state, action: Action<Data>) => ({
+        ...state,
+        loading: false,
+        data: action.payload as Data,
+        success: true,
+        error: null,
+      }),
+      sendFailure: (state, action: Action<any>) => ({
+        ...state,
+        loading: false,
+        success: false,
+        error: action.payload,
+        requiresPasswordConfirmation: false,
+      }),
+      passwordConfirmed: (state) => ({
+        ...state,
+        requiresPasswordConfirmation: false,
+      }),
+      requiresPasswordConfirmation: (state) => ({
+        ...state,
+        requiresPasswordConfirmation: true,
+      }),
+      resetState: () => loadableInitialState as LoadableState<Data>,
+      ...(options.reducers ? options.reducers : {}),
+    },
+  });
+};
+
 export type SerializableError = {
   message: string;
   code?: string | number;
@@ -33,22 +136,6 @@ export const serializeAxiosError = (e: unknown): SerializableError => {
   }
 
   return { message: "Unknown error" };
-};
-
-export interface LoadableState<T> {
-  data: T;
-  loading: boolean;
-  success: boolean;
-  error: SerializableError | null;
-  requiresPasswordConfirmation: boolean;
-}
-
-export const loadableInitialState = {
-  loading: false,
-  data: null,
-  success: false,
-  error: null,
-  requiresPasswordConfirmation: false,
 };
 
 interface RequestOptionsBase<Data> {
@@ -154,90 +241,3 @@ export const passwordConfirmationHandler =
       payload: serializeAxiosError(e),
     });
   };
-
-/**
- * @description Given an effect or resource,
- * RxRequest sends the request and handles loading, success and error states
- */
-export const RxRequest = <RequestPayload, Data>(
-  options: RequestOptions<RequestPayload, Data>,
-) => {
-  const {
-    name = "rxRequest",
-    initialState = loadableInitialState,
-    sources = [],
-    catchErrorHandler = defaultCatchErrorHandler,
-  } = options;
-
-  let effect: OperatorFunction<Action<RequestPayload>, Observable<any>>;
-
-  if ((options as RequestOptionsWithEffect<RequestPayload, Data>).effect) {
-    effect = (options as RequestOptionsWithEffect<RequestPayload, Data>).effect;
-  } else {
-    effect = (actions$: Observable<Action<RequestPayload>>) =>
-      actions$.pipe(
-        map(({ payload }) =>
-          defer(() =>
-            from(
-              (
-                options as RequestOptionsWithResource<RequestPayload, Data>
-              ).resource(payload as RequestPayload),
-            ),
-          ),
-        ),
-      );
-  }
-  return RxBuilder({
-    name,
-    initialState,
-    sources,
-    debug: options.debug,
-    reducers: {
-      send: {
-        reducer: (state, _: Action<RequestPayload>) => ({
-          ...state,
-          loading: true,
-        }),
-        effects: [
-          (send$: Observable<any>) =>
-            send$.pipe(
-              effect,
-              switchMap((request$) =>
-                request$.pipe(
-                  map((response) => ({
-                    type: "sendSuccess",
-                    payload: response,
-                  })),
-                  catchError(catchErrorHandler(request$)),
-                ),
-              ),
-            ),
-        ],
-      },
-      sendSuccess: (state, action: Action<Data>) => ({
-        ...state,
-        loading: false,
-        data: action.payload as Data,
-        success: true,
-        error: null,
-      }),
-      sendFailure: (state, action: Action<any>) => ({
-        ...state,
-        loading: false,
-        success: false,
-        error: action.payload,
-        requiresPasswordConfirmation: false,
-      }),
-      passwordConfirmed: (state) => ({
-        ...state,
-        requiresPasswordConfirmation: false,
-      }),
-      requiresPasswordConfirmation: (state) => ({
-        ...state,
-        requiresPasswordConfirmation: true,
-      }),
-      resetState: () => loadableInitialState as LoadableState<Data>,
-      ...(options.reducers ? options.reducers : {}),
-    },
-  });
-};
