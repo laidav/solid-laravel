@@ -20,48 +20,62 @@ RxApp.selectors = {
   /**
    * AUTH SELECTORS
    */
-  userLoaded: (state: AppState) => {
-    const {
+  userLoaded: ({
+    auth: {
       user: { loading, data },
-    } = state.auth;
-    return !(loading && !data);
-  },
-  getUser: (state: AppState) => state.auth.user.data,
-  userVerified: (state: AppState) =>
-    state.auth.login.isLoggedIn && state.auth.user.data?.emailVerified,
-  loadingUser: (state: AppState) => state.auth.user.loading,
-  isLockedOut: (state: AppState) => state.auth.login.lockedOut,
-  isLoggedIn: (state: AppState) => state.auth.login.isLoggedIn,
-  isLoggingIn: (state: AppState) => state.auth.login.loggingIn,
-  isLoggingOut: (state: AppState) => state.auth.login.loggingOut,
-  isCheckingLoginStatus: (state: AppState) =>
-    state.auth.login.checkingLoginStatus,
+    },
+  }: AppState) => !(loading && !data),
+
+  getUser: ({ auth }: AppState) => auth.user.data,
+
+  userVerified: ({ auth }: AppState) =>
+    auth.login.isLoggedIn && auth.user.data?.emailVerified,
+
+  loadingUser: ({ auth }: AppState) => auth.user.loading,
+
+  isLockedOut: ({ auth }: AppState) => auth.login.lockedOut,
+
+  isLoggedIn: ({ auth }: AppState) => auth.login.isLoggedIn,
+
+  isLoggingIn: ({ auth }: AppState) => auth.login.loggingIn,
+
+  isLoggingOut: ({ auth }: AppState) => auth.login.loggingOut,
+
+  isCheckingLoginStatus: ({ auth }: AppState) => auth.login.checkingLoginStatus,
+
   twoFactorRequiresPassword: ({
     auth: { twoFactorAuthentication },
   }: AppState) =>
     Object.values(twoFactorAuthentication).some(
       ({ requiresPasswordConfirmation }) => requiresPasswordConfirmation,
     ),
-  isDisablingTwoFactor: (state: AppState) =>
-    state.auth.twoFactorAuthentication.disable.loading ||
-    state.auth.user.loading,
-  isEnablingTwoFactor: (state: AppState) =>
-    state.auth.twoFactorAuthentication.enable.loading ||
-    state.auth.user.loading,
-  loadingTwoFactorQrCodes: (state: AppState) =>
-    state.auth.twoFactorAuthentication.getQrCode.loading,
-  twoFactorQrCode: (state: AppState) =>
-    state.auth.twoFactorAuthentication.getQrCode.data?.svg,
-  tooManyTwoFactorConfirmationAttempts: (state: AppState) =>
-    state.auth.twoFactorAuthentication.confirm.error?.httpStatus === 429,
-  isSubmittingTwoFactorConfirmation: (state: AppState) =>
-    state.auth.twoFactorAuthentication.confirm.loading,
-  getRecoveringCodes: (state: AppState) =>
-    state.auth.twoFactorAuthentication.recoveryCodes.data?.data,
-  isLoadingRecoveringCodes: (state: AppState) =>
-    state.auth.twoFactorAuthentication.recoveryCodes.loading,
-  isRegeneratingRecoveryCodes: (state: AppState) =>
-    state.auth.twoFactorAuthentication.regenerateRecoveryCodes.loading,
+
+  isDisablingTwoFactor: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.disable.loading || auth.user.loading,
+
+  isEnablingTwoFactor: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.enable.loading || auth.user.loading,
+
+  loadingTwoFactorQrCodes: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.getQrCode.loading,
+
+  twoFactorQrCode: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.getQrCode.data?.svg,
+
+  tooManyTwoFactorConfirmationAttempts: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.confirm.error?.httpStatus === 429,
+
+  isSubmittingTwoFactorConfirmation: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.confirm.loading,
+
+  getRecoveringCodes: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.recoveryCodes.data?.data,
+
+  isLoadingRecoveringCodes: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.recoveryCodes.loading,
+
+  isRegeneratingRecoveryCodes: ({ auth }: AppState) =>
+    auth.twoFactorAuthentication.regenerateRecoveryCodes.loading,
 };
 
 export default RxApp;
