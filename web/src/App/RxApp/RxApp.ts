@@ -29,7 +29,7 @@ RxApp.selectors = {
   getUser: ({ auth }: AppState) => auth.user.data,
 
   userVerified: ({ auth }: AppState) =>
-    auth.login.isLoggedIn && auth.user.data?.emailVerified,
+    Boolean(auth.login.isLoggedIn && auth.user.data?.emailVerified),
 
   loadingUser: ({ auth }: AppState) => auth.user.loading,
 

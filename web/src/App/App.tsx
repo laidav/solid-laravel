@@ -52,7 +52,7 @@ function App() {
                   path="/"
                   component={(props) => (
                     <Guard
-                      when={Boolean(select.userVerified())}
+                      when={select.userVerified()}
                       redirectTo={
                         !select.isLoggedIn() ? "/login" : "/verify-email"
                       }
