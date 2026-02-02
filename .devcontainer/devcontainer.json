@@ -2,7 +2,8 @@
   "name": "PHP App with MariaDB & Mailpit",
   "dockerComposeFile": "../docker-compose.yaml",
   "service": "app",
-  "workspaceFolder": "/app",
+  "workspaceFolder": "/workspace",
+  "mounts": ["source=${localWorkspaceFolder},target=/workspace,type=bind"],
   "shutdownAction": "stopCompose",
   "forwardPorts": [8000, 5173, 3307, 2080],
   "customizations": {

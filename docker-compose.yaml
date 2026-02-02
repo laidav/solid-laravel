@@ -5,6 +5,7 @@ services:
     image: mariadb:10.11
     environment:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
+      MARIADB_SSL: off
     ports:
       - "3307:3306"
     volumes:
@@ -13,7 +14,7 @@ services:
   app:
     build:
       dockerfile: Dockerfile
-    working_dir: /app
+    working_dir: /workspace
     depends_on:
       - db
     ports:

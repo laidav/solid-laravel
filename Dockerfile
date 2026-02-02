@@ -1,5 +1,5 @@
 FROM php:8.5-fpm
-WORKDIR /app
+WORKDIR /workspace
 
 # System deps
 RUN apt-get update && apt-get install -y \
