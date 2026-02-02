@@ -1,0 +1,38 @@
+{
+  "name": "PHP App with MariaDB & Mailpit",
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8000, 5173, 3307, 2080],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "xdebug.php-debug",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "bmewburn.vscode-intelephense-client",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "formulahendry.code-runner",
+        "tomoki1207.pdf",
+        "dbaeumer.vscode-eslint",
+        "onecentlin.laravel-blade",
+        "recca0120.vscode-phpunit",
+        "cweijan.vscode-database-client2"
+      ],
+      "settings": {
+        "php.suggest.basic": false,
+        "intelephense.codeLens.implementations.enable": true,
+        "intelephense.codeLens.overrides.enable": true,
+        "intelephense.codeLens.parent.enable": true,
+        "intelephense.codeLens.references.enable": true,
+        "intelephense.codeLens.usages.enable": true,
+        "intelephense.environment.phpVersion": "^8.3.0",
+        "intelephense.environment.shortOpenTag": false,
+        "blade.format.enable": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
