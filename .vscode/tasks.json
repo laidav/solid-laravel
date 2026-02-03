@@ -6,24 +6,40 @@
   },
   "tasks": [
     {
-      "label": "Create Database",
-      "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
+      "label": "SetupAll",
+      "dependsOn": [
+        "CopyEnvs",
+        "CreateDatabase",
+        "SetupBackendAndWeb",
+        "StartAll"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "SetupBackendAndWeb",
+      "dependsOn": ["SetupBackend", "SetupWeb"],
+      "dependsOrder": "parallel"
     },
     {
       "label": "CopyEnvs",
       "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env "
     },
     {
-      "label": "SetupFrontend",
-      "command": "cd web && npm install"
+      "label": "Create Database",
+      "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
     },
     {
       "label": "SetupBackend",
       "command": "cd backend && composer install && php artisan migrate:refresh --seed --no-interaction"
     },
     {
+      "label": "SetupWeb",
+      "command": "cd web && npm install"
+    },
+    {
       "label": "StartAll",
-      "dependsOn": ["BackendServer", "WebFrontendServer"],
+      "dependsOn": ["BackendServer", "WebServer"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -34,13 +50,8 @@
       "command": "cd backend && php artisan serve --no-reload"
     },
     {
-      "label": "WebFrontendServer",
+      "label": "WebServer",
       "command": "cd web && npm run dev"
     }
-    // {
-    //   "label": "Reseed Backend (TEMP ONLY WHILE DEV)",
-    //   "command": "cd backend && php artisan migrate:refresh --seed",
-    //   "problemMatcher": []
-    // },
   ]
 }
