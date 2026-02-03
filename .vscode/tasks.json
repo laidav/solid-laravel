@@ -6,6 +6,10 @@
   },
   "tasks": [
     {
+      "label": "Create Database",
+      "command": "mysql -u root -p -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
+    },
+    {
       "label": "CopyEnvs",
       "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env "
     },
