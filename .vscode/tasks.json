@@ -7,7 +7,7 @@
   "tasks": [
     {
       "label": "Create Database",
-      "command": "mysql -u root -p -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
+      "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
     },
     {
       "label": "CopyEnvs",
