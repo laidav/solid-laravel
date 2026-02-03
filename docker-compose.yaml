@@ -20,6 +20,8 @@ services:
     ports:
       - "8000:8000"
       - "5173:5173"
+    volumes:
+      - .:/workspace
   mail:
     image: axllent/mailpit
     ports: [2080:8025]
