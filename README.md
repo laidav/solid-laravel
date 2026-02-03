@@ -21,6 +21,8 @@ This is a starter kit for building modern web applications with Laravel, SolidJS
 - Clone project
 - Open project in VS Code Container
 - Run vscode task `SetupAll`
+- After setup app should run and accessible at `localhost:5173`
+- Emails viewable with Mailpit at `localhost:2080`
 
 ## Stack
 
