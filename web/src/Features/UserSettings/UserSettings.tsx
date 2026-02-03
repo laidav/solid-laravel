@@ -2,7 +2,7 @@ import { A, type RouteSectionProps } from "@solidjs/router";
 const UserSettings = (props: RouteSectionProps) => {
   return (
     <div>
-      <h1>UserSettings</h1>
+      <h1>User Settings</h1>
       <nav>
         <ul>
           <li>

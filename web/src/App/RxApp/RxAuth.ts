@@ -5,10 +5,10 @@ import { AuthService } from "../../Services/AuthService";
 import {
   loadableInitialState,
   RxRequest,
-  passwordConfirmationHandler,
   serializeAxiosError,
   type LoadableState,
 } from "../../Shared/Rx/RxRequest";
+import { RxPasswordGuardedRequest } from "../../Shared/Rx/RxPasswordGuardedRequest";
 
 export interface User {
   id: number;
@@ -177,14 +177,18 @@ export const RxAuth = ({
   /**2FA SETTINGS */
 
   // Handle flows when user hits an api route requiring password confirmation
-  const passwordCatchErrorHandler = passwordConfirmationHandler(
-    passwordActions$.ofTypes([passwordActions$.types.sendSuccess]),
-    passwordActions$.ofTypes([passwordActions$.types.resetState]),
-  );
+  const events$ = {
+    passwordConfirmed$: passwordActions$.ofTypes([
+      passwordActions$.types.sendSuccess,
+    ]),
+    cancelledConfirmation$: passwordActions$.ofTypes([
+      passwordActions$.types.resetState,
+    ]),
+  };
 
-  const rxRegenerateRecoveryCodes = RxRequest({
+  const rxRegenerateRecoveryCodes = RxPasswordGuardedRequest({
     resource: authService.regenerateRecoveryCodes,
-    catchErrorHandler: passwordCatchErrorHandler,
+    ...events$,
   });
 
   const [, , regenCodesActions$] = rxRegenerateRecoveryCodes;
@@ -193,28 +197,30 @@ export const RxAuth = ({
     regenCodesActions$.types.sendSuccess,
   ]);
 
-  const rxRecoveryCodes = RxRequest<unknown, { data: string[] }>({
-    resource: authService.getRecoveryCodes,
-    catchErrorHandler: passwordCatchErrorHandler,
-    sources: [codesRengerated$.pipe(map(() => ({ type: "send" })))],
-  });
+  const rxRecoveryCodes = RxPasswordGuardedRequest<unknown, { data: string[] }>(
+    {
+      resource: authService.getRecoveryCodes,
+      sources: [codesRengerated$.pipe(map(() => ({ type: "send" })))],
+      ...events$,
+    },
+  );
 
   const rxTwoFactorAuthentication = combine({
-    enable: RxRequest({
+    enable: RxPasswordGuardedRequest({
       resource: () => authService.enableTwoFactorAuthentication(),
-      catchErrorHandler: passwordCatchErrorHandler,
+      ...events$,
     }),
-    disable: RxRequest({
+    disable: RxPasswordGuardedRequest({
       resource: () => authService.disableTwoFactorAuthentication(),
-      catchErrorHandler: passwordCatchErrorHandler,
+      ...events$,
     }),
-    getQrCode: RxRequest<undefined, { svg: string }>({
+    getQrCode: RxPasswordGuardedRequest<undefined, { svg: string }>({
       resource: () => authService.twoFactorQrCode().then(({ data }) => data),
-      catchErrorHandler: passwordCatchErrorHandler,
+      ...events$,
     }),
-    confirm: RxRequest<{ code: string }, unknown>({
+    confirm: RxPasswordGuardedRequest<{ code: string }, unknown>({
       resource: (body) => authService.confirmTwoFactor(body),
-      catchErrorHandler: passwordCatchErrorHandler,
+      ...events$,
     }),
     regenerateRecoveryCodes: rxRegenerateRecoveryCodes,
     recoveryCodes: rxRecoveryCodes,
