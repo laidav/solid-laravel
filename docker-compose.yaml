@@ -20,13 +20,6 @@ services:
     ports:
       - "8000:8000"
       - "5173:5173"
-    environment:
-      # Database connection variables for PHP app
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: test
-      DB_USERNAME: root
-      DB_PASSWORD: ""
   mail:
     image: axllent/mailpit
     ports: [2080:8025]

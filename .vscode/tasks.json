@@ -6,6 +6,18 @@
   },
   "tasks": [
     {
+      "label": "CopyEnvs",
+      "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env "
+    },
+    {
+      "label": "SetupFrontend",
+      "command": "cd web && npm install"
+    },
+    {
+      "label": "SetupBackend",
+      "command": "cd backend && composer install && php artisan migrate --no-interaction"
+    },
+    {
       "label": "StartAll",
       "dependsOn": ["BackendServer", "WebFrontendServer"],
       "group": {
