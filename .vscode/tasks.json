@@ -8,7 +8,7 @@
     {
       "label": "SetupAll",
       "dependsOn": [
-        "CopyEnvs",
+        "CopyEnvsAndGenerateAppKey",
         "CreateDatabase",
         "SetupBackendAndWeb",
         "StartAll"
@@ -22,8 +22,17 @@
       "dependsOrder": "parallel"
     },
     {
+      "label": "CopyEnvsAndGenerateAppKey",
+      "dependsOn": ["CopyEnvs", "GenerateAppKey"],
+      "dependsOrder": "sequence"
+    },
+    {
       "label": "CopyEnvs",
-      "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env "
+      "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env"
+    },
+    {
+      "label": "GenerateAppKey",
+      "command": "cd backend && php artisan key:generate"
     },
     {
       "label": "Create Database",
@@ -47,11 +56,11 @@
     },
     {
       "label": "BackendServer",
-      "command": "cd backend && php artisan serve --no-reload"
+      "command": "cd backend && php artisan serve --host=0.0.0.0 --port=8000 --no-reload"
     },
     {
       "label": "WebServer",
-      "command": "cd web && npm run dev"
+      "command": "cd web && npm run dev -- --host 0.0.0.0"
     }
   ]
 }
