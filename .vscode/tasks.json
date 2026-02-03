@@ -27,7 +27,7 @@
     },
     {
       "label": "Create Database",
-      "command": "until mysql -h db -u root --skip-ssl -e \"SELECT 1\" >/dev/null 2>&1; do sleep 1; done && mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
+      "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
     },
     {
       "label": "SetupBackend",
