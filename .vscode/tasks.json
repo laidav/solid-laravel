@@ -26,12 +26,8 @@
       "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env"
     },
     {
-      "label": "GenerateAppKey",
-      "command": "cd backend && php artisan key:generate"
-    },
-    {
       "label": "Create Database",
-      "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
+      "command": "until mysql -h db -u root --skip-ssl -e \"SELECT 1\" >/dev/null 2>&1; do sleep 1; done && mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
     },
     {
       "label": "SetupBackend",

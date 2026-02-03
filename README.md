@@ -1,6 +1,6 @@
-# Laravel + SolidJS + Reactables Starter Kit
+# Laravel + SolidJS (with Reactables) Starter Kit
 
-This is a starter kit for building modern web applications with a modern backend and frontend stack.
+This is a starter kit for building modern web applications with Laravel, SolidJS (with Reactables).
 
 ## Features
 
@@ -14,7 +14,7 @@ This is a starter kit for building modern web applications with a modern backend
 - Modular, component-based frontend architecture
 - Example folder structure for scalable projects
 - Out-of-the-box scripts for development and build
-- Ready for Docker containerization
+- Docker containerized
 
 ## Stack
 
@@ -27,3 +27,9 @@ This is a starter kit for building modern web applications with a modern backend
 - **Reactables**: State management using RxJS and Reactables for reactivity.
 - **@solidjs/router** for routing
 - **Vite-powered** development
+
+## Setup
+
+- Clone project
+- Open project in VS Code Container
+- Run vscode task `SetupAll`
