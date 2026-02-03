@@ -1,22 +1,13 @@
 import axios from "axios";
 import { type Action, RxBuilder } from "@reactables/core";
-import {
-  type OperatorFunction,
-  type Observable,
-  from,
-  of,
-  defer,
-  merge,
-  concat,
-} from "rxjs";
-import { catchError, map, switchMap, mergeMap } from "rxjs/operators";
+import { type OperatorFunction, type Observable, from, of, defer } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 export interface LoadableState<T> {
   data: T;
   loading: boolean;
   success: boolean;
   error: SerializableError | null;
-  requiresPasswordConfirmation: boolean;
 }
 
 export const loadableInitialState = {
@@ -24,7 +15,6 @@ export const loadableInitialState = {
   data: null,
   success: false,
   error: null,
-  requiresPasswordConfirmation: false,
 };
 
 /**
@@ -98,15 +88,6 @@ export const RxRequest = <RequestPayload, Data>(
         loading: false,
         success: false,
         error: action.payload,
-        requiresPasswordConfirmation: false,
-      }),
-      passwordConfirmed: (state) => ({
-        ...state,
-        requiresPasswordConfirmation: false,
-      }),
-      requiresPasswordConfirmation: (state) => ({
-        ...state,
-        requiresPasswordConfirmation: true,
       }),
       resetState: () => loadableInitialState as LoadableState<Data>,
       ...(options.reducers ? options.reducers : {}),
@@ -180,64 +161,3 @@ export const defaultCatchErrorHandler = (_?: Observable<any>) => (e: any) =>
     type: "sendFailure",
     payload: serializeAxiosError(e),
   }) as Observable<Action<any>>;
-
-/**
- * @description handles requests that require password confirmation
- */
-export const passwordConfirmationHandler =
-  (
-    passwordConfirmSuccess$: Observable<any>,
-    passwordConfirmCancelled$: Observable<any>,
-  ) =>
-  (originalRequest$?: Observable<any>) =>
-  (e: any): Observable<Action<any>> => {
-    if (!originalRequest$) {
-      return defaultCatchErrorHandler()(e);
-    }
-
-    if (axios.isAxiosError(e) && e.response?.status === 423) {
-      /**
-       * Signal RxRequest that password confirmation is required
-       */
-      const requiresPasswordConfirmation$ = of({
-        type: "requiresPasswordConfirmation",
-      });
-
-      /**
-       * Send appropriate actions to RxRequest state once user has acted on
-       * the password confirmation.
-       */
-      const handlePasswordConfirmation$ = merge(
-        passwordConfirmSuccess$.pipe(
-          mergeMap(() =>
-            concat(
-              of({ type: "passwordConfirmed" }),
-              // Once password confirm, try the request again
-              originalRequest$.pipe(
-                map((response) => ({
-                  type: "sendSuccess",
-                  payload: response,
-                })),
-                catchError(defaultCatchErrorHandler()),
-              ),
-            ),
-          ),
-        ),
-        passwordConfirmCancelled$.pipe(
-          mergeMap(() => of({ type: "sendFailure" })),
-        ),
-      );
-
-      const flow$ = concat(
-        requiresPasswordConfirmation$,
-        handlePasswordConfirmation$,
-      );
-
-      return flow$;
-    }
-
-    return of({
-      type: "sendFailure",
-      payload: serializeAxiosError(e),
-    });
-  };
