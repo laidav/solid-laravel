@@ -26,7 +26,7 @@
       "command": "cp ./backend/.env.example ./backend/.env && cp ./web/.env.example ./web/.env"
     },
     {
-      "label": "Create Database",
+      "label": "CreateDatabase",
       "command": "mysql -h db -u root --skip-ssl -e \"CREATE DATABASE IF NOT EXISTS my_app;\""
     },
     {
